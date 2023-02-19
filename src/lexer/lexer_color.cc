@@ -190,12 +190,13 @@ code::T lexer_color::operator<<(const std::string& aSource)
     return code::ok;
 }
 
-std::string lexer_color::mark(token_data& token, int indentation)
+std::string lexer_color::mark(token_data& token)
 {
+    //Str.fill(0x20, token.mLoc.colnum-1 + indentation);
     stracc Str = "%s%s[%s]: offset: %d line:%d, col:%d, %s/{%s}";
     Str << Product() << color::Reset << mnemonic_name(token.c) << token.mLoc.offset << token.mLoc.linenum << token.mLoc.colnum << token.type_name() << token.semantic_types();
     Str << '\n';
-    Str.fill(0x20, token.mLoc.colnum-1 + indentation);
+    Str.fill(0x20, token.mLoc.colnum-1 + diagnostic::indentation());
     Str << Icon::ArrowUp;
     return Str();
 }

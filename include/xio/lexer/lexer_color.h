@@ -36,7 +36,7 @@ public:
     std::string Product() {
         return _product_data;
     }
-    std::string mark(token_data& token, int indentation);
+    std::string mark(token_data& token);
 
 private:
     //...

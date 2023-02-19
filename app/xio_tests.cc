@@ -72,9 +72,9 @@ code::T Test::operator ()()
     diagnostic::message() << code::begin << " dumping tokens:";
     for(auto& token : tokens)
     {
-        diagnostic::output() << lc.mark(token,diagnostic::indentation()*4);
+        diagnostic::output() << lc.mark(token);
     }
-    diagnostic::test() << " lexer_color: " << lc.Product() << color::Reset << code::end;
+    diagnostic::test() << code::end << " lexer_color: " << lc.Product() << color::Reset;
     return code::accepted;
 }
 
@@ -101,10 +101,10 @@ auto main(int argc, char **argv) -> int
     Test();
 out:
     diagnostic::clear([](diagnostic::log_entry& e) {
-        std::cerr << diagnostic::cc(e) << '\n'; // ?
+        std::cout << diagnostic::cc(e);// << '\n'; // ?
         //...
     });
-
+    std::cout << "\n";
     return 0;
 }
 
