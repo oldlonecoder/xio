@@ -13,6 +13,8 @@ add_library(
         include/${PROJECT_NAME}/lexer/lexer.h src/lexer/lexer.cc
         include/${PROJECT_NAME}/lexer/tokendata.h src/lexer/tokendata.cc
         include/${PROJECT_NAME}/lexer/lexer_color.h src/lexer/lexer_color.cc
+        include/${PROJECT_NAME}/alu.h src/alu.cc
+        include/${PROJECT_NAME}/xiobject.h src/xiobject.cc
 )
 
 
