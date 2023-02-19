@@ -9,7 +9,10 @@
 namespace xio
 {
 
-    class  lexer_color
+/*!
+    @note important! Make two phases : ph.1: Mnemonic; ph.2: Semantic Context & Primary Type.
+*/
+class  lexer_color
 {
     token_data::collection tokens;
     textattr::format _formatormat = textattr::format::ansi256; ///< Not used yet
