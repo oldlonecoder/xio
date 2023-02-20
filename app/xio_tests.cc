@@ -55,7 +55,12 @@ Test::~Test()
 
 code::T Test::operator ()()
 {
-    source = "u8 A = 4ac * c/3;";
+    std::string acc = token_data::dump_token_table();
+    diagnostic::info() << " :";
+    diagnostic::output() << acc;
+
+
+    source = "if !collection.empty() { u8 A = 4ac * c/3; return A; } else return code::rejected;";
     lexer::config_data d;
     d.Source = source.str().c_str();
     d.Tokens = &tokens;

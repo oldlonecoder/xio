@@ -80,6 +80,7 @@ namespace xio
         [[nodiscard]] std::string details(bool Mark_ = false) const;
 
         static token_data scan(const char* C_);
+        static std::string dump_token_table();
 
         [[nodiscard]] bool is_text() const
         {

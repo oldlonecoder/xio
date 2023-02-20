@@ -136,7 +136,7 @@ std::string name(T T_)
         }
     }
     if(Str_.empty())
-        Str_ += "null";
+        Str_ += "Null";
     return Str_;
 }
 
@@ -161,23 +161,23 @@ namespace xio
 std::string mnemonic_name(mnemonic M)
 {
     std::map<mnemonic, std::string_view> _ = {{    mnemonic::Null,              "Null"},
-                                                  {mnemonic::LeftShift,         "Left_shift"},
+                                                  {mnemonic::LeftShift,         "LeftShift"},
                                                   {mnemonic::Radical,           "Radical"},
                                                   {mnemonic::Exponent,          "Exponent"},
-                                                  {mnemonic::RightShift,        "Right_shift"},
+                                                  {mnemonic::RightShift,        "RightShift"},
                                                   {mnemonic::Decr,              "Decr"},
                                                   {mnemonic::Incr,              "Incr"},
-                                                  {mnemonic::AssignAdd,         "Assign_add"},
-                                                  {mnemonic::AssignSub,         "Assign_sub"},
-                                                  {mnemonic::AssignMul,         "Assign_mul"},
-                                                  {mnemonic::AssignDiv,         "Assign_div"},
-                                                  {mnemonic::AssignMod,         "Assign_mod"},
-                                                  {mnemonic::AssignAnd,         "Assign_and"},
-                                                  {mnemonic::AssignOr,          "Assign_or"},
-                                                  {mnemonic::AssignXor,         "Assign_xor"},
-                                                  {mnemonic::AssignC1,          "Assign_c1"},
-                                                  {mnemonic::AssignLeftShift,   "Assign_left_shift"},
-                                                  {mnemonic::AssignRightShift,  "Assign_right_shift"},
+                                                  {mnemonic::AssignAdd,         "AssignAdd"},
+                                                  {mnemonic::AssignSub,         "AssignSub"},
+                                                  {mnemonic::AssignMul,         "AssignMul"},
+                                                  {mnemonic::AssignDiv,         "AssignDiv"},
+                                                  {mnemonic::AssignMod,         "AssignMod"},
+                                                  {mnemonic::AssignAnd,         "AssignAnd"},
+                                                  {mnemonic::AssignOr,          "AssignOr"},
+                                                  {mnemonic::AssignXor,         "AssignXor"},
+                                                  {mnemonic::AssignC1,          "AssignC1"},
+                                                  {mnemonic::AssignLeftShift,   "AssignLeftShift"},
+                                                  {mnemonic::AssignRightShift,  "AssignRightShift"},
                                                   {mnemonic::Deref,             "Deref"},
                                                   {mnemonic::LessEq,            "LessEq"},
                                                   {mnemonic::GreaterEq,         "GreaterEq"},
@@ -265,7 +265,7 @@ std::string mnemonic_name(mnemonic M)
                                                   {mnemonic::Object,            "Object"},
                                                   {mnemonic::Static,            "Static"},
                                                   {mnemonic::This,              "This"},
-                                                  {mnemonic::Unshadow,          ".::"},
+                                                  {mnemonic::Unshadow,          "Unshadow"}, // Take the address of the local var instance identifier, from the parent bloc instead.
                                                   {mnemonic::Noop,              "noop"}};
     return std::string(_[M]);
 }
@@ -278,10 +278,10 @@ mnemonic lexem::from_str(const std::string &M_)
 {
     std::map<mnemonic, std::string> _ = {
                                              {mnemonic::Null,               "Null"},
-                                             {mnemonic::LeftShift,          "LeftShift,"},
-                                             {mnemonic::Radical,            "Radical,"},
-                                             {mnemonic::Exponent,           "Exponent,"},
-                                             {mnemonic::RightShift,         "RightShift,"},
+                                             {mnemonic::LeftShift,          "LeftShift"},
+                                             {mnemonic::Radical,            "Radical"},
+                                             {mnemonic::Exponent,           "Exponent"},
+                                             {mnemonic::RightShift,         "RightShift"},
                                              {mnemonic::Decr,               "Decr"},
                                              {mnemonic::Incr,               "Incr"},
                                              {mnemonic::AssignAdd,          "AssignAdd"},
@@ -293,8 +293,8 @@ mnemonic lexem::from_str(const std::string &M_)
                                              {mnemonic::AssignOr,           "AssignOr"},
                                              {mnemonic::AssignXor,          "AssignXor"},
                                              {mnemonic::AssignC1,           "AssignC1"},
-                                             {mnemonic::AssignLeftShift,    "AssignLeft_shift"},
-                                             {mnemonic::AssignRightShift,   "AssignRight_shift"},
+                                             {mnemonic::AssignLeftShift,    "AssignLeftShift"},
+                                             {mnemonic::AssignRightShift,   "AssignRightShift"},
                                              {mnemonic::LessEq,             "LessEq"},
                                              {mnemonic::GreaterEq,          "GreaterEq"},
                                              {mnemonic::Equal,              "Equal"},
