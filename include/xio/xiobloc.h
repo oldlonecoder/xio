@@ -20,7 +20,7 @@
 ***************************************************************************/
 
 #pragma once
-#include <xio/xiobject.h>
+#include <xio/xiovar.h>
 
 namespace xio
 {
@@ -71,7 +71,7 @@ private:
 
     alu operator()(const alu::list& params) override{
         //          logdebug << " xio_stack::rt_function(const alu::list_t&):  " << Ends;
-        for (auto a : params) {
+        for (auto& a : params) {
            diagnostic::debug() << "arg: [" << color::Yellow << a() << color::Reset << "]";
            //...
         }
@@ -84,11 +84,63 @@ private:
 
 };
 
-
-class xiobloc : public xiobject
+class  xiobloc : public xiobject
 {
-    xiobject::list*  _instructions_list = nullptr;
+
+public:
+    using list = std::vector<xiobloc*>;
+protected:
+
+    xiobject::list * _instructions  = nullptr;
+    xiovar::list* _xiovars          = nullptr; ///< Represent the stack xiobloc.
+    // xiobloc::list* _functions = nullptr; ///< ...
+    // xiobloc::list* _structs = nullptr;
+
+public:
+    /**
+     * Default constructor
+     */
+    xiobloc();
+    xiobloc(xiobloc* parent_, token_data* info_ = nullptr, alu* a_ = nullptr);
+    xiobloc(xiobject* parent_, token_data* info_ = nullptr, alu* a_ = nullptr);
+
+    /**
+     * Copy constructor
+     *
+     * @param other TODO
+     */
+    xiobloc(const xiobloc& other);
+
+    /**
+     * Destructor
+     */
+    ~xiobloc();
+
+    /**
+     * Assignment operator
+     *
+     * @param other TODO
+     * @return TODO
+     */
+    xiobloc& operator=(const xiobloc& other);
+
+    /**
+     * @todo write docs
+     *
+     * @param other TODO
+     * @return TODO
+     */
+    bool operator!=(const xiobloc& other) const;
+
+    alu jsr() override;
+    xiovar* query_var(const std::string& id_);
+    xiovar* query_local_var(const std::string& id_);
+    xiovar* new_var(xiobject* var_); ///< ?? When parsing (compiling) the xio node is created (...or not?)
+    xiovar* new_var(token_data* info_); ///< ?? When parsing (compiling) the xio node is created (...or not?)
+
+
 };
+
 
 
 }

@@ -63,10 +63,10 @@ protected:
         uint8_t xshared : 1; // 1 = cannot be deleted by the parent's destructor.
         // ...
     }mem = { 0,0,0,0,0 }; ///< Storage types of this xiobject.
-    friend class var;
-    friend class bloc;
+    friend class xiovar;
+    friend class xiobloc;
     // friend class compiler;
-    // friend class interpreter_t;
+    // friend class interpreter_t; if A in{0.9,4,5,67,7} {...};
 
 public:
 
