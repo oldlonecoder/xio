@@ -245,22 +245,30 @@ bool lexer::num_scanner::operator++(int)
     if(!isdigit(*C))
     {
         if(*C == '.')
+        {
             if(!Real)
             {
+                const char *e = C;
+                ++e;
+                if(!isdigit(*e)) return false;
+                St = true;
                 Real = true;
             }
-
             else
+            {
+                St = false;
                 return false;
+            }
+        }
         else
+        {
             return false;
+        }
     }
-
+    St = true;
     E = C;
     ++C;
-    if((C <= Eos) && isdigit(*C))
-        E = C;
-    return C < Eos;
+    return St;
 }
 
 /*!
@@ -269,7 +277,7 @@ bool lexer::num_scanner::operator++(int)
  */
 lexer::num_scanner::operator bool() const
 {
-    return E >= B;
+    return St;
 }
 
 /*!
@@ -283,15 +291,12 @@ xio::type::T lexer::num_scanner::operator()() const
     if(!Real)
     {
         std::string temp = B;
-        std::string n = std::string(temp, 0, E-B);
-
-        stracc    Str = n;
+        stracc Str = std::string(temp, 0, E-B);
         uint64_t D;
         Str >> D;
-        uint64_t                I = 0;
+        uint64_t I = 0;
         std::array<uint64_t, 3> R = {0x100, 0x10000, 0x100000000};
-        while(D >= R[I])
-            ++I;
+        while(D >= R[I]) ++I;
         std::array<xio::type::T, 4> Capacity = {xio::type::U8, xio::type::U16, xio::type::U32, xio::type::U64};
         xio::type::T                atoken   = Capacity[I];
         return atoken;
@@ -390,8 +395,12 @@ code::T lexer::input_punctuation(token_data &atoken)
             }
         }
     }
+    // ... A = .0123 :
     if(atoken.c == mnemonic::Dot)
-        return scan_number(atoken);
+    {
+        if(code::T r; (r = scan_number(atoken)) == code::accepted)
+            return r;
+    }
 
     if(atoken.c == mnemonic::CommentCpp)
         return skip_cpp_comment();
@@ -437,8 +446,11 @@ code::T lexer::scan_number(token_data &atoken)
 
     //logger::debug() << __PRETTY_FUNCTION__ << ":\n";
     num_scanner Num = num_scanner(src_cursor.C, src_cursor.E);
-    while(Num++);
-    if(!Num.operator bool())
+    while(Num++)
+    {
+        ;
+    }
+    if(! Num)
         return code::rejected;
 
     if(src_cursor._F)
@@ -489,7 +501,7 @@ code::T lexer::scan_number(token_data &atoken)
                 break;
         }
     }
-    atoken.c          = mnemonic::Noop;
+    atoken.c = mnemonic::Noop;
     atoken.s |= type::Const;
     return Push(atoken);
     //return code::Taccepted;
@@ -750,7 +762,7 @@ code::T lexer::Exec()
     {
         if(C == src_cursor.C)
         {
-            diagnostic::error() << "lexer: internal loop on" << code::endl  << src_cursor.mark(diagnostic::indentation()*4);
+            diagnostic::error() << "lexer: internal infinite loop!" << code::endl  << src_cursor.mark();
             return code::rejected;
         }
 

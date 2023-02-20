@@ -56,6 +56,7 @@ class lexer
         bool Real = false;
 
         bool Literal = true; ///< scan literal digits - do not validate hexadecimal...
+        bool St = false;
 
         enum NumBase
         {

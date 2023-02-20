@@ -55,12 +55,15 @@ Test::~Test()
 
 code::T Test::operator ()()
 {
-    std::string acc = token_data::dump_token_table();
-    diagnostic::info() << " :";
-    diagnostic::output() << acc;
 
+    source =
+R"(if !collection.empty()
+{
+    u8 A = 4ac * c/3 - .33;
+    return A;
+}
+)";
 
-    source = "if !collection.empty() { u8 A = 4ac * c/3; return A; } else return code::rejected;";
     lexer::config_data d;
     d.Source = source.str().c_str();
     d.Tokens = &tokens;
@@ -77,9 +80,9 @@ code::T Test::operator ()()
     diagnostic::message() << code::begin << " dumping tokens:";
     for(auto& token : tokens)
     {
-        diagnostic::output() << lc.mark(token);
+        diagnostic::output() << token.details(true);
     }
-    diagnostic::test() << code::end << " lexer_color: " << lc.Product() << color::Reset;
+    diagnostic::test() << code::end << " lexer_color: " << code::endl << lc.Product() << color::Reset;
     return code::accepted;
 }
 

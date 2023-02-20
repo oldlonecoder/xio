@@ -192,9 +192,15 @@ code::T lexer_color::operator<<(const std::string& aSource)
 
 std::string lexer_color::mark(token_data& token)
 {
+
     //Str.fill(0x20, token.mLoc.colnum-1 + indentation);
-    stracc Str = "%s%s[%s]: offset: %d line:%d, col:%d, %s/{%s}";
-    Str << Product() << color::Reset << mnemonic_name(token.c) << token.mLoc.offset << token.mLoc.linenum << token.mLoc.colnum << token.type_name() << token.semantic_types();
+    stracc Str;
+    Str << Product()<< " "
+        << color::Reset
+        << mnemonic_name(token.c) << "; "
+        << token.location() << " ; "
+        << token.type_name() << " ; "
+        << token.semantic_types();
     Str << '\n';
     Str.fill(0x20, token.mLoc.colnum-1 + diagnostic::indentation());
     Str << Icon::ArrowUp;

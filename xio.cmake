@@ -15,6 +15,7 @@ add_library(
         include/${PROJECT_NAME}/lexer/lexer_color.h src/lexer/lexer_color.cc
         include/${PROJECT_NAME}/alu.h src/alu.cc
         include/${PROJECT_NAME}/xiobject.h src/xiobject.cc
+        include/${PROJECT_NAME}/xiobloc.h #src/xiobloc.cc
 )
 
 

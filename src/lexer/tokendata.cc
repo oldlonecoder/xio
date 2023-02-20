@@ -161,6 +161,7 @@ std::string token_data::mark(int nspc) const
 
 std::string token_data::location() const
 {
+    if(mLoc.linenum <= 0) return "[]";
     stracc Str = "Line :%d, Col:%d";
     Str << mLoc.linenum << mLoc.colnum;
     return Str();
@@ -180,116 +181,6 @@ std::string token_data::type_name() const
 }
 
 
-/*!
-    @note !IMPORTANT : Decompress token_data::s values! -==>
-    ---------------------------------------------------------------------------------------------------------------------------------------------------------
-[Null           ] Keyword
-[LeftShift      ] Operator/Binary
-[Unshadow       ] Unary/Prefix/Operator
-[OpenAbsOp      ] Operator/Binary/Punc
-[CloseAbsOp     ] Operator/Punc
-[Radical        ] Operator/Binary
-[Exponent       ] Operator/Binary
-[RightShift     ] Operator
-[BinaryXor      ] Operator/Binary
-[Decr           ] Unary/Prefix/Operator
-[Incr           ] Unary/Prefix/Operator
-[AssignAdd      ] Keyword/Operator/Binary/Assign
-[AssignSub      ] Keyword/Operator/Binary/Assign
-[AssignMul      ] Keyword/Operator/Binary/Assign
-[AssignDiv      ] Keyword/Operator/Binary/Assign
-[AssignMod      ] Keyword/Operator/Binary/Assign
-[AssignAnd      ] Keyword/Operator/Binary/Assign
-[AssignOr       ] Keyword/Operator/Binary/Assign
-[AssignXor      ] Keyword/Operator/Binary/Assign
-[AssignC1       ] Keyword/Operator/Binary/Assign
-[AssignLeftShift] Keyword/Operator/Binary/Assign
-[AssignRightShift] Keyword/Operator/Binary/Assign
-[Deref          ] Unary/Prefix/Operator
-[LessEq         ] Operator/Binary/Bool
-[GreaterEq      ] Operator/Binary/Bool
-[Equal          ] Operator/Binary/Bool
-[NotEqual       ] Operator/Binary/Bool
-[NotEqual       ] Operator/Binary/Bool
-[Add            ] Operator/Binary
-[Sub            ] Operator/Binary
-[Mul            ] Operator/Binary
-[CommentCpp     ] Operator
-[Modulo         ] Operator/Binary
-[LessThan       ] Operator/Binary/Bool
-[GreaterThan    ] Operator/Binary/Bool
-[Assign         ] Keyword/Operator/Binary/Assign
-[BinaryAnd      ] Operator/Binary
-[BinaryOr       ] Operator/Binary
-[C2             ] Unary/Prefix/Operator
-[C1             ] Unary/Prefix/Operator
-[BinaryNot      ] Unary/Prefix/Operator
-[LogicalAnd     ] Operator/Binary/Bool
-[LogicalOr      ] Operator/Binary/Bool
-[OpenPar        ] Operator/Punc/OpenPair
-[ClosePar       ] Operator/Punc/ClosePair
-[OpenIndex      ] Operator/Binary/Punc/Const
-[CloseIndex     ] Operator/Punc/
-[BraceBegin     ] Operator/Binary/Punc/OpenPair
-[BraceEnd       ] Operator/Punc/ClosePair
-[BeginComment   ] Null
-[EndComment     ] Null
-[Div            ] Operator/Binary
-[Comma          ] Operator/Binary/Punc
-[Scope          ] Operator/Binary/Punc
-[Semicolon      ] Punc
-[Colon          ] Operator/Binary/Punc
-[Range          ] Operator/Binary/Punc
-[Factorial      ] Unary/Prefix/Operator
-[Positive       ] Signed/Unary/Prefix/Operator
-[Negative       ] Signed/Unary/Prefix/Operator
-[Squote         ] Text/Leaf/Operator
-[Dquote         ] Text/Leaf/Operator
-[Ternary        ] Keyword/Operator/Binary
-[Hash           ] Unary/Prefix/Operator
-[Eos            ] Unary/Prefix/Operator
-[Dot            ] Operator/Punc
-[Return         ] Keyword
-[If             ] Keyword
-[Pi             ] Number/Leaf/Float/Keyword/Const
-[Number         ] Number/Keyword/Prefix/Operator
-[U8             ] U8/Keyword/Prefix/Operator
-[U16            ] U16/Keyword/Prefix/Operator
-[U32            ] U32/Keyword/Prefix/Operator
-[U64            ] U64/Keyword/Prefix/Operator
-[I8             ] I8/Keyword/Prefix/Operator
-[I16            ] I16/Keyword/Prefix/Operator
-[I32            ] I32/Keyword/Prefix/Operator
-[I64            ] I64/Keyword/Prefix/Operator
-[Float          ] Float/Keyword/Prefix/Operator
-[String         ] Text/Keyword/Prefix/Operator
-[Then           ] Keyword
-[Else           ] Keyword
-[Const          ] Keyword/Const
-[Include        ] Keyword
-[Module         ] Keyword
-[At             ] Unary/Prefix/Operator
-[Prime          ] Unary/Prefix/Operator
-[Do             ] Keyword
-[While          ] Keyword
-[For            ] Keyword
-[Until          ] Keyword
-[Repeat         ] Keyword
-[Switch         ] Keyword
-[Case           ] Keyword
-[Type           ] Keyword
-[LowHex         ] Number/Leaf/Keyword/Operator/Hex
-[UpHex          ] Number/Leaf/Keyword/Operator/Hex
-[Cosinus        ] Unary/Prefix/Operator
-[ArcCosinus     ] Keyword/Unary/Prefix/Operator
-[Tangent        ] Keyword/Unary/Prefix/Operator
-[ArcTangent     ] Keyword/Unary/Prefix/Operator
-[Sinus          ] Keyword/Unary/Prefix/Operator
-[ArcSinus       ] Keyword/Unary/Prefix/Operator
-[Object         ] Keyword
-[Static         ] Keyword
-[This           ] Keyword
-*/
 static token_data::collection tokens_table =
 {
     {mnemonic::Null,                type::Keyword,   type::Keyword                                              ,type::distance::identifier, lexem::Null,        1},
