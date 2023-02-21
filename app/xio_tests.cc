@@ -21,6 +21,8 @@
 
 #include <tlux/application.h>
 #include <xio/lexer/lexer_color.h>
+#include <xio/xiobloc.h>
+
 
 using namespace tux;
 
@@ -43,14 +45,12 @@ public:
 
 };
 
-Test::Test():application()
-{
-
-}
+Test::Test():application(){}
 
 Test::~Test()
 {
-
+    tokens.clear();
+    source.clear();
 }
 
 code::T Test::operator ()()
@@ -83,6 +83,16 @@ R"(if !collection.empty()
         diagnostic::output() << token.details(true);
     }
     diagnostic::test() << code::end << " lexer_color: " << code::endl << lc.Product() << color::Reset;
+
+    diagnostic::test() << " xio::alu:";
+    alu A = 42;
+    diagnostic::output() << code::begin << " xio::alu A(=42) := " << color::Yellow << A();
+    alu B = 0;
+    diagnostic::test() << "test alu B = 0; alu C = A/B:";
+    alu C = A / B;
+    alu D = "infinity";
+    diagnostic::output() << "C:" << D();
+    diagnostic::test() << code::end << code::success;
     return code::accepted;
 }
 

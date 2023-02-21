@@ -19,48 +19,44 @@
 *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 ***************************************************************************/
 
-// SPDX-FileCopyrightText: 2022 Serge Lussier <email>
-// SPDX-License-Identifier: BSD-3-Clause
-
 
 #pragma once
 
-#include <xio/xiobject.h>
-
-
+#include<xio/xiobloc.h>
 
 
 namespace xio {
-
-/**
- * @todo write docs
- */
-class  xiovar : public xiobject
+// x + calcule_distance( sin x/ ) - r;
+struct context_t
 {
+    // ------- Input data : ----------------
+    xiobloc*                bloc = nullptr;
+    token_data::iterator    start;
+
+    // ------- local data : ----------------
+    token_data::iterator    cursor;
+    token_data::iterator    stop;
+    xiobject::list          ins_seq;
+    //..
 
 public:
-    using list = std::vector<xiovar*>;
-    // will use sub-template when I will write the interpret objects operations... this var will holds the objet  instance...
-    /**
-     * Default constructor
-     */
-    xiovar();
+    context_t();
+    context_t(xiobloc* _bloc, token_data::iterator _start);
 
-    /**
-     * Copy constructor
-     *
-     * @param other TODO
-     */
-    xiovar(const xiovar& other);
-    xiovar(xiobject* parent_, token_data* info_, alu* v = nullptr);
+    context_t(context_t&&) noexcept = default;
+    context_t(const context_t&) = default;
 
-    /**
-     * Destructor
-     */
-    ~xiovar();
+    ~context_t();
+
+    context_t& operator = (context_t&&) noexcept = default;
+    context_t& operator = (const context_t&) = default;
+
+    void roll_back();
+    code::T operator ++();
+    code::T operator ++(int);
 
 };
 
-}
+} // namespace xio
 
 

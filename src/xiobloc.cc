@@ -32,15 +32,13 @@ xiobloc::~xiobloc()
     if(!mem.xshared)
     {
         if(_instructions)
-            for(auto* i: *_instructions) delete i;
+            _instructions->clear();
+        if(_xiovars)
+            _xiovars->clear();
         // if(_functions)
         //     for(auto* f : *_functions) delete f;
         // if(_structs)
         //     for(auto s :*_structs) delete s;
-    }
-    if(_xiovars)
-    {
-        for(auto v : *_xiovars) delete v;
     }
 
     //...
@@ -49,9 +47,10 @@ xiobloc::~xiobloc()
 
 
 /*!
-    @brief deep copy the rhs xiobloc for duplicating its vars and sub-xiobloc stack contents. At this level,  it is implicitely preparing generation of struct and function calls
+    @brief deep copy the rhs xiobloc for duplicating its vars and sub-xiobloc stack content.
+    At this level,  it is implicitely preparing generation of struct and function calls
 
-    @note - Call this strickly for generate copy of stack such as function calls and other instaciation of xiobloc-based xiovars
+    @note - Call this strickly for generate copy of stack such as function calls and other instanciation of xiobloc-based xiovars
 */
 
 xiobloc& xiobloc::operator=(const xiobloc& rhs)
@@ -95,6 +94,44 @@ xiovar* xiobloc::new_var(token_data* info_)
     }
     diagnostic::error() << " xiovar '" << color::Yellow << info_->text() << color::Reset << code::exist;
     return nullptr;
+}
+
+code::T xiobloc::detach(xiobject *x)
+{
+    auto r = xiobject::detach(x);
+    if(r != code::accepted) return r;
+
+    if(_instructions)
+    {
+        auto xi = std::find(_instructions->begin(), _instructions->end(), x);
+        if(xi != _instructions->end()) _instructions->erase(xi);
+        if(_instructions->empty())
+        {
+            delete _instructions;
+            _instructions = nullptr;
+        }
+        return code::accepted;
+    }
+
+    if(_xiovars)
+    {
+        auto xi = std::find(_xiovars->begin(), _xiovars->end(), x);
+        if(xi != _xiovars->end()) _xiovars->erase(xi);
+        if(_xiovars->empty())
+        {
+            delete _xiovars;
+            _xiovars = nullptr;
+        }
+        return code::accepted;
+    }
+
+    //...
+    return r;
+}
+
+code::T xiobloc::instanciate()
+{
+    return code::notimplemented;
 }
 
 /*!

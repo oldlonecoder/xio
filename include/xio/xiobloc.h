@@ -91,8 +91,8 @@ public:
     using list = std::vector<xiobloc*>;
 protected:
 
-    xiobject::list * _instructions  = nullptr;
-    xiovar::list* _xiovars          = nullptr; ///< Represent the stack xiobloc.
+    xiobject::list* _instructions  = nullptr;
+    xiovar::list*   _xiovars       = nullptr; ///< Represent the stack xiobloc.
     // xiobloc::list* _functions = nullptr; ///< ...
     // xiobloc::list* _structs = nullptr;
 
@@ -138,6 +138,10 @@ public:
     xiovar* new_var(xiobject* var_); ///< ?? When parsing (compiling) the xio node is created (...or not?)
     xiovar* new_var(token_data* info_); ///< ?? When parsing (compiling) the xio node is created (...or not?)
 
+    code::T detach(xiobject* x) override;
+
+
+    virtual code::T instanciate(); ///< Strictly specific to instanciation from the execution of the interpreter.
 
 };
 

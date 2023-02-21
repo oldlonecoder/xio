@@ -8,8 +8,8 @@ std::string  alu::mNil = "";
 
 #define UCTor(rhs) { T |= xio::type::Number|xio::type::Leaf; v.d=(rhs); }
 #define SCTor(rhs) { T |= xio::type::Number|xio::type::Sign|xio::type::Leaf;v.d=(rhs); }
-#define _assign_u T |= xio::type::Number|xio::type::Leaf; v..reset(); v. = (rhs);
-#define _assign_s T |= xio::type::Number|xio::type::Sign|xio::type::Leaf; v..reset(); v. = (rhs);
+#define _assign_u T |= xio::type::Number|xio::type::Leaf; v.d = (rhs);
+#define _assign_s T |= xio::type::Number|xio::type::Sign|xio::type::Leaf;v.d = (rhs);
 
     alu::alu(int8_t rhs) : T(xio::type::I8)
     SCTor(rhs)
@@ -235,7 +235,7 @@ std::string  alu::mNil = "";
             if (vr == 0.0L)
             {
                 diagnostic::except() << " In alu operation: division by zero error. (" << (*this)() << " / " << rv() << ")";
-                return {};
+                return "Inf";
             }
             return {lr / vr};
         }
@@ -866,7 +866,7 @@ std::string  alu::mNil = "";
         if (T & xio::type::Bool)
             str << (v.u ? "true" : "false");
         else
-            if (T & xio::type::Number)
+            if (T & (xio::type::Number|xio::type::Float))
                 str << v.d;
             else
                 if (T & xio::type::Text)

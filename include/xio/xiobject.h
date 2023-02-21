@@ -117,7 +117,7 @@ public:
     }
 
     code::T append_child(xiobject* c);
-    code::T detach(xiobject* c);
+    virtual code::T detach(xiobject* c);
 
 protected:
 

@@ -19,48 +19,47 @@
 *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 ***************************************************************************/
 
-// SPDX-FileCopyrightText: 2022 Serge Lussier <email>
-// SPDX-License-Identifier: BSD-3-Clause
-
-
-#pragma once
-
-#include <xio/xiobject.h>
-
-
+#include <xio/compiler/cc_context.h>
 
 
 namespace xio {
 
-/**
- * @todo write docs
- */
-class  xiovar : public xiobject
+context_t::context_t()
 {
-
-public:
-    using list = std::vector<xiovar*>;
-    // will use sub-template when I will write the interpret objects operations... this var will holds the objet  instance...
-    /**
-     * Default constructor
-     */
-    xiovar();
-
-    /**
-     * Copy constructor
-     *
-     * @param other TODO
-     */
-    xiovar(const xiovar& other);
-    xiovar(xiobject* parent_, token_data* info_, alu* v = nullptr);
-
-    /**
-     * Destructor
-     */
-    ~xiovar();
-
-};
 
 }
 
 
+context_t::context_t(xiobloc *_bloc, token_data::iterator _start):
+    bloc(_bloc),
+    start(_start),
+    stop(_start),
+    cursor(_start)
+{
+
+}
+
+void context_t::roll_back()
+{
+    for(auto* x : ins_seq)
+    {
+        //...
+        bloc->detach(x);
+        delete x;
+        //...
+    }
+    ins_seq.clear();
+}
+
+code::T context_t::operator ++()
+{
+    return code::notimplemented;
+}
+
+code::T context_t::operator ++(int)
+{
+    return code::notimplemented;
+}
+
+
+} // namespace xio
