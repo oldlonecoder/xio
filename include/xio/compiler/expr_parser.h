@@ -22,37 +22,18 @@
 
 #pragma once
 
-#include<xio/xiobloc.h>
+#include <xio/compiler/parser.h>
 
 
 namespace xio {
-// x + calcule_distance( sin x/ ) - r;
-struct context_t
+
+class expr_parser : public xio::parser
 {
-    // ------- Input data : ----------------
-    xiobloc*                bloc = nullptr;
-    token_data::iterator    start;
-
-    // ------- local data : ----------------
-    token_data::iterator    cursor;
-    token_data::iterator    stop;
-    xiobject::list          ins_seq;
-    //..
-
 public:
-    context_t();
-    context_t(xiobloc* _bloc, token_data::iterator _start);
-
-    context_t(context_t&&) noexcept = default;
-    context_t(const context_t&) = default;
-
-    ~context_t();
-
-    context_t& operator = (context_t&&) noexcept = default;
-    context_t& operator = (const context_t&) = default;
-
-    void roll_back();
-
+    expr_parser();
+    expr_parser(token_data::collection* _tkstream);
+    ~expr_parser() override;
+    code::T parse(const context_t& _ctx) override;
 };
 
 } // namespace xio

@@ -21,37 +21,40 @@
 
 
 #pragma once
-
-#include<xio/xiobloc.h>
-
+#include <xio/compiler/cc_context.h>
 
 namespace xio {
-// x + calcule_distance( sin x/ ) - r;
-struct context_t
+
+class parser
 {
-    // ------- Input data : ----------------
-    xiobloc*                bloc = nullptr;
-    token_data::iterator    start;
-
-    // ------- local data : ----------------
-    token_data::iterator    cursor;
-    token_data::iterator    stop;
-    xiobject::list          ins_seq;
-    //..
-
+protected:
+    token_data::collection* _stream = nullptr;
+    context_t ctx;
+    virtual void init_context();
 public:
-    context_t();
-    context_t(xiobloc* _bloc, token_data::iterator _start);
 
-    context_t(context_t&&) noexcept = default;
-    context_t(const context_t&) = default;
+    enum class rule : uint8_t
+    {
+        _expr,          ///< Explicitely Invoked.
+        _if,            ///< Indirect
+        //_type,  ///< Indirect & Explicit // f32 A = 1/3;
+        _var,           ///< Indirect & explicit
+        _decl_var,      ///< Explicit
+        _function_decl, ///< Indirect & Explicit
+        _function_call, ///< Indirect & Explicit
+        _params,        ///< Explicit decl phase
+        _args,          ///< Explicit instanciation call phase ...
+        //...
+    };
 
-    ~context_t();
 
-    context_t& operator = (context_t&&) noexcept = default;
-    context_t& operator = (const context_t&) = default;
+    parser();
+    parser(token_data::collection* _tkstream);
 
-    void roll_back();
+
+    virtual ~parser();
+    virtual code::T parse(const context_t& _ctx);
+    bool eof();
 
 };
 

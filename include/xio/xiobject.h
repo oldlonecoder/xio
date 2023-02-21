@@ -148,7 +148,7 @@ protected:
 
     // -------- Arithmetic binary tree INPUT: -----------------------------------
 #pragma region INPUT
-
+public:
     xiobject* input(xiobject* parent_bloc, token_data* token);  ///< input nullptr token for telling to finalyse the tree... :)
     xiobject* _binary(xiobject* a);
     //xiobject* _prefix(xiobject* a);

@@ -129,6 +129,15 @@ code::T xiobloc::detach(xiobject *x)
     return r;
 }
 
+code::T xiobloc::append_instruction(xiobject *x)
+{
+    if(!_instructions)
+        _instructions = new xiobject::list;
+    _instructions->push_back(x);
+    return code::accepted;
+}
+
+
 code::T xiobloc::instanciate()
 {
     return code::notimplemented;

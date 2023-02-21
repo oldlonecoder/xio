@@ -29,6 +29,11 @@ context_t::context_t()
 
 }
 
+context_t::~context_t()
+{
+
+}
+
 
 context_t::context_t(xiobloc *_bloc, token_data::iterator _start):
     bloc(_bloc),
@@ -51,15 +56,6 @@ void context_t::roll_back()
     ins_seq.clear();
 }
 
-code::T context_t::operator ++()
-{
-    return code::notimplemented;
-}
-
-code::T context_t::operator ++(int)
-{
-    return code::notimplemented;
-}
 
 
 } // namespace xio

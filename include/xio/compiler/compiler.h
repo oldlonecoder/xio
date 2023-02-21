@@ -23,17 +23,32 @@
 #pragma once
 
 
-#include <xio/compiler/cc_context.h>
-
+#include <xio/compiler/parser.h>
+#include <xio/lexer/lexer_color.h>
 
 namespace xio {
 
+
+
+
 class compiler
 {
-    context_t ctx;
+    context_t   ctx;
+    token_data::collection* _tokens = nullptr;
+
+    lexer       lex;
+    lexer_color* _lc = nullptr; ///< When: diagnostic;
+
+    token_data::iterator _cursor;
+    xiobloc*    _global = nullptr;
 
 public:
     compiler();
+    compiler(xiobloc* _bloc, token_data::collection* tkstream);
+    ~compiler();
+
+    void init_context();
+
 };
 
 } // namespace xio

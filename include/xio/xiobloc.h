@@ -139,7 +139,7 @@ public:
     xiovar* new_var(token_data* info_); ///< ?? When parsing (compiling) the xio node is created (...or not?)
 
     code::T detach(xiobject* x) override;
-
+    code::T append_instruction(xiobject* x);
 
     virtual code::T instanciate(); ///< Strictly specific to instanciation from the execution of the interpreter.
 
