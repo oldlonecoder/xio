@@ -34,6 +34,7 @@ code::T compiler::parse_expr()
             continue;
         }
 
+        //@todo Must provide lambda function to let the parsers create the proper xiobject from within the arithmetic expression tree.
         ins = ins->input(ctx.bloc,&(*ctx.cursor));
         if(!ins)
         {
