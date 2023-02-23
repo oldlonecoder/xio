@@ -38,8 +38,10 @@ struct context_t
     token_data::iterator    stop;
     xiobject::list          ins_seq;
     //..
-
+    friend class compiler;
 public:
+    using stack = std::stack<context_t>;
+
     context_t();
     context_t(xiobloc* _bloc, token_data::iterator _start);
 

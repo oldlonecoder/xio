@@ -23,7 +23,7 @@
 #pragma once
 
 
-#include <xio/compiler/parser.h>
+#include <xio/compiler/cc_context.h>
 #include <xio/lexer/lexer_color.h>
 
 namespace xio {
@@ -34,21 +34,44 @@ namespace xio {
 class compiler
 {
     context_t   ctx;
-    token_data::collection* _tokens = nullptr;
-
+    token_data::collection _tokens;
+    const char* _source;
     lexer       lex;
     lexer_color* _lc = nullptr; ///< When: diagnostic;
 
     token_data::iterator _cursor;
     xiobloc*    _global = nullptr;
 
+    context_t::stack _ctx_stack;
+
+    enum class rule : uint8_t
+    {
+        _expr,          ///< Explicitely Invoked.
+        _if,            ///< Indirect
+        //_type,  ///< Indirect & Explicit // f32 A = 1/3;
+        _var,           ///< Indirect & explicit
+        _decl_var,      ///< Explicit
+        _function_decl, ///< Indirect & Explicit
+        _function_call, ///< Indirect & Explicit
+        _params,        ///< Explicit decl phase
+        _args,          ///< Explicit instanciation call phase ...
+        //...
+    };
+
+
+    code::T parse_expr();
+
 public:
     compiler();
-    compiler(xiobloc* _bloc, token_data::collection* tkstream);
+    compiler(xiobloc* _bloc);
     ~compiler();
 
     void init_context();
+    code::T parse(const context_t& _ctx);
 
+    void push_ctx( context_t&& ctx );
+    code::T pop_ctx();
+    bool eof();
 };
 
 } // namespace xio

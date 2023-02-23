@@ -33,19 +33,6 @@ protected:
     virtual void init_context();
 public:
 
-    enum class rule : uint8_t
-    {
-        _expr,          ///< Explicitely Invoked.
-        _if,            ///< Indirect
-        //_type,  ///< Indirect & Explicit // f32 A = 1/3;
-        _var,           ///< Indirect & explicit
-        _decl_var,      ///< Explicit
-        _function_decl, ///< Indirect & Explicit
-        _function_call, ///< Indirect & Explicit
-        _params,        ///< Explicit decl phase
-        _args,          ///< Explicit instanciation call phase ...
-        //...
-    };
 
 
     parser();
