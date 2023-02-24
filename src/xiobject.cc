@@ -236,6 +236,16 @@ code::T xiobject::detach(xiobject * c)
     return code::accepted;
 }
 
+code::T xiobject::detach()
+{
+    xiobject* p = parent<xiobject>();
+    if(p)
+    {
+        p->detach(this);
+    }
+    return code::accepted;
+}
+
 
 
 alu xiobject::LeftShift()
@@ -738,7 +748,7 @@ void xiobject::header(xiobject* input_node, source_location&& Loc)
  *
  * ex.: if x-1 + 12 ==  0 return 12;
  */
-xiobject* xiobject::input(xiobject* parent_bloc, token_data* token)
+xiobject* xiobject::input(xiobject* parent_bloc, token_data* token, xiobject::maker mk)
 {
     for (auto [lr, fn] : xiobject::input_tbl)
     {
@@ -747,14 +757,26 @@ xiobject* xiobject::input(xiobject* parent_bloc, token_data* token)
         {
             diagnostic::debug(sfnl) << color::Yellow << t0->text() << " <- " << color::Yellow << token->text() << color::Reset << " Input token validated... ";
             ///@todo Check id tokens for function_call and other id-constructs before calling xiobject::input(...).
-            xiobject* a = new xiobject(parent_bloc,token);
+
+            xiobject* a;
+            if(mk)
+                a = mk(token);
+            else
+                a  = new xiobject(parent_bloc,token);
+
             auto fn = xiobject::query(this, a);
             if (!fn)
             {
+                if(a)
+                {
+                    a->detach();
+                    delete a;
+                }
                 diagnostic::syntax() << " invalid relational operands at " << token->location() << " - unexpected token:" << code::endl << token->mark();
                 return nullptr;
             }
             diagnostic::debug() << t0->text() << "::input(" << token->text() << "):" << code::endl << token->mark();
+
             return (this->*fn)(a);
         }
     }

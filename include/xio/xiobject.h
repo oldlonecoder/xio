@@ -118,6 +118,7 @@ public:
 
     code::T append_child(xiobject* c);
     virtual code::T detach(xiobject* c);
+    virtual code::T detach();
 
 protected:
 
@@ -149,7 +150,8 @@ protected:
     // -------- Arithmetic binary tree INPUT: -----------------------------------
 #pragma region INPUT
 public:
-    xiobject* input(xiobject* parent_bloc, token_data* token);  ///< input nullptr token for telling to finalyse the tree... :)
+    xiobject* input(xiobject* parent_bloc, token_data* token, xiobject::maker mk=nullptr);  ///< input nullptr token for telling to finalyse the tree... :)
+
     xiobject* _binary(xiobject* a);
     //xiobject* _prefix(xiobject* a);
     //xiobject* _postfix(xiobject* a);
