@@ -2,7 +2,7 @@
 
 namespace xio
 {
-code::T compiler::parse_expr()
+xiobject* compiler::cc_expr()
 {
     init_context();
     //...
@@ -13,7 +13,7 @@ code::T compiler::parse_expr()
             if(!ins)
             {
                 ctx.roll_back();
-                return code::rejected;
+                return nullptr;
             }
             break;
         }
@@ -65,7 +65,7 @@ code::T compiler::parse_expr()
         if(!ins)
         {
             ctx.roll_back();
-            return code::rejected;
+            return ins;
         }
         ctx.cursor++;
         ctx.bloc->append_instruction(ins);
@@ -74,11 +74,9 @@ code::T compiler::parse_expr()
     // A;
     ins = ins->tree_close();
     if(!ins)
-    {
         ctx.roll_back();
-        return code::rejected;
-    }
-    return code::accepted;
+
+   return ins;
 }
 
 }

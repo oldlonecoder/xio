@@ -18,6 +18,4 @@ xiobject* compiler::cc_pi()
     return x;
 }
 
-
-
 }
