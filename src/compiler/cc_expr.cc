@@ -53,14 +53,15 @@ code::T compiler::parse_expr()
                 {
                     if(ctx.cursor->c == mnemonic::Pi)
                     {
-                        return new xiobject(ctx.bloc, cursor());
+                        return cc_pi();
                     }
+                    break;
                 }
-
-
+                default: break;
             }
-            return nullptr;
+            return new xiobject(ctx.bloc,cursor());;
         });
+
         if(!ins)
         {
             ctx.roll_back();

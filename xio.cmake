@@ -21,6 +21,7 @@ add_library(
         include/${PROJECT_NAME}/compiler/compiler.h
         src/compiler/compiler.cc
         src/compiler/cc_expr.cc
+        src/compiler/cc_pi.cc
 )
 
 

@@ -60,6 +60,7 @@ class compiler
 
 
     code::T parse_expr();
+    xiobject* cc_pi();
 
 public:
     compiler();
