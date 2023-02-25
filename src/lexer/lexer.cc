@@ -158,7 +158,15 @@ std::string lexer::internal_cursor::mark(int nspc) const
     stracc Str;
     if(nspc)
         Str.fill(0x20, nspc);
-    Str << L << "," << Col << " =>\n";
+    Str << L << "," << Col << ":\n";
+    int l=1;
+    const char* cc = B;
+    while(l++<=L)
+    {
+        while((cc <=E) && (*cc != '\n')) Str << *cc++;
+    }
+
+    Str << '\n';
     if(nspc)
         Str.fill(0x20, nspc);
     for(int x = 1; x < Col; x++)
@@ -776,7 +784,7 @@ code::T lexer::Exec()
 
             if((this->*S)(atoken) != code::accepted)
             {
-                diagnostic::fatal() << "lexer: aborted: unexpected scan rejection at position:" << code::endl << src_cursor.mark(diagnostic::indentation()*4);
+                diagnostic::fatal() << "lexer: aborted: unexpected scan rejection at position:" << src_cursor.mark(diagnostic::indentation()*4);
                 return code::rejected;
             }
         }
@@ -787,7 +795,7 @@ code::T lexer::Exec()
                 skip_cpp_comment();
                 continue;
             }
-            diagnostic::error() << "lexer loop: there is no scanner for token:" << code::endl << src_cursor.mark(diagnostic::indentation()*4);
+            diagnostic::error() << "lexer loop: there is no scanner for token:" << src_cursor.mark(diagnostic::indentation()*4);
             return code::rejected;
         }
 

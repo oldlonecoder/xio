@@ -248,7 +248,7 @@ static token_data::collection tokens_table =
     {mnemonic::Ternary,             type::Keyword,   type::Keyword|type::Operator|type::Binary                  ,type::distance::unary,      lexem::Ternary, 1},
     {mnemonic::Hash,                type::Prefix,    type::Unary|type::Prefix|type::Operator                    ,type::distance::unary,      lexem::Hash,   1},
     {mnemonic::Eos,                 type::Prefix,    type::Unary|type::Prefix|type::Operator                    ,type::distance::unary,      lexem::Eos,    1},
-    {mnemonic::Dot,                 type::Punc,      type::Punc                                                 ,type::distance::scope,      lexem::Dot,    1},
+    {mnemonic::Dot,                 type::Punc,      type::Punc|type::Operator                     ,type::distance::scope,      lexem::Dot,    1},
     {mnemonic::Return,              type::Keyword,   type::Keyword                                              ,type::distance::identifier, lexem::Return, 0},
     {mnemonic::If,                  type::Keyword,   type::Keyword                                              ,type::distance::identifier, lexem::If,     0},
     {mnemonic::Pi,                  type::Number,    type::Number|type::Leaf|type::Float|type::Keyword|type::Const ,type::distance::identifier, lexem::Pi,     1},
@@ -305,7 +305,7 @@ token_data token_data::scan(const char* C_)
         unicode = 0; // oops...
         std::size_t sz = std::strlen(rtxt);
 
-        if (*crs != *token.mLoc.begin) continue;
+        if(*crs != *token.mLoc.begin) continue;
 
         while ((*crs && *rtxt) && (*crs == *rtxt))
         {
