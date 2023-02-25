@@ -72,8 +72,10 @@ constexpr T        Static       = 0x008000000000; ///< Flag set at the parser ph
 constexpr T        F32          = 0x010000000000;
 constexpr T        F64          = 0x020000000000;
 constexpr T        F128         = 0x040000000000;
-constexpr T        OctalFormat = 0x080000000000;
-constexpr T        BinFormat   = 0x100000000000;
+constexpr T        OctalFormat  = 0x080000000000;
+constexpr T        BinFormat    = 0x100000000000;
+constexpr T        Integer      = xio::type::I8|xio::type::I16|xio::type::I32|xio::type::I64|xio::type::U8|xio::type::U16|xio::type::U32|xio::type::U64;
+constexpr T        Unsigned     = xio::type::U8|xio::type::U16|xio::type::U32|xio::type::U64;
 
 
 std::string name(T T_);

@@ -56,6 +56,8 @@ std::map<T, std::string> T_STR = {{Null,         "Null"},
                                   {ClosePair,    "ClosePair"},
                                   {Static,       "Static"},
                                   {Const,        "Const"},
+                                  {Integer,      "Integer"},
+                                  {Unsigned,     "Unsigned"},
                                   };
 
 std::map<std::string, T> STR_T = {{"Null",          Null},
@@ -107,14 +109,16 @@ std::map<std::string, T> STR_T = {{"Null",          Null},
                                   {"BinFormat",     BinFormat},
                                   {"OpenPair",      OpenPair},
                                   {"ClosePair",     ClosePair},
-                                  {"Const",         Const}
+                                  {"Const",         Const},
+                                  {"Integer",       Integer},
+                                  {"Unsigned",      Unsigned}
 };
 
 std::string name(T T_)
 {
     std::string Str_;
 
-    if(T_ >= xio::type::BinFormat)
+    if(T_ > xio::type::BinFormat)
     {
         Str_ += "*.*";
         return Str_;

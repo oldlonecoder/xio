@@ -209,7 +209,10 @@ alu xiobject::jsr()
             diagnostic::warning() << "operator xiobject [" << color::Yellow << t0->text() << color::Reset << "] has no implementation (yet?).:\n" << t0->mark();
         }
     }
-    t0->s |= acc->T;///< todo Oops! Check wtf is that!
+    t0->s |= acc->T; ///< Why is that ?
+    // It's because our actual token::type (xio::type::T) has been changed by the type of the resulting operation alu::T ( acc->T is put into t0->s )...
+    // Ceci est le changement apporté au champs sémantique du token qui est modifié par le type résultant de l'opération.  ^       ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ...
+
     return *acc;
 }
 
@@ -249,8 +252,13 @@ code::T xiobject::detach()
 
 
 alu xiobject::LeftShift()
-
 {
+    if((lhs->t0->s & xio::type::Float) || (rhs->t0->s & xio::type::Float))
+    {
+        *acc = 0.f;
+        diagnostic::warning() << lhs->t0->type_name() << " " << t0->text() << " " << rhs->t0->type_name() << " are incompatible";
+    }
+
     *acc = lhs->acc->number<uint64_t>() << rhs->acc->number<uint64_t>();
     return *acc;
 }
