@@ -22,6 +22,13 @@ add_library(
         src/compiler/compiler.cc
         src/compiler/cc_expr.cc
         src/compiler/cc_pi.cc
+        src/compiler/cc_identifier.cc
+        src/compiler/cc_if.cc
+        src/compiler/cc_pi.cc
+        src/compiler/cc_return.cc
+        include/${PROJECT_NAME}/rti/kif.h src/rti/kif.cc
+        include/${PROJECT_NAME}/rti/kreturn.h src/rti/kreturn.cc
+        include/${PROJECT_NAME}/rti/kpi.h src/rti/kpi.cc
 )
 
 

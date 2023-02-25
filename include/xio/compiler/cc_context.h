@@ -29,6 +29,22 @@ namespace xio {
 // x + calcule_distance( sin x/ ) - r;
 struct context_t
 {
+
+
+    enum class rule_t : uint8_t
+    {
+        _expr,          ///< Explicitely Invoked.
+        _if,            ///< Indirect
+        _global,        ///< Indirect & Explicit // f32 A = 1/3;
+        _var,           ///< Indirect & explicit
+        _declaration,   ///< Explicit
+        _function_decl, ///< Indirect & Explicit
+        _function_call, ///< Indirect & Explicit
+        _params,        ///< Explicit decl phase
+        _args,          ///< Explicit instanciation call phase ...
+        //...
+    }rule {context_t::rule_t::_global};
+
     // ------- Input data : ----------------
     xiobloc*                bloc = nullptr;
     token_data::iterator    start;
@@ -39,8 +55,9 @@ struct context_t
     xiobject::list          ins_seq;
     //..
     friend class compiler;
-public:
     using stack = std::stack<context_t>;
+
+
 
     context_t();
     context_t(xiobloc* _bloc, token_data::iterator _start);

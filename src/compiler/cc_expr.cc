@@ -2,9 +2,13 @@
 
 namespace xio
 {
+
+
+
 xiobject* compiler::cc_expr()
 {
-    init_context();
+    push_ctx();
+
     //...
     xiobject* ins = nullptr;
     do{
@@ -12,7 +16,8 @@ xiobject* compiler::cc_expr()
         {
             if(!ins)
             {
-                ctx.roll_back();
+                if(!ctx.ins_seq.empty())
+                    ctx.roll_back();
                 return nullptr;
             }
             break;
@@ -43,11 +48,8 @@ xiobject* compiler::cc_expr()
             {
                 case xio::type::Id:
                 {
-                    auto* v = ctx.bloc->query_var(cursor()->text());
-                    if(v)
-                        return new xiovar(ctx.bloc, cursor(), v->acc);
+                    ins = cc_identifier();
 
-                    return ctx.bloc->new_var(cursor());
                 }
                 case xio::type::Number:
                 {
@@ -62,19 +64,27 @@ xiobject* compiler::cc_expr()
             return new xiobject(ctx.bloc,cursor());;
         });
 
-        if(!ins)
-        {
-            ctx.roll_back();
-            return ins;
-        }
+        if(!ins) break;
+
+
         ctx.cursor++;
-        ctx.bloc->append_instruction(ins);
+        ctx.ins_seq.push_back(ins);
     }
-    while(!eof());
-    // A;
+    while((ins != nullptr) && !eof());
+
+    if(!ins)
+    {
+        //check
+        if(ctx.ins_seq.empty())
+        {
+            diagnostic::error() << " expression parser invoked, but there is no such expression:" << ctx.start->mark();
+            return nullptr;
+        }
+        ins = *ctx.ins_seq.being();
+    }
     ins = ins->tree_close();
     if(!ins)
-        ctx.roll_back();
+        ctx.roll_back(); // xiobject already have put diagnostic message log entry
 
    return ins;
 }

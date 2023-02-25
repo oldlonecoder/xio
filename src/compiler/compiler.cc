@@ -29,10 +29,9 @@ token_data *compiler::cursor()
     return ctx.cursor < _tokens.end() ? &(*ctx.cursor) : nullptr;
 }
 
-void compiler::push_ctx(context_t &&actx)
+void compiler::push_ctx()
 {
-    _ctx_stack.push(std::move(actx));
-
+    _ctx_stack.push(ctx);
 }
 
 code::T compiler::pop_ctx()
@@ -44,6 +43,12 @@ code::T compiler::pop_ctx()
     }
     ctx = _ctx_stack.top();
     return code::accepted;
+}
+
+xiobject *compiler::generate_instruction()
+{
+    xiobject* x = nullptr;
+
 }
 
 bool compiler::eof()
