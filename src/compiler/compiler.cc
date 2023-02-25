@@ -24,6 +24,11 @@ void compiler::init_context()
     //ctx.stop = ctx.cursor = ctx.start;
 }
 
+token_data *compiler::cursor()
+{
+    return ctx.cursor < _tokens.end() ? &(*ctx.cursor) : nullptr;
+}
+
 void compiler::push_ctx(context_t &&actx)
 {
     _ctx_stack.push(std::move(actx));

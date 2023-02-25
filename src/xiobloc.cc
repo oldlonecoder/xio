@@ -92,6 +92,7 @@ xiovar* xiobloc::new_var(token_data* info_)
         _xiovars->push_back(new xiovar(this, info_));
         return _xiovars->back();
     }
+
     diagnostic::error() << " xiovar '" << color::Yellow << info_->text() << color::Reset << code::exist;
     return nullptr;
 }

@@ -69,6 +69,7 @@ public:
     void init_context();
     code::T parse(const context_t& _ctx);
 
+    token_data* cursor();
     void push_ctx( context_t&& ctx );
     code::T pop_ctx();
     bool eof();

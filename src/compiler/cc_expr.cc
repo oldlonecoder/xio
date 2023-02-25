@@ -28,14 +28,39 @@ code::T compiler::parse_expr()
             //        u8   0
             //          \
             //           A
+            // @todo have maker here too:
+            ins = xiobject::begin(ctx.bloc, cursor());
 
-            ins = new xiobject(ctx.bloc, &(*ctx.cursor));
             ctx.cursor ++;
             continue;
         }
 
         //@todo Must provide lambda function to let the parsers create the proper xiobject from within the arithmetic expression tree.
-        ins = ins->input(ctx.bloc,&(*ctx.cursor));
+        ins = ins->input(ctx.bloc,cursor(),[&](token_data* token)-> xiobject*
+        {
+            // As said, for now we create only xio-P.O.D. types vairables. and PI keyword const
+            switch(token->t)
+            {
+                case xio::type::Id:
+                {
+                    auto* v = ctx.bloc->query_var(cursor()->text());
+                    if(v)
+                        return new xiovar(ctx.bloc, cursor(), v->acc);
+
+                    return ctx.bloc->new_var(cursor());
+                }
+                case xio::type::Number:
+                {
+                    if(ctx.cursor->c == mnemonic::Pi)
+                    {
+                        return new xiobject(ctx.bloc, cursor());
+                    }
+                }
+
+
+            }
+            return nullptr;
+        });
         if(!ins)
         {
             ctx.roll_back();
