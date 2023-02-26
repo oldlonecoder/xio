@@ -27,23 +27,30 @@
 
 namespace xio {
 // x + calcule_distance( sin x/ ) - r;
-struct context_t
+struct context
 {
 
 
-    enum class rule_t : uint8_t
+    enum class mstate : uint8_t
     {
-        _expr,          ///< Explicitely Invoked.
-        _if,            ///< Indirect
-        _global,        ///< Indirect & Explicit // f32 A = 1/3;
-        _var,           ///< Indirect & explicit
-        _declaration,   ///< Explicit
-        _function_decl, ///< Indirect & Explicit
-        _function_call, ///< Indirect & Explicit
-        _params,        ///< Explicit decl phase
+        _stmt_start,    ///< begin statement state; ex.:'if' in this state is accepted and invoke cc_if.
+        _stmt,          ///< in (middle of) statement  state ;ex.:'if' in this state is rejected and so fatal,error,unexpected.
+        _stmt_end,      ///< statement sequence is terminated and accepted.
+        _expr,          ///< Explicitely Invoked, pushes condition state for accepting only value tokens, invoking xiobject::input
+                        //   to build punctual arithmetic expression AST until oef, error, non-value token.
+        _global,        ///< only declarations and init constructs.
+        _bloc_enter,    ///< go to _bloc state.
+        _bloc,          ///< can go to _stmt_start-_declaration-_stmt-_stmt_end cycles.
+        _bloc_end,      ///< terminating bloc. - Switch context to parent bloc.
+        _declaration,   ///< Explicit.
+        _function_decl, ///< Indirect & Explicit...
+        _function_call, ///< Indirect & Explicit...
+        _params,        ///< Explicit decl phase...
+        _param,
         _args,          ///< Explicit instanciation call phase ...
+        _arg
         //...
-    }rule {context_t::rule_t::_global};
+    }m_st {context::mstate::_global};
 
     // ------- Input data : ----------------
     xiobloc*                bloc = nullptr;
@@ -55,20 +62,20 @@ struct context_t
     xiobject::list          ins_seq;
     //..
     friend class compiler;
-    using stack = std::stack<context_t>;
+    using stack = std::stack<context>;
 
 
 
-    context_t();
-    context_t(xiobloc* _bloc, token_data::iterator _start);
+    context();
+    context(xiobloc* _bloc, token_data::iterator _start);
 
-    context_t(context_t&&) noexcept = default;
-    context_t(const context_t&) = default;
+    context(context&&) noexcept = default;
+    context(const context&) = default;
 
-    ~context_t();
+    ~context();
 
-    context_t& operator = (context_t&&) noexcept = default;
-    context_t& operator = (const context_t&) = default;
+    context& operator = (context&&) noexcept = default;
+    context& operator = (const context&) = default;
 
     void roll_back();
 

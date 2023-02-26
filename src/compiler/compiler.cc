@@ -9,6 +9,8 @@ compiler::compiler()
 
 }
 
+
+
 compiler::compiler(xiobloc *_bloc):
     _global(_bloc)
 {
@@ -48,7 +50,8 @@ code::T compiler::pop_ctx()
 xiobject *compiler::generate_instruction()
 {
     xiobject* x = nullptr;
-
+    //...
+    return x;
 }
 
 bool compiler::eof()

@@ -19,6 +19,7 @@ add_library(
         include/${PROJECT_NAME}/xiovar.h src/xiovar.cc
         include/${PROJECT_NAME}/compiler/cc_context.h src/compiler/cc_context.cc
         include/${PROJECT_NAME}/compiler/compiler.h
+
         src/compiler/compiler.cc
         src/compiler/cc_expr.cc
         src/compiler/cc_pi.cc

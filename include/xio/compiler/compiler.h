@@ -38,7 +38,7 @@ namespace xio {
 
 class compiler
 {
-    context_t   ctx;
+    context   ctx;
     token_data::collection _tokens;
     const char* _source;
     lexer       lex;
@@ -47,14 +47,19 @@ class compiler
     token_data::iterator _cursor;
     xiobloc*    _global = nullptr;
 
-    context_t::stack _ctx_stack;
+    context::stack _ctx_stack;
+
+    using maker = std::function<xiobject*()>;
 
 
+
+// === === === === === === === === === === === === === === === === === === ===
 
     xiobject* cc_expr();
     xiobject* cc_pi();
     xiobject* generate_instruction();
-//    xiobject* cc_identifier();
+    xiobject* cc_identifier();
+
 //    xiobject* cc_if();
 //    xiobject* cc_for();
 //    xiobject* cc_return();
@@ -62,11 +67,7 @@ class compiler
 //    xiobject* cc_decl_function();
 //    xiobject* cc_function_call();
 
-    using maker = std::function<xiobject*()>;
-
-    using flow_control_rules_t = std::map<xio::mnemonic, compiler::maker>;
-    using glob_control_rules_t = std::map<xio::mnemonic, compiler::maker>;
-
+// === === === === === === === === === === === === === === === === === === ===
 
 public:
 
@@ -78,7 +79,7 @@ public:
 private:
 
     void init_context();
-    code::T parse(const context_t& _ctx);
+
 
     token_data* cursor();
     void push_ctx();

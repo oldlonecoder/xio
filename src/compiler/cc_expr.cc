@@ -5,6 +5,7 @@ namespace xio
 
 
 
+
 xiobject* compiler::cc_expr()
 {
     push_ctx();
@@ -44,24 +45,10 @@ xiobject* compiler::cc_expr()
         ins = ins->input(ctx.bloc,cursor(),[&](token_data* token)-> xiobject*
         {
             // As said, for now we create only xio-P.O.D. types vairables. and PI keyword const
-            switch(token->t)
-            {
-                case xio::type::Id:
-                {
-                    ins = cc_identifier();
+            if(token->t == xio::type::Id) return cc_identifier();
+            if(token->c == mnemonic::Pi) return cc_pi();
 
-                }
-                case xio::type::Number:
-                {
-                    if(ctx.cursor->c == mnemonic::Pi)
-                    {
-                        return cc_pi();
-                    }
-                    break;
-                }
-                default: break;
-            }
-            return new xiobject(ctx.bloc,cursor());;
+            return new xiobject(ctx.bloc,cursor());
         });
 
         if(!ins) break;
@@ -80,7 +67,7 @@ xiobject* compiler::cc_expr()
             diagnostic::error() << " expression parser invoked, but there is no such expression:" << ctx.start->mark();
             return nullptr;
         }
-        ins = *ctx.ins_seq.being();
+        ins = *ctx.ins_seq.begin();
     }
     ins = ins->tree_close();
     if(!ins)

@@ -24,28 +24,28 @@
 
 namespace xio {
 
-context_t::context_t()
+context::context()
 {
 
 }
 
-context_t::~context_t()
+context::~context()
 {
 
 }
 
 
 
-context_t::context_t(xiobloc *_bloc, token_data::iterator _start):
+context::context(xiobloc *_bloc, token_data::iterator _start):
     bloc(_bloc),
     start(_start),
     stop(_start),
-    cursor(_start),
+    cursor(_start)
 {
 
 }
 
-void context_t::roll_back()
+void context::roll_back()
 {
     for(auto* x : ins_seq)
     {

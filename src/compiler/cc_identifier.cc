@@ -12,9 +12,9 @@ xiobject* compiler::cc_identifier()
     if(v)
         return new xiovar(ctx.bloc, cursor(), v->acc);
 
-    v = ctx.bloc->query_function(cursor()->text());
-    if(v)
-       return cc_function_call();
+//    v = ctx.bloc->query_function(cursor()->text());
+//    if(v)
+//       return cc_function_call();
 
     return ctx.bloc->new_var(cursor());
 }
