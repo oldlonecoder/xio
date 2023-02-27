@@ -3,13 +3,9 @@
 namespace xio
 {
 
-
-
-
 xiobject* compiler::cc_expr()
 {
-    push_ctx();
-
+    ctx.m_st = context::mstate::_expr;
     //...
     xiobject* ins = nullptr;
     do{
@@ -35,7 +31,7 @@ xiobject* compiler::cc_expr()
             //          \
             //           A
             // @todo have maker here too:
-            ins = xiobject::begin(ctx.bloc, cursor());
+            ins = generate_instruction();
 
             ctx.cursor ++;
             continue;
@@ -45,10 +41,8 @@ xiobject* compiler::cc_expr()
         ins = ins->input(ctx.bloc,cursor(),[&](token_data* token)-> xiobject*
         {
             // As said, for now we create only xio-P.O.D. types vairables. and PI keyword const
-            if(token->t == xio::type::Id) return cc_identifier();
-            if(token->c == mnemonic::Pi) return cc_pi();
+            return generate_instruction();
 
-            return new xiobject(ctx.bloc,cursor());
         });
 
         if(!ins) break;

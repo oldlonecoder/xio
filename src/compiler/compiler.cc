@@ -49,9 +49,18 @@ code::T compiler::pop_ctx()
 
 xiobject *compiler::generate_instruction()
 {
-    xiobject* x = nullptr;
+    //xiobject* x = nullptr;
+    if(ctx.m_st == context::mstate::_expr)
+    {
+        if(cursor()->t == xio::type::Id) return cc_identifier();
+        if(cursor()->c == mnemonic::Pi) return cc_pi();
+
+        return new xiobject(ctx.bloc,cursor());
+    }
+
     //...
-    return x;
+    diagnostic::warning() << code::notimplemented;
+    return nullptr;
 }
 
 bool compiler::eof()

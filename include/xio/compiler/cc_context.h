@@ -48,7 +48,11 @@ struct context
         _params,        ///< Explicit decl phase...
         _param,
         _args,          ///< Explicit instanciation call phase ...
-        _arg
+        _arg,
+        // === === === === === === === === === === === === === === === === === === === === === === === ===
+        _error,
+        _warning,
+        _fatal
         //...
     }m_st {context::mstate::_global};
 
