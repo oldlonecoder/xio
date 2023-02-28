@@ -71,11 +71,20 @@ class compiler
 
 public:
 
+    struct cc_config
+    {
+        std::string_view src;
+        std::string      filename;
+
+    };
+
     compiler();
     compiler(xiobloc* _bloc);
     ~compiler();
     bool eof();
+    code::T cc();
 
+    compiler::cc_config& config() { return _cfg; }
 private:
 
     void init_context();
@@ -85,7 +94,8 @@ private:
     void push_ctx();
     code::T pop_ctx();
 
-
+    compiler::cc_config _cfg;
+    code::T load_file();
 };
 
 } // namespace xio

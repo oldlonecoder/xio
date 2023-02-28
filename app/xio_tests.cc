@@ -21,7 +21,7 @@
 
 #include <tlux/application.h>
 #include <xio/lexer/lexer_color.h>
-#include <xio/xiobloc.h>
+#include <xio/compiler/compiler.h>
 
 
 using namespace tux;
@@ -41,6 +41,7 @@ public:
     ~Test() override;
 
     code::T operator ()();
+    code::T test_compiler();
     code::T init(int argc, char** argv) override;
 
 };
@@ -92,12 +93,41 @@ R"(if !collection.empty()
     alu C = A / B;
     alu D = "infinity";
     diagnostic::output() << "C:" << D();
+
+    (void)test_compiler();
+
     diagnostic::test() << code::end << code::success;
     return code::accepted;
 }
 
+code::T Test::test_compiler()
+{
+    using xio::compiler;
+    compiler cc;
+
+    try{
+        return cc.cc();
+    }
+    catch(diagnostic::log_entry& e)
+    {
+    ;
+    }
+
+    return code::unexpected;
+}
+
 code::T Test::init(int argc, char **argv)
 {
+    // Setup this applciation args;
+    application& app = *this;
+    app << {true, "Use the compiler and provide the source script file", "compiler", 'c', {}, 0, application::envarg::ValueRequired };
+
+//    {
+//        {"compiler",
+
+//        }
+//        ,{"expression", {true,"use expr to evaluate the next argument as \"arithmetic expression\"", 'x',{},0,application::envarg::ValueRequired}}
+//        };
     // Setup the diagnostic data  and attr db;
     application::init(argc,argv);
     return code::ok;

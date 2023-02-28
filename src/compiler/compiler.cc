@@ -17,13 +17,19 @@ compiler::compiler(xiobloc *_bloc):
     init_context();
 }
 
+compiler::~compiler()
+{
+    _tokens.clear();
+    ctx.ins_seq.clear();
+}
+
 
 void compiler::init_context()
 {
     //_global = interpreter::global();
     //_global = new xiobloc;
     ctx = {_global, _tokens.begin()};
-    //ctx.stop = ctx.cursor = ctx.start;
+    ctx.m_st = context::mstate::_global;
 }
 
 token_data *compiler::cursor()
@@ -47,6 +53,13 @@ code::T compiler::pop_ctx()
     return code::accepted;
 }
 
+code::T compiler::load_file()
+{
+    if(_cfg.filename.empty())
+        throw diagnostic::error()  << " compiler: filename/path is " << code::empty;
+    return code::notimplemented;
+}
+
 xiobject *compiler::generate_instruction()
 {
     //xiobject* x = nullptr;
@@ -66,6 +79,17 @@ xiobject *compiler::generate_instruction()
 bool compiler::eof()
 {
     return ctx.cursor == _tokens.end();
+}
+
+code::T compiler::cc()
+{
+    if(_cfg.src.empty())
+        load_file();
+
+    push_ctx();
+    cc_expr();
+    pop_ctx();
+    return code::accepted;
 }
 
 
