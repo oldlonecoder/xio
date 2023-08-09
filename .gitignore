@@ -8,6 +8,10 @@
 *.user
 *.userosscache
 *.sln.docstates
+*.so
+*.la
+*.a
+*.so.*
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -197,8 +201,7 @@ _pkginfo.txt
 # Visual Studio cache files
 # files ending in .cache can be ignored
 *.[Cc]ache
-# but keep track of directories ending in .cache
-!*.[Cc]ache/
+.[Cc]ache/
 
 # Others
 ClientBin/
@@ -297,13 +300,18 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 
-#Linux/KDevelop/Jetbrains
+#Linux/KDevelop/Jetbrains/QtCreator
 *.kdev4
 .kdev4/
 build/
+build-*/
 bin/
 gnu_build/
 cmake-*/
 .clangd/
 .idea/
 .vscode/
+CMakeLists.txt.user*
+.qtc/
+.cmake/
+.qtc_clangd/

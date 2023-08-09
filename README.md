@@ -1,5 +1,0 @@
-
-# xio [ eXecutable Instruction Object ]
-
-
-
