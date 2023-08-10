@@ -17,6 +17,14 @@ add_library(
         ${TargetName}
         SHARED
         include/${TargetName}/public.h                 #global framework-wide macros definitions and dll export and import macros for MSVC.
+        include/${TargetName}/types.h         src/types.cc
+        include/${TargetName}/alu.h           src/alu.cc
+        include/${TargetName}/tokendata.h     src/tokendata.cc
+        include/${TargetName}/xio.h           src/xio.cc  # La pièce maîtresse ;)
+        include/${TargetName}/xiobloc.h       src/xiobloc.cc
+        include/${TargetName}/xiovar.h        src/xiovar.cc
+
+
         # ...Will grow...
 )
 

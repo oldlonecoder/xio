@@ -1,7 +1,7 @@
-#include <xio/xio/tokendata.h>
-#include <xio/diagnostic/Icons.h>
+#include <xio/tokendata.h>
+#include <chrtools/Icons.h>
 #include <map>
-#include <xio/diagnostic/expect.h>
+#include <logbook/expect.h>
 
 
 //static const char* fmt = "'%s'(%d,%d) %s[%s]";

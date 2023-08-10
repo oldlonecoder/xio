@@ -21,11 +21,11 @@
 ***************************************************************************/
 
 #pragma once
-#include <xio/xio/xiovar.h>
+#include <xio/xiovar.h>
 
 
-using xio::rem;
-using xio::color;
+using book::rem;
+
 
 namespace xio
 {
@@ -80,7 +80,7 @@ private:
         //          logdebug << " xio_stack::rt_function(const alu::list_t&):  " << Ends;
         for (auto& a : params)
         {
-            rem::push_debug() << "arg: [" << xio::color::Yellow << a() << xio::color::Reset << "]";
+            rem::push_debug() << "arg: [" << color::Yellow << a() << color::Reset << "]";
            //...
         }
         return accumulate(params, std::index_sequence_for<params_...>{});

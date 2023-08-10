@@ -1,8 +1,5 @@
-#include <xio/xio/alu.h>
+#include <xio/alu.h>
 
-using xio::color;
-using xio::stracc;
-using xio::rem;
 
 namespace xio
 {
@@ -152,7 +149,7 @@ std::string  alu::mNil = "";
             return {v.d + rhs.v.d}; // Slow?
 
         std::string str;
-        xio::rem::push_warning() << " [" << xio::type::name(T) << "] and [" << xio::type::name(rhs.T) << "] are incompatible.";
+        book::rem::push_warning() << " [" << xio::type::name(T) << "] and [" << xio::type::name(rhs.T) << "] are incompatible.";
         return {false};
     }
 
@@ -169,7 +166,7 @@ std::string  alu::mNil = "";
         {
             return lf.number<double>() == number<double>();
         }
-        rem::push_warning(HERE) << " Equality comparison between different types(" << xio::type::name(T) << " == " << xio::type::name(lf.T) << ')';
+        book::rem::push_warning(HERE) << " Equality comparison between different types(" << xio::type::name(T) << " == " << xio::type::name(lf.T) << ')';
         return {false};
     }
 
@@ -202,7 +199,7 @@ std::string  alu::mNil = "";
 
         lrtext(rv)
         {
-            xio::rem::push_warning() << " substraction operator strings is not yet supported";
+            book::rem::push_warning() << " substraction operator strings is not yet supported";
             //return remove_substr_copy(rv.text);
             return *this;
         }
@@ -212,7 +209,7 @@ std::string  alu::mNil = "";
         lr_any(rv)
             return {reinterpret_cast<uint64_t>(value<void *>()) - reinterpret_cast<uint64_t>(rv.value<void *>())};
 
-        xio::rem::push_warning() << "cannot apply sign on " << xio::type::name(T);
+        book::rem::push_warning() << "cannot apply sign on " << xio::type::name(T);
         return {false};
     }
 
@@ -230,7 +227,7 @@ std::string  alu::mNil = "";
         lr_number(rv)
             return {v.d * rv.v.d};
 
-        xio::rem::push_warning() << "cannot multiply" << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
+        book::rem::push_warning() << "cannot multiply" << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
         return {};
     }
 
@@ -238,7 +235,7 @@ std::string  alu::mNil = "";
     {
         lrtext(rv)
         {
-            xio::rem::push_warning() << "cannot divide strings";
+            book::rem::push_warning() << "cannot divide strings";
             return {};
         }
         //    f = text + rv.text;
@@ -250,13 +247,13 @@ std::string  alu::mNil = "";
 
             if (vr == 0.0L)
             {
-                xio::rem::push_except() << " In alu operation: division by zero error. (" << (*this)() << " / " << rv() << ")";
+                book::rem::push_except() << " In alu operation: division by zero error. (" << (*this)() << " / " << rv() << ")";
                 return "Inf";
             }
             return {lr / vr};
         }
 
-        xio::rem::push_warning() << "cannot divide " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
+        book::rem::push_warning() << "cannot divide " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
         return {};
     }
 
@@ -265,13 +262,13 @@ std::string  alu::mNil = "";
         alu f;
         lrtext(rv)
         {
-            xio::rem::push_warning() << "cannot modulo strings";
+            book::rem::push_warning() << "cannot modulo strings";
             return {};
         }
         lr_number(rv)
             return {v.u % rv.v.u};
 
-        xio::rem::push_warning() << "cannot modulo " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
+        book::rem::push_warning() << "cannot modulo " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
         return {};
     }
 
@@ -280,14 +277,14 @@ std::string  alu::mNil = "";
         alu f;
         lrtext(rv)
         {
-            xio::rem::push_warning() << "cannot xor strings";
+            book::rem::push_warning() << "cannot xor strings";
             return {};
         }
 
         lr_number(rv)
             return {v.u ^ rv.v.u};
 
-        xio::rem::push_warning() << "cannot xor " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
+        book::rem::push_warning() << "cannot xor " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
         return {};
     }
 
@@ -304,7 +301,7 @@ std::string  alu::mNil = "";
         lr_number(rhs)
             return {v.u << rhs.v.u};
 
-        xio::rem::push_warning() << "cannot execute bitwise left-shift or insert with " << xio::type::name(T) << " and " << xio::type::name(rhs.T) << ".";
+        book::rem::push_warning() << "cannot execute bitwise left-shift or insert with " << xio::type::name(T) << " and " << xio::type::name(rhs.T) << ".";
         return f;
     }
     alu alu::operator>>(const alu& rhs) const
@@ -312,12 +309,12 @@ std::string  alu::mNil = "";
         alu f;
         lrtext(rhs)
         {
-            xio::rem::push_warning() << "cannot execute bitwise right-shift or extract/write/send string on string " << xio::type::name(T) << " and " << xio::type::name(rhs.T) << ".";
+            book::rem::push_warning() << "cannot execute bitwise right-shift or extract/write/send string on string " << xio::type::name(T) << " and " << xio::type::name(rhs.T) << ".";
         }
         lr_number(rhs)
             return {v.u >> rhs.v.u};
 
-        xio::rem::push_warning() << "cannot execute bitwise right-shift or extract/write/send with " << xio::type::name(T) << " and " << xio::type::name(rhs.T) << ".";
+        book::rem::push_warning() << "cannot execute bitwise right-shift or extract/write/send with " << xio::type::name(T) << " and " << xio::type::name(rhs.T) << ".";
         return f;
     }
 
@@ -331,7 +328,7 @@ std::string  alu::mNil = "";
         lr_number(rhs)
             return {v.u | rhs.v.u};
 
-        xio::rem::push_warning() << "cannot execute bitwise or with " << xio::type::name(T) << " and " << xio::type::name(rhs.T) << ".";
+        book::rem::push_warning() << "cannot execute bitwise or with " << xio::type::name(T) << " and " << xio::type::name(rhs.T) << ".";
         return {};
     }
 
@@ -339,12 +336,12 @@ std::string  alu::mNil = "";
     {
         lrtext(rhs)
         {
-            xio::rem::push_warning() << "cannot execute bitwise and on string ";
+            book::rem::push_warning() << "cannot execute bitwise and on string ";
         }
         lr_number(rhs)
             return {v.u & rhs.v.u};
 
-        rem::push_warning() << "cannot execute bitwise and between " << xio::type::name(T) << " and " << xio::type::name(rhs.T) << ".";
+        book::rem::push_warning() << "cannot execute bitwise and between " << xio::type::name(T) << " and " << xio::type::name(rhs.T) << ".";
         return {};
     }
 
@@ -352,7 +349,7 @@ std::string  alu::mNil = "";
     {
         istext(*this)
         {
-            xio::rem::push_warning() << "cannot execute bitwise invert on string ";
+            book::rem::push_warning() << "cannot execute bitwise invert on string ";
         }
 
         is_number
@@ -362,7 +359,7 @@ std::string  alu::mNil = "";
             return {~v.u};
         }
 
-        xio::rem::push_warning() << "cannot execute bitwise invert on " << xio::type::name(T);
+        book::rem::push_warning() << "cannot execute bitwise invert on " << xio::type::name(T);
         return {};
     }
 
@@ -381,7 +378,7 @@ std::string  alu::mNil = "";
             return *this;
         }
 
-        xio::rem::push_warning() << "cannot execute assign add between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
+        book::rem::push_warning() << "cannot execute assign add between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
         return *this;
     }
 
@@ -396,7 +393,7 @@ std::string  alu::mNil = "";
             return *this;
         }
 
-        xio::rem::push_warning() << "cannot execute assign substraction between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
+        book::rem::push_warning() << "cannot execute assign substraction between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
         return *this;
     }
 
@@ -404,26 +401,26 @@ std::string  alu::mNil = "";
     {
         lrtext(rv)
         {
-            xio::rem::push_warning() << "cannot execute assign multiply on strings [" << (*this)() << " *= " << rv() << "].";
+            book::rem::push_warning() << "cannot execute assign multiply on strings [" << (*this)() << " *= " << rv() << "].";
             return *this;
         }
 
         lr_number(rv)
         {
-            rem::push_debug()
+            book::rem::push_debug()
                 << color::Orange5 << "alu"
                 << color::White << "::"
-                << color::White << rem::endl << ":" << rem::endl << "{" << rem::endl
+                << color::White << book::rem::endl << ":" << book::rem::endl << "{" << book::rem::endl
                 << color::Yellow << v.d << color::White << '(' << color::LightSeaGreen << xio::type::name(T) << color::White << ')'
                 << color::CornflowerBlue << " *= "
                 << color::Yellow << rv.v.d << color::White << '(' << color::LightSeaGreen << xio::type::name(rv.T) << color::White << ')';
 
             v.d *= rv.v.d;
-            rem::out() << color::White << " = " << color::Yellow << v.d  << color::White << rem::endl << '}' << rem::endl;
+            book::rem::out() << color::White << " = " << color::Yellow << v.d  << color::White <<  book::rem::endl << '}' <<  book::rem::endl;
             return *this;
         }
 
-        xio::rem::push_warning() << "cannot execute assign multiply between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
+        book::rem::push_warning() << "cannot execute assign multiply between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
         return *this;
     }
 
@@ -431,7 +428,7 @@ std::string  alu::mNil = "";
     {
         lrtext(rv)
         {
-            xio::rem::push_warning() << "cannot execute assign divide on strings [" << (*this)() << " /= " << rv() << "].";
+            book::rem::push_warning() << "cannot execute assign divide on strings [" << (*this)() << " /= " << rv() << "].";
             return *this;
         }
 
@@ -440,7 +437,7 @@ std::string  alu::mNil = "";
 
             if (v.d==0.0f)
             {
-                xio::rem::push_warning() << "alu: cannot divide by zero."; // Oops plutôt erreur fatale!!
+                book::rem::push_warning() << "alu: cannot divide by zero."; // Oops plutôt erreur fatale!!
                 v.d = 0.0;
                 T = xio::type::Null;
                 return *this;
@@ -448,7 +445,7 @@ std::string  alu::mNil = "";
             v.d /= rv.v.d;
             return *this;
         }
-        xio::rem::push_warning() << "cannot execute assign divide between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
+        book::rem::push_warning() << "cannot execute assign divide between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
         return *this;
     }
 
@@ -472,7 +469,7 @@ std::string  alu::mNil = "";
 
         lrtext(rv)
         {
-            xio::rem::push_warning() << "cannot execute assign bitwise or on strings [" << (*this)() << " |= " << rv() << "].";
+            book::rem::push_warning() << "cannot execute assign bitwise or on strings [" << (*this)() << " |= " << rv() << "].";
             return *this;
         }
 
@@ -481,7 +478,7 @@ std::string  alu::mNil = "";
             v.u |= rv.v.u;
             return *this;
         }
-        xio::rem::push_warning() << "cannot execute assign bitwise or between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
+        book::rem::push_warning() << "cannot execute assign bitwise or between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
         return *this;
     }
 
@@ -489,7 +486,7 @@ std::string  alu::mNil = "";
     {
         lrtext(rv)
         {
-            xio::rem::push_warning() << "cannot execute assign bitwise and on strings [" << (*this)() << " &= " << rv() << "].";
+            book::rem::push_warning() << "cannot execute assign bitwise and on strings [" << (*this)() << " &= " << rv() << "].";
             return *this;
         }
         //    a = std::string(text + rv.text);
@@ -499,7 +496,7 @@ std::string  alu::mNil = "";
             v.u &=  rv.v.u;
             return *this;
         }
-        xio::rem::push_warning() << "cannot execute assign bitwise and between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
+        book::rem::push_warning() << "cannot execute assign bitwise and between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
         return *this;
     }
 
@@ -507,7 +504,7 @@ std::string  alu::mNil = "";
     {
         lrtext(rv)
         {
-            xio::rem::push_warning() << "cannot execute assign xor on strings [" << (*this)() << " ><= " << rv() << "].";
+            book::rem::push_warning() << "cannot execute assign xor on strings [" << (*this)() << " ><= " << rv() << "].";
             return *this;
         }
 
@@ -518,7 +515,7 @@ std::string  alu::mNil = "";
             return *this;
         }
 
-        xio::rem::push_warning() << "cannot execute assign xor between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
+        book::rem::push_warning() << "cannot execute assign xor between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
         return *this;
     }
 
@@ -531,7 +528,7 @@ std::string  alu::mNil = "";
         lr_number(rv)
             return {v.d > rv.v.d};
 
-        xio::rem::push_warning() << "cannot execute relational operations between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
+        book::rem::push_warning() << "cannot execute relational operations between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
         return {false};
     }
 
@@ -543,7 +540,7 @@ std::string  alu::mNil = "";
         lr_number(rv)
             return {v.d < rv.v.d};
 
-        xio::rem::push_warning() << "cannot execute relational operations between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
+        book::rem::push_warning() << "cannot execute relational operations between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
         return {false};
 
     }
@@ -555,7 +552,7 @@ std::string  alu::mNil = "";
         lr_number(rv)
             return {v.d >= rv.v.d};
 
-        xio::rem::push_warning() << "cannot execute relational operations between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
+        book::rem::push_warning() << "cannot execute relational operations between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
         return {false};
 
     }
@@ -568,7 +565,7 @@ std::string  alu::mNil = "";
         lr_number(rv)
             return {v.d <= rv.v.d};
 
-        xio::rem::push_warning() << "cannot execute relational operations between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
+        book::rem::push_warning() << "cannot execute relational operations between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
         return {false};
 
     }
@@ -581,7 +578,7 @@ std::string  alu::mNil = "";
         lr_number(rv)
             return {v.d != rv.v.d};
 
-        xio::rem::push_warning() << "cannot execute relational operations between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
+        book::rem::push_warning() << "cannot execute relational operations between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
         return {false};
     }
 
@@ -593,7 +590,7 @@ std::string  alu::mNil = "";
         lr_number(rv)
             return {v.d || rv.v.d};
 
-        xio::rem::push_warning() << "cannot execute relational operations between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
+        book::rem::push_warning() << "cannot execute relational operations between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
         return {false};
     }
 
@@ -605,7 +602,7 @@ std::string  alu::mNil = "";
         lr_number(rv)
             return {v.u && rv.v.u};
 
-        xio::rem::push_warning() << "cannot execute relational operations between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
+        book::rem::push_warning() << "cannot execute relational operations between " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
         return {false};
     }
 
@@ -618,9 +615,9 @@ std::string  alu::mNil = "";
     {
         istext(*this)
         {
-            xio::rem::push_warning() << "cannot execute sign operator on string -(\"" << (*this)() << "\").";
+            book::rem::push_warning() << "cannot execute sign operator on string -(\"" << (*this)() << "\").";
         }
-        xio::rem::push_warning() << "cannot execute relational operations on " << xio::type::name(T);
+        book::rem::push_warning() << "cannot execute relational operations on " << xio::type::name(T);
         return -v.d;
     }
 
@@ -628,14 +625,14 @@ std::string  alu::mNil = "";
     {
         istext(*this)
         {
-            xio::rem::push_warning() << "cannot execute sign operator on string +(\"" << (*this)() << "\").";
+            book::rem::push_warning() << "cannot execute sign operator on string +(\"" << (*this)() << "\").";
         }
 
         is_number
             if (v.d < 0.0f)
                 return {v.d * -1};
 
-        xio::rem::push_warning() << "cannot execute relational operations on " << xio::type::name(T);
+        book::rem::push_warning() << "cannot execute relational operations on " << xio::type::name(T);
         return {false};
     }
 
@@ -644,7 +641,7 @@ std::string  alu::mNil = "";
 
         istext(*this)
         {
-            xio::rem::push_warning() << "cannot increment string (\"" << (*this)() << "\")++.";
+            book::rem::push_warning() << "cannot increment string (\"" << (*this)() << "\")++.";
         }
 
         is_number
@@ -655,7 +652,7 @@ std::string  alu::mNil = "";
             v.d = f;
             return ff;
         }
-        xio::rem::push_warning() << "cannot execute increment operations on " << xio::type::name(T);
+        book::rem::push_warning() << "cannot execute increment operations on " << xio::type::name(T);
         return {false};
     }
 
@@ -663,7 +660,7 @@ std::string  alu::mNil = "";
     {
         istext(*this)
         {
-            xio::rem::push_warning() << "cannot increment string ++(\"" << (*this)() << "\").";
+            book::rem::push_warning() << "cannot increment string ++(\"" << (*this)() << "\").";
         }
 
         is_number
@@ -673,7 +670,7 @@ std::string  alu::mNil = "";
             v.d = f;
             return *this;
         }
-        xio::rem::push_warning() << "cannot execute increment operations on " << xio::type::name(T);
+        book::rem::push_warning() << "cannot execute increment operations on " << xio::type::name(T);
         return {false};
     }
 
@@ -682,7 +679,7 @@ std::string  alu::mNil = "";
 
         istext(*this)
         {
-            xio::rem::push_warning() << "cannot decrement string --(\"" << (*this)() << "\").";
+            book::rem::push_warning() << "cannot decrement string --(\"" << (*this)() << "\").";
         }
 
         is_number
@@ -692,7 +689,7 @@ std::string  alu::mNil = "";
             v.d = f;
             return *this;
         }
-        xio::rem::push_warning() << "cannot execute decrement operations on " << xio::type::name(T);
+        book::rem::push_warning() << "cannot execute decrement operations on " << xio::type::name(T);
         return {false};
     }
 
@@ -700,7 +697,7 @@ std::string  alu::mNil = "";
     {
         istext(*this)
         {
-            xio::rem::push_warning() << "cannot decrement string (\"" << (*this)() << "\")++."; // oops... What if long text string?
+            book::rem::push_warning() << "cannot decrement string (\"" << (*this)() << "\")++."; // oops... What if long text string?
         }
 
         is_number
@@ -711,7 +708,7 @@ std::string  alu::mNil = "";
             v.d = f;
             return ff;
         }
-        xio::rem::push_warning() << "cannot execute decrement operations on " << xio::type::name(T);
+        book::rem::push_warning() << "cannot execute decrement operations on " << xio::type::name(T);
         return {false};
     }
 
@@ -724,7 +721,7 @@ std::string  alu::mNil = "";
             return al;
         }
 
-        xio::rem::push_warning() << "cannot execute radical operator on " << xio::type::name(T);
+        book::rem::push_warning() << "cannot execute radical operator on " << xio::type::name(T);
         return {false};
     }
 
@@ -740,7 +737,7 @@ std::string  alu::mNil = "";
                 fac *= j;
             return {fac};
         }
-        xio::rem::push_warning() << "cannot execute factorial operator on " << xio::type::name(T);
+        book::rem::push_warning() << "cannot execute factorial operator on " << xio::type::name(T);
         return {false};
     }
 
@@ -756,7 +753,7 @@ std::string  alu::mNil = "";
                 fac *= j;
             return { fac };
         }
-        xio::rem::push_warning() << "cannot execute factorial operator on " << xio::type::name(T);
+        book::rem::push_warning() << "cannot execute factorial operator on " << xio::type::name(T);
         return { false };
 
     }
@@ -766,7 +763,7 @@ std::string  alu::mNil = "";
 
         lrtext(rv)
         {
-            xio::rem::push_warning() << "cannot execute assign extraction/bitwise left-shift / output on strings.";
+            book::rem::push_warning() << "cannot execute assign extraction/bitwise left-shift / output on strings.";
             return *this;
         }
 
@@ -776,7 +773,7 @@ std::string  alu::mNil = "";
             return *this;
         }
 
-        xio::rem::push_warning() << "cannot execute assign bitwise left-shift or insert with " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
+        book::rem::push_warning() << "cannot execute assign bitwise left-shift or insert with " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
         return *this;
     }
 
@@ -785,7 +782,7 @@ std::string  alu::mNil = "";
 
         lrtext(rv)
         {
-            xio::rem::push_warning() << "cannot execute assign extraction/bitwise right-shift / output on strings.";
+            book::rem::push_warning() << "cannot execute assign extraction/bitwise right-shift / output on strings.";
             return *this;
         }
 
@@ -795,7 +792,7 @@ std::string  alu::mNil = "";
             return *this;
         }
 
-        xio::rem::push_warning() << "cannot execute assign bitwise right-shift or insert with " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
+        book::rem::push_warning() << "cannot execute assign bitwise right-shift or insert with " << xio::type::name(T) << " and " << xio::type::name(rv.T) << ".";
         return *this;
     }
 

@@ -1,5 +1,5 @@
-#include <xio/xio/xio.h>
-#include <xio/diagnostic/geometry.h>
+#include <xio/xio.h>
+#include <chrtools/geometry.h>
 
 
 
@@ -120,7 +120,7 @@ xio::xio(object* parent_bloc, token_data* atoken, alu* a_alu): object(parent_blo
 {
     t0 = atoken;
 
-    rem::push_debug() << "xio::xio => token details:[" << (t0 ? t0->details() : "nullptr") << "] \n";
+    book::rem::push_debug() << "xio::xio => token details:[" << (t0 ? t0->details() : "nullptr") << "] \n";
 
     if (a_alu != nullptr)
     {
@@ -146,7 +146,7 @@ xio::xio(object* parent_bloc, token_data* atoken, alu* a_alu): object(parent_blo
             double d;
             (stracc(atoken->text())) >> d;
             *acc = d;
-            rem::push_debug() << " acc: " << color::Yellow << (*acc)();
+            book::rem::push_debug() << " acc: " << color::Yellow << (*acc)();
         }
     }
     return;
@@ -169,7 +169,7 @@ xio::xio(object* parent_bloc, token_data* atoken, alu* a_alu): object(parent_blo
 
     auto i = xio::xio_operators_table.find(atoken->c);
     xio_fn = i != xio::xio_operators_table.end() ? i->second : nullptr;
-    rem::push_debug(HERE) << " acc: '" << color::Yellow << (*acc)() << color::White << "'";
+    book::rem::push_debug(HERE) << " acc: '" << color::Yellow << (*acc)() << color::White << "'";
 }
 
 xio::list::iterator xio::query(xio* c)
@@ -198,7 +198,7 @@ alu xio::jsr()
         return (this->*xio_fn)();// All operators assign acc.
     else {
         if (t0->is_operator()) {
-            rem::push_warning() << "operator xio [" << color::Yellow << t0->text() << color::Reset << "] has no implementation (yet?).:\n" << t0->mark();
+            book::rem::push_warning() << "operator xio [" << color::Yellow << t0->text() << color::Reset << "] has no implementation (yet?).:\n" << t0->mark();
         }
     }
     t0->s |= acc->T; ///< Why is that ?
@@ -208,47 +208,47 @@ alu xio::jsr()
     return *acc;
 }
 
-rem::code xio::append_child(xio *c)
+book::rem::code xio::append_child(xio *c)
 {
     auto e = query(c);
     if(e != _children.end())
         _children.push_back(c);
     else
-        return rem::exist;
+        return book::rem::exist;
 
-    return rem::accepted;
+    return book::rem::accepted;
 }
 
 
-rem::code xio::detach(xio * c)
+book::rem::code xio::detach(xio * c)
 {
     auto i = query(c);
     if(i != _children.end())
         _children.erase(i);
     else
-        return rem::notexist;
+        return book::rem::notexist;
 
-    return rem::accepted;
+    return book::rem::accepted;
 }
 
-rem::code xio::detach()
+book::rem::code xio::detach()
 {
     xio* p = parent<xio>();
     if(p)
     {
         p->detach(this);
     }
-    return rem::accepted;
+    return book::rem::accepted;
 }
 
 
 
 alu xio::LeftShift()
 {
-    if((lhs->t0->s & xio::type::Float) || (rhs->t0->s & xio::type::Float))
+    if((lhs->t0->s & type::Float) || (rhs->t0->s & type::Float))
     {
         *acc = 0.f;
-        rem::push_warning() << lhs->t0->type_name() << " " << t0->text() << " " << rhs->t0->type_name() << " are incompatible";
+        book::rem::push_warning() << lhs->t0->type_name() << " " << t0->text() << " " << rhs->t0->type_name() << " are incompatible";
     }
 
     *acc = lhs->acc->number<uint64_t>() << rhs->acc->number<uint64_t>();
@@ -386,9 +386,9 @@ alu xio::Neq()
 
 alu xio::Add()
 {
-    rem::push_debug(HERE) << color::Yellow << lhs->acu()() << " " << color::CornflowerBlue << attribute() << " " << color::Yellow << rhs->acu()() << ":";
+    book::rem::push_debug(HERE) << color::Yellow << lhs->acu()() << " " << color::CornflowerBlue << attribute() << " " << color::Yellow << rhs->acu()() << ":";
     *acc = *lhs->acc + *rhs->acc;
-    rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)();
+    book::rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)();
     return *acc;
 }
 alu xio::Sub()
@@ -396,22 +396,22 @@ alu xio::Sub()
     // hack... en attendant :
     if (t0->s & type::Sign)
         return Negative();
-    rem::push_debug(HERE) << color::Lime
+    book::rem::push_debug(HERE) << color::Lime
         << color::Yellow << lhs->acu()() << " " << color::CornflowerBlue << attribute() << " " << color::Yellow << rhs->acu()() << ":";
     *acc = *lhs->acc - *rhs->acc;
-    rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)();
+    book::rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)();
 
     return *acc;
 }
 alu xio::Mul()
 {
-    rem::push_debug()
+    book::rem::push_debug()
         << color::Yellow << lhs->attribute()
         << color::CornflowerBlue << attribute()
         << color::Yellow << rhs->attribute()
         << color::White << "=";
     *acc = *lhs->acc * *rhs->acc;
-    rem::out() << (*acc)();
+    book::rem::out() << (*acc)();
     return *acc;
 }
 alu xio::Modulo()
@@ -431,14 +431,14 @@ alu xio::GreaterThan()
 }
 alu xio::Assign()
 {
-    rem::push_debug(HERE) << color::Lime
+    book::rem::push_debug(HERE) << color::Lime
         << color::Aquamarine3 << lhs->attribute() << color::Reset << " "
         << " " << color::CornflowerBlue << attribute() << " "
         << color::Yellow
         << rhs->acu()() << ":";
 
     *acc = *lhs->acc = *rhs->acc;
-    rem::out() << color::CornflowerBlue << " => " << color::Lime << (*acc)();
+    book::rem::out() << color::CornflowerBlue << " => " << color::Lime << (*acc)();
     return *acc;
 }
 alu xio::BinAnd()
@@ -489,7 +489,7 @@ alu xio::BoolOr()
 
 alu xio::Division()
 {
-    rem::push_debug(HERE) << color::Lime
+    book::rem::push_debug(HERE) << color::Lime
         << color::Yellow << lhs->acu()()
         << " " << color::CornflowerBlue << attribute() << " "
         << color::Yellow
@@ -497,7 +497,7 @@ alu xio::Division()
 
     *acc = *lhs->acc / *rhs->acc;
     return *acc;
-    //rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)();
+    //book::rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)();
 }
 
 
@@ -522,7 +522,7 @@ alu xio::Positive()
 
 alu xio::Negative()
 {
-    rem::push_debug(HERE) << color::Lime
+    book::rem::push_debug(HERE) << color::Lime
         << color::CornflowerBlue << attribute()
         << color::Yellow << rhs->attribute()
         << color::White << "=";
@@ -531,7 +531,7 @@ alu xio::Negative()
         *rhs->acc *= -1;
 
     *acc = *rhs->acc;
-    rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)();
+    book::rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)();
     return *acc;
 }
 
@@ -619,7 +619,7 @@ alu xio::KI8()
 
 alu xio::KI16()
 {
-    rem::push_debug() << rhs->t0->text();
+    book::rem::push_debug() << rhs->t0->text();
     *acc = (int16_t)(rhs->acc->number<uint64_t>() & 0xFFFF);
     return *acc;
 }
@@ -701,36 +701,36 @@ xio::input_table_t xio::input_tbl =
 
 void xio::syntax_error(xio* e)
 {
-    throw rem::push_syntax() << "at " << e->t0->location() << rem::endl << e->t0->mark();
+    throw book::rem::push_syntax() << "at " << e->t0->location() << book::rem::endl << e->t0->mark();
 }
 
 xio *xio::warning(xio *)
 {
     return nullptr;
 }
-void xio::make_error(rem::code ErrCode, xio* source_node, xio* input_node)
+void xio::make_error(book::rem::code ErrCode, xio* source_node, xio* input_node)
 {
-    throw rem::push_error() << source_node->attribute()
+    throw book::rem::push_error() << source_node->attribute()
         << " token input error: "
         << ErrCode
         << input_node->attribute()
-        << rem::endl
+        << book::rem::endl
         << input_node->t0->mark();
 }
 
-void xio::make_error(rem::code ErrCode, xio* source_node, token_data* inputoken)
+void xio::make_error(book::rem::code ErrCode, xio* source_node, token_data* inputoken)
 {
-    throw rem::push_error() << source_node->attribute()
+    throw book::rem::push_error() << source_node->attribute()
         << " token input error: "
         << ErrCode
         << inputoken->text()
-        << rem::endl
+        << book::rem::endl
         << inputoken->mark();
 }
 
-void xio::header(xio* input_node, xio::source_location&& Loc)
+void xio::header(xio* input_node, book::source_location&& Loc)
 {
-    rem::push_debug(std::move(Loc)) << t0->text() << "<-" << input_node->t0->text() << rem::endl << input_node->t0->mark();
+    book::rem::push_debug(std::move(Loc)) << t0->text() << "<-" << input_node->t0->text() << book::rem::endl << input_node->t0->mark();
 }
 
 
@@ -752,7 +752,7 @@ xio* xio::input(xio* parent_bloc, token_data* token, xio::maker mk)
         auto [l, r] = lr;
         if ((t0->t & l) && (token->t & r))
         {
-            rem::push_debug(HERE) << color::Yellow << t0->text() << " <- " << color::Yellow << token->text() << color::Reset << " Input token validated... ";
+            book::rem::push_debug(HERE) << color::Yellow << t0->text() << " <- " << color::Yellow << token->text() << color::Reset << " Input token validated... ";
             ///@todo Check id tokens for function_call and other id-constructs before calling xio::input(...).
 
             xio* a;
@@ -769,20 +769,20 @@ xio* xio::input(xio* parent_bloc, token_data* token, xio::maker mk)
                     a->detach();
                     delete a;
                 }
-                rem::push_syntax() << " invalid relational operands at " << token->location() << " - unexpected token:" << rem::endl << token->mark();
+                book::rem::push_syntax() << " invalid relational operands at " << token->location() << " - unexpected token:" << book::rem::endl << token->mark();
                 return nullptr;
             }
-            rem::push_debug() << t0->text() << "::input(" << token->text() << "):" << rem::endl << token->mark();
+            book::rem::push_debug() << t0->text() << "::input(" << token->text() << "):" << book::rem::endl << token->mark();
 
             return (this->*fn)(a);
         }
     }
 
-    rem::push_info(HERE) << t0->text()
+    book::rem::push_info(HERE) << t0->text()
         << "::input(" << token->text() << ") invalid relational operands at "
         << token->location() << " - unexpected token : "
-        << rem::endl << token->mark();
-    rem::out() << t0->details() << " || " << token->details() << rem::endl << "Returning nullptr";
+        << book::rem::endl << token->mark();
+    book::rem::out() << t0->details() << " || " << token->details() << book::rem::endl << "Returning nullptr";
 
     return nullptr;
 }
@@ -810,7 +810,7 @@ xio* xio::_binary(xio* a)
         {
             auto fn = query(this, a);
             if (!fn)
-                xio::make_error(rem::unexpected, this, a);
+                xio::make_error(book::rem::unexpected, this, a);
 
             return (op->*fn)(a);
         }
@@ -821,7 +821,7 @@ xio* xio::_binary(xio* a)
     if (op) {
         auto fn = query(this, a);
         if (!fn)
-            xio::make_error(rem::unexpected, this, a);
+            xio::make_error(book::rem::unexpected, this, a);
         return (op->*fn)(a);
 
     }
@@ -835,7 +835,7 @@ xio* xio::_close_pair(xio* a)
     xio* x = xio::pop_par();
     if (!x)
     {
-        rem::push_error() << "Unmatched left paranthese:" << rem::endl << a->t0->mark();
+        book::rem::push_error() << "Unmatched left paranthese:" << book::rem::endl << a->t0->mark();
         return nullptr;
     }
     a->op = x->op;
@@ -848,12 +848,12 @@ xio* xio::_close_pair(xio* a)
     if (a->op)
         a->op->rhs = a; // oops!!
 
-    rem::push_debug()
+    book::rem::push_debug()
         << "new input vertex:["
         << color::Yellow
         << a->t0->text()
         << color::Reset
-        << "]" << rem::endl
+        << "]" << book::rem::endl
         << a->t0->mark();
 
     return a;
@@ -866,7 +866,7 @@ xio* xio::_close_par(xio* a)
     xio* x = xio::pop_par();
     if (!x)
     {
-        rem::push_error() << "Unmatched left paranthese." << a->t0->mark();
+        book::rem::push_error() << "Unmatched left paranthese." << a->t0->mark();
         return nullptr;
     }
     a->op = x->op;
@@ -879,12 +879,12 @@ xio* xio::_close_par(xio* a)
     if (a->op)
         a->op->rhs = a; // oops!!
 
-    rem::out()
+    book::rem::out()
         << "new input vertex:["
         << color::Yellow
         << a->t0->text()
         << color::Reset
-        << "]" << rem::endl
+        << "]" << book::rem::endl
         << a->t0->mark();
 
     return a;
@@ -903,7 +903,7 @@ xio* xio::collapse_par_pair(xio* a)
     // discard();
 
     if (v->op) {
-        rem::out()
+        book::rem::out()
             << color::Yellow << v->op->attribute() << color::CornflowerBlue
             << " <-- "
             << color::Yellow << a->attribute();
@@ -964,7 +964,7 @@ xio* xio::tree_close()
 
     if (t0->c == mnemonic::OpenPar)
     {
-        rem::push_error() << " unexpected end of file.";
+        book::rem::push_error() << " unexpected end of file.";
         return nullptr;
     }
 
@@ -972,17 +972,17 @@ xio* xio::tree_close()
     {
         xio* x = xio::pars.top();
         xio::pars.pop();
-        rem::push_error() << " umatched closing parenthese from:" << rem::endl << x->t0->mark();
+        book::rem::push_error() << " umatched closing parenthese from:" << book::rem::endl << x->t0->mark();
         return nullptr;
     }
 
 
     if (t0->c == mnemonic::ClosePar) {
-        rem::push_debug() << "Closing the tree on close parenthese:";
+        book::rem::push_debug() << "Closing the tree on close parenthese:";
         if (lhs)
         {
             xio* x = lhs;
-            rem::push_debug() << "left hand side operand: " << lhs->t0->details() << ":" << rem::endl << lhs->t0->mark();
+            book::rem::push_debug() << "left hand side operand: " << lhs->t0->details() << ":" << book::rem::endl << lhs->t0->mark();
 
             lhs->op = op;
 
@@ -1001,7 +1001,7 @@ xio* xio::tree_close()
 
 xio* xio::tree_root(bool skip_syntax)
 {
-    rem::push_debug(HERE) << "query tree ins from xio node:" << rem::endl << t0->mark();
+    book::rem::push_debug(HERE) << "query tree ins from xio node:" << book::rem::endl << t0->mark();
     xio* x = this;
     xio* p = x;
     do {
@@ -1013,25 +1013,25 @@ xio* xio::tree_root(bool skip_syntax)
             case type::Binary:
                 if (!x->lhs)
                 {
-                    rem::push_error() << "Syntax error: binary operator is missing its left operand." << rem::endl << x->t0->mark();
+                    book::rem::push_error() << "Syntax error: binary operator is missing its left operand." << book::rem::endl << x->t0->mark();
                     return nullptr;
                 }
                 if (!x->rhs)
                 {
-                    rem::push_error() << "Syntax error: binary operator is missing its right operand." << rem::endl << x->t0->mark();
+                    book::rem::push_error() << "Syntax error: binary operator is missing its right operand." << book::rem::endl << x->t0->mark();
                     return nullptr;
                 }
             case type::Prefix:
                 if (!x->rhs)
                 {
-                    rem::push_error() << "Syntax error: prefix unary operator is missing its (right) operand." << rem::endl << x->t0->mark();
+                    book::rem::push_error() << "Syntax error: prefix unary operator is missing its (right) operand." << book::rem::endl << x->t0->mark();
                     return nullptr;
                 }
                 break;
             case type::Postfix:
                 if (!x->lhs)
                 {
-                    rem::push_error() << "Syntax error: postfix unary operator is missing its (left) operand." << rem::endl << x->t0->mark();
+                    book::rem::push_error() << "Syntax error: postfix unary operator is missing its (left) operand." << book::rem::endl << x->t0->mark();
                     return nullptr;
                 }
                 break;
@@ -1040,7 +1040,7 @@ xio* xio::tree_root(bool skip_syntax)
         p = p->op;
     } while (p);
 
-    rem::push_debug(HERE) << "query tree ins returning node: " << x->t0->details() << rem::endl << x->t0->mark();
+    book::rem::push_debug(HERE) << "query tree ins returning node: " << x->t0->details() << book::rem::endl << x->t0->mark();
     return  x;
 }
 
@@ -1060,7 +1060,7 @@ xio* xio::to_right(xio* in_rhs)
               /
             rhs
         */
-        rem::push_debug() << t0->text() << " -> " << rhs->t0->text()
+        book::rem::push_debug() << t0->text() << " -> " << rhs->t0->text()
             << color::Lime << "tree_set_right "
             << color::White << " <- "
             << color::Yellow << in_rhs->t0->text();
@@ -1071,7 +1071,7 @@ xio* xio::to_right(xio* in_rhs)
     in_rhs->op = this;
     if (t0->is_binary())
     {
-        rem::push_debug(HERE) << xio::trace_connect_binary_operands(this);
+        book::rem::push_debug(HERE) << xio::trace_connect_binary_operands(this);
     }
     return in_rhs;
 }
@@ -1169,10 +1169,7 @@ void xio::dot_attr(stracc& a_out)
 }
 
 
-using xio::point;
-using xio::dim;
-using xio::rect;
-using xio::winbuffer;
+
 
 std::string xio::trace_connect_binary_operands(xio* x)
 {

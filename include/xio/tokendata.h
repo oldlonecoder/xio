@@ -24,7 +24,7 @@
 #pragma once
 
 #include <xio/types.h>
-#include <xio/diagnostic/expect.h>
+#include <logbook/expect.h>
 
 
 namespace xio

@@ -23,8 +23,8 @@
 #pragma once
 
 
-#include <xio/diagnostic/expect.h>
-#include <xio/xio/types.h>
+#include <logbook/expect.h>
+#include <xio/types.h>
 #include <memory>
 #include <vector>
 #include <map>

@@ -3,8 +3,8 @@
 //
 
 #include "xio/types.h"
-#include "logbook/strbrk.h"
-#include "logbook/stracc.h"
+#include "chrtools/strbrk.h"
+#include "chrtools/stracc.h"
 
 
 #include <map>
@@ -151,8 +151,8 @@ std::string name(T T_)
 T from_str(const std::string& Str )
 {
     T types = 0;
-    xio::strbrk words = Str.c_str();
-    xio::strbrk::token_t::list W;
+    strbrk words = Str.c_str();
+    strbrk::token_t::list W;
     (void) words(W, "/", false);
 
     for(auto I: W)

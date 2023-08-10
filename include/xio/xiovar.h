@@ -13,7 +13,7 @@
 
 #pragma once
 
-#include <xio/xio/xio.h>
+#include <xio/xio.h>
 
 
 
@@ -31,7 +31,7 @@ namespace xio
 class  XIO_PUBLIC xiovar : public xio
 {
     std::size_t  _index{0ul}; ///< index to get to the local instance;
-    xio::type::T _type{xio::type::F32}; ///< default s++ value type.
+    type::T _type{type::F32}; ///< default s++ value type.
     friend class xiobloc;
     friend class function_descriptor;
 

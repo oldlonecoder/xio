@@ -30,7 +30,7 @@
 #include <xio/alu.h>
 #include <xio/tokendata.h>
 #include <logbook/expect.h>
-#include <xio/diagnostic/object.h>
+#include <logbook/object.h>
 
 
 namespace xio
@@ -41,7 +41,7 @@ namespace xio
     @author copy;2022, oldlonecoder (Serge Lussier, lussier.serge@gmail.com)
 */
 
-class  XIO_PUBLIC xio : public object
+class  XIO_PUBLIC xio : public book::object
 {
     friend class compiler;
 protected:
@@ -99,9 +99,9 @@ public:
 
     xio::list::iterator query(xio* c);
 
-    rem::code append_child(xio* c);
-    virtual rem::code detach(xio* c);
-    virtual rem::code detach();
+    book::rem::code append_child(xio* c);
+    virtual book::rem::code detach(xio* c);
+    virtual book::rem::code detach();
 
 protected:
 
@@ -125,9 +125,9 @@ protected:
     xio* warning(xio*);
     //xio* Fatal(xio*);
 
-    static void make_error(rem::code ErrCode, xio* source_node, xio* input_node);
-    static void make_error(rem::code ErrCode, xio* source_node, token_data* input_token);
-    void header(xio* input_node, xio::source_location&& Loc = {});
+    static void make_error(book::rem::code ErrCode, xio* source_node, xio* input_node);
+    static void make_error(book::rem::code ErrCode, xio* source_node, token_data* input_token);
+    void header(xio* input_node, book::source_location&& Loc = {});
 
 
     // -------- Arithmetic binary tree INPUT: -----------------------------------

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2022 Serge Lussier <email>
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include <xio/xio/xiobloc.h>
+#include <xio/xiobloc.h>
 
 
 namespace xio
@@ -79,7 +79,7 @@ bool xiobloc::operator!=(const xiobloc& other) const
 /*!
     @brief Creates a new xiovar inside this xiobloc scope.
 
-    @return xiovar pointer or a rem::error/warning if the xiovar already exists in this xiobloc or in the parent scopes...
+    @return xiovar pointer or a book::book::rem::error/warning if the xiovar already exists in this xiobloc or in the parent scopes...
     @author @copy; 2022, Serge Lussier <oldlonecoder; bretzel> lussier.serge@gmail.com
 
     @note ( dev note: Make declaration rule syntax mandatory for creating any var, anywhere, thus prevent using new vars into middle of expression )
@@ -96,14 +96,14 @@ xiovar* xiobloc::new_var(token_data* info_)
         return _xiovars->back();
     }
 
-    rem::push_error() << " xiovar '" << color::Yellow << info_->text() << color::Reset << rem::exist;
+    book::rem::push_error() << " xiovar '" << color::Yellow << info_->text() << color::Reset << book::rem::exist;
     return nullptr;
 }
 
-rem::code xiobloc::detach(xio *x)
+book::rem::code xiobloc::detach(xio *x)
 {
     auto r = xio::detach(x);
-    if(r != rem::accepted) return r;
+    if(r != book::rem::accepted) return r;
 
     if(_instructions)
     {
@@ -114,7 +114,7 @@ rem::code xiobloc::detach(xio *x)
             delete _instructions;
             _instructions = nullptr;
         }
-        return rem::accepted;
+        return book::rem::accepted;
     }
 
     if(_xiovars)
@@ -126,39 +126,39 @@ rem::code xiobloc::detach(xio *x)
             delete _xiovars;
             _xiovars = nullptr;
         }
-        return rem::accepted;
+        return book::rem::accepted;
     }
 
     //...
     return r;
 }
 
-rem::code xiobloc::append_instruction(xio *x)
+book::rem::code xiobloc::append_instruction(xio *x)
 {
     if(!_instructions)
         _instructions = new xio::list;
     _instructions->push_back(x);
-    return rem::accepted;
+    return book::rem::accepted;
 }
 
 
-rem::code xiobloc::instanciate()
+book::rem::code xiobloc::instanciate()
 {
 
-    return rem::notimplemented;
+    return book::rem::notimplemented;
 }
 
 /*!
     @brief Creates a new xiovar inside this xiobloc scope.
 
-    @return xiovar pointer or a rem::error/warning if the xiovar already exists in this xiobloc or in the parent scopes...
+    @return xiovar pointer or a book::rem::error/warning if the xiovar already exists in this xiobloc or in the parent scopes...
     @author @copy; 2022, Serge Lussier <oldlonecoder; bretzel> lussier.serge@gmail.com
 
     @note ( dev note: Make declaration rule syntax mandatory for creating any var, anywhere, thus prevent using new vars into middle of expression )
  */
 xiovar* xiobloc::new_var(xio* var_)
 {
-    rem::push_message(HERE) << " Not there yet...Will be implemented."; ///< Not there yet; It depends on the arithmetics expression tree building...
+    book::rem::push_message(HERE) << " Not there yet...Will be implemented."; ///< Not there yet; It depends on the arithmetics expression tree building...
     return nullptr;
 }
 
@@ -187,7 +187,7 @@ alu xiobloc::jsr()
 {
     if(!_instructions)
     {
-        rem::push_warning() << " Executing xiobloc with no instructions. returning current alu value.";
+        book::rem::push_warning() << " Executing xiobloc with no instructions. returning current alu value.";
         return *acc;
     }
 

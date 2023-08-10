@@ -10,7 +10,7 @@
  *   Copyrights from authors other than Serge Lussier also apply here      *
  ***************************************************************************/
 
-#include <xio/xio/xiovar.h>
+#include <xio/xiovar.h>
 
 
 namespace xio
