@@ -121,8 +121,8 @@ _ReSharper*/
 # JustCode is a .NET coding add-in
 .JustCode
 
-# TeamCity is a build add-in
-_TeamCity*
+# xiomCity is a build add-in
+_xiomCity*
 
 # DotCover is a Code Coverage Tool
 *.dotCover
