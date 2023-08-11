@@ -27,9 +27,9 @@
 
 
 //-- Common includes for this and derived classes...
-#include <xio/alu.h>
-#include <xio/tokendata.h>
-#include <logbook/expect.h>
+#include "xio/alu.h"
+#include "xio/tokendata.h"
+//#include "logbook/expect.h"
 #include <logbook/object.h>
 
 
