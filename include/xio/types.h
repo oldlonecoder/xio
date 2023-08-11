@@ -7,7 +7,7 @@
 
 #include <cstdint>
 #include <string>
-#include "xio/public.h"
+#include <xio/public.h>
 
 
 namespace xio
