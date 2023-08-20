@@ -25,7 +25,7 @@
 namespace xio
 {
 
-    class token_data
+    class XIO_PUBLIC token_data
     {
     public:
         xio::mnemonic       c = mnemonic::Noop;
@@ -42,7 +42,7 @@ namespace xio
         using iterator = collection::iterator;
 
 
-        struct location_data
+        struct XIO_PUBLIC location_data
         {
             const char* begin = nullptr;
             const char* end = nullptr;
@@ -55,7 +55,7 @@ namespace xio
             std::string position() const;
         }  mLoc;
 
-        struct  Flag
+        struct XIO_PUBLIC Flag
         {
             uint8_t V : 1; ///< Pre-parsed as a value Token;
             uint8_t S : 1; ///< Post parsed as assignable

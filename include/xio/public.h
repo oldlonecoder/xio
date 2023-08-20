@@ -22,7 +22,7 @@
 //class __declspec(dllimport) std::thread;
 #   define _CRT_SECURE_NO_WARNINGS
 #   define _SCL_SECURE_NO_WARNINGS
-
+#   define NOMINMAX
 #   ifdef XIO_EXPORTS
 #       define XIO_PUBLIC __declspec(dllexport)
 #   else

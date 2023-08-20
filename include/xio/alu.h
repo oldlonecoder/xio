@@ -36,7 +36,7 @@ namespace xio
      *
      */
 
-struct  alu
+struct XIO_PUBLIC alu
 {
     using list = std::vector<alu>;
     using linkarray = std::vector<alu*>;
@@ -62,7 +62,7 @@ struct  alu
         piudt& operator=(std::string* v_) { t = v_; return *this;}
     }v = {0};
 
-    enum CNV {
+    enum XIO_PUBLIC CNV {
         DEG,
         RAD
     };

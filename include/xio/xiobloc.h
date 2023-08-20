@@ -86,7 +86,7 @@ private:
 
 };
 
-class  xiobloc : public xio
+class XIO_PUBLIC xiobloc : public xio
 {
 
 public:

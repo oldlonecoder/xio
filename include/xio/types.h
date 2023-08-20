@@ -75,7 +75,7 @@ constexpr T        Integer      = xio::type::I8|xio::type::I16|xio::type::I32|xi
 constexpr T        Unsigned     = xio::type::U8|xio::type::U16|xio::type::U32|xio::type::U64;
 
 
-std::string name(T T_);
+std::string XIO_PUBLIC name(T T_);
 T           from_str(const std::string&);
 
 } // namespace type
@@ -194,7 +194,7 @@ enum class mnemonic : uint16_t
     Noop
 };
 
-std::string mnemonic_name(mnemonic);
+std::string XIO_PUBLIC mnemonic_name(mnemonic);
 
 namespace distance
 {
@@ -336,7 +336,7 @@ constexpr T Unshadow      = ".::";
 constexpr T Catch         = "catch";
 constexpr T Throw         = "throw";
 
-mnemonic from_str(const std::string &M_);
+mnemonic XIO_PUBLIC  from_str(const std::string &M_);
 
 } // namespace lexem
 } // namespece xio

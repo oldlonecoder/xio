@@ -46,7 +46,7 @@ protected:
     token_data* t0 = nullptr; ///< Token informations.
 
     alu* acc = nullptr; ///< Arithmetic Logical Unit, or Accumulator, or whatever!
-    struct storage_attr {
+    struct XIO_PUBLIC storage_attr {
         uint8_t lvalue : 1; // 0 = rvalue non-assignable (such as const,leaf). 1= left value; assignable.
         uint8_t own : 1; // 1 = this xio owns its acc storage - so will delete it in the destructor.
         uint8_t leave : 1; // 1 = leave flag because this xio is a return statement.
