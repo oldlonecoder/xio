@@ -12,8 +12,8 @@
  *   ----------------------------------------------------------------------------------   *
  ******************************************************************************************/
 
-#include "lexer/lexer_color.h"
-#include "lexer/lexer.h"
+#include "xio/lexer/lexer_color.h"
+//#include "lexer/lexer.h"
 
 
     //Normal Types:

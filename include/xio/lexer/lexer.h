@@ -16,6 +16,7 @@
 #include <xio/tokendata.h>
 
 
+
 using book::rem;
 
 /*!
@@ -121,15 +122,15 @@ private:
 
 
     #pragma region Scanners
-
+public:
     using ScannerFn = rem::code(lexer::*)(xio::token_data&);
     using Input = std::pair<xio::type::T, lexer::ScannerFn>;
     using ScanTable = std::vector<lexer::Input>;
     using Scanner = lexer::ScannerFn;
-    static lexer::ScanTable scan_table;
+    
 
     static Scanner get_scanner(xio::token_data& token);
-
+private:
     rem::code input_binary_operator(xio::token_data&);
     rem::code input_default(xio::token_data&);
     rem::code input_unary_operator(xio::token_data&);

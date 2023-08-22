@@ -25,6 +25,11 @@ class xiobloc;
 
 class XIO_PUBLIC parser
 {
+    
+    token_data::collection* _tokens_stream{ nullptr };
+    const char* _filename_or_source{ nullptr };
+
+
 
     struct context_data
     {
@@ -35,7 +40,7 @@ class XIO_PUBLIC parser
         iterator cursor;
         iterator source_end;
 
-        const rule* current_rule{nullptr};
+        const ::xio::grammar::rule* current_rule{nullptr};
         xiobloc*    current_scope{nullptr};
 
         xio::list   build;
@@ -55,16 +60,39 @@ class XIO_PUBLIC parser
         context_data& operator=(context_data&& ) = default;
         context_data& operator=(context_data const& ) = default;
         context_data& operator=(token_data::collection* tkptr);
+        void assign_token_stream(token_data::collection* tkstream);
         // ---------------------------------------------
         //...
     };
 
     context_data::stack context_stack;
-    void push_context();
-    void pop_context();
-    void reset_context();
+    //void push_context();
+    //void pop_context();
+    //void reset_context();
+
+    //void accept();
+    //void reject();
+
+    // ------------------ parsers -Cannot be used yet-----------
+    book::rem::code parse_expr();
+    book::rem::code parse_rule(const std::string& rule_name);
+    // ---------------------------------------------------------
+
+public:
+
+    //----------- Public access & callables: -------------------
+
+    parser() = default;
+    parser(const parser&) = delete;
+    parser(parser&&) noexcept = delete;
+
+    parser(const char* source_or_filename, token_data::collection* token_stream);
+    parser(const char* source_or_filename, token_data::collection* token_stream, const std::string& use_this_rules_text);
 
 
+
+    parser& operator = (parser&&) noexcept = delete;
+    parser& operator = (const parser&) = delete;
 
 };
 

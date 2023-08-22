@@ -2,7 +2,7 @@
 // Created by slussier on 21-08-08.
 //
 
-#include "lexer/lexer.h"
+#include "xio/lexer/lexer.h"
 #include <array>
 #include <chrtools/Icons.h>
 
@@ -10,7 +10,7 @@
 
 using namespace xio;
 
-lexer::ScanTable  lexer::scan_table;
+lexer::ScanTable  scan_table;
 
 #pragma region InternalCursor
 
@@ -324,7 +324,7 @@ xio::type::T lexer::num_scanner::operator()() const
 
 lexer::Scanner lexer::get_scanner(token_data &token)
 {
-    for(const auto &scanners_tbl: lexer::scan_table)
+    for(const auto &scanners_tbl: scan_table)
     {
         if(token.s & scanners_tbl.first)
             return scanners_tbl.second;
@@ -751,9 +751,9 @@ rem::code lexer::Exec()
     if(!mConfig)
         return rem::rejected; // Use logger::push_error to queu error message and code...
     //...
-    if(lexer::scan_table.empty())
+    if(scan_table.empty())
     {
-        lexer::scan_table = {
+        scan_table = {
             {xio::type::Null, &lexer::input_default},
             {xio::type::Binary,    &lexer::input_binary_operator},
             {xio::type::Hex, &lexer::input_hex},
@@ -815,9 +815,9 @@ rem::code lexer::step_begin()
     if(!mConfig)
         return rem::rejected;//rem::codeFatal() << "lexer::Exec(): Config Data is missing crucial informations...";
 
-    if(lexer::scan_table.empty())
+    if(scan_table.empty())
     {
-        lexer::scan_table = {
+        scan_table = {
             {xio::type::Null, &lexer::input_default},
             {xio::type::Binary,  &lexer::input_binary_operator},
             {xio::type::Hex, &lexer::input_hex},

@@ -27,7 +27,7 @@ grammar::Dictionary grammar::grammar_dictionnary = {
     {'#', &grammar::set_directive},
 };
 
-rule::collection grammar::rules;
+grammar::rule::collection grammar::rules;
 
 std::string grammar_text = R"(
 module             : 'module' Id ';'.
@@ -380,14 +380,14 @@ book::rem::code grammar::set_oneof(strbrk::token_t::iterator &crs)
     return 0;
 }
 
-rule *grammar::query_rule(const std::string &a_id)
+grammar::rule *grammar::query_rule(const std::string &a_id)
 {
     auto i = rules.find(a_id);
     return i == rules.end() ? nullptr : i->second;
 }
 
 
-const rule *grammar::operator[](const std::string &r_id) const
+const grammar::rule *grammar::operator[](const std::string &r_id) const
 {
     book::rem::push_debug(HEREF) << " query: '" << r_id << "':\n";
     auto i = grammar::rules.find(r_id);
@@ -409,34 +409,34 @@ void grammar::destroy_rules()
     rules.clear();
 }
 
-term::term(rule *r, term_properties a_)
+grammar::term::term(rule *r, term_properties a_)
 {
     a = a_;
     object.r = r;
     _type = term::type::r;
 }
 
-term::term(xio::type::T a_sem, term_properties a_)
+grammar::term::term(xio::type::T a_sem, term_properties a_)
 {
     a = a_;
     object.sem = a_sem;
     _type = term::type::s;
 }
 
-term::term(mnemonic a_code, term_properties a_)
+grammar::term::term(mnemonic a_code, term_properties a_)
 {
     a = a_;
     object.m = a_code;
     _type = term::type::m;
 }
 
-term::term(const std::string &a_lexem)
+grammar::term::term(const std::string &a_lexem)
 {
     _type = term::type::m;
     object.m = lexem::from_str(a_lexem);
 }
 
-term::term(term &&_t)
+grammar::term::term(term &&_t)
 noexcept
 {
     //     logdebugfn << ":" << Ends;
@@ -446,14 +446,14 @@ noexcept
     swap(a, _t.a);
 }
 
-term::term(const term &_t)
+grammar::term::term(const grammar::term &_t)
 {
     object = _t.object;
     _type  = _t._type;
     a      = _t.a;
 }
 
-term &term::operator=(term &&_t) noexcept
+grammar::term & grammar::term::operator=(term &&_t) noexcept
 {
     using std::swap;
     swap(object, _t.object);
@@ -462,7 +462,7 @@ term &term::operator=(term &&_t) noexcept
     return *this;
 }
 
-term &term::operator=(const term &_t)
+grammar::term & grammar::term::operator=(const term &_t)
 {
     object = _t.object;
     _type  = _t._type;
@@ -470,7 +470,7 @@ term &term::operator=(const term &_t)
     return *this;
 }
 
-bool term::operator==(const term &t) const
+bool grammar::term::operator==(const term &t) const
 {
     if(_type != t._type)
         return false;
@@ -485,7 +485,7 @@ bool term::operator==(const term &t) const
     return false;
 }
 
-bool term::operator==(const token_data &t) const
+bool grammar::term::operator==(const token_data &t) const
 {
     switch(_type)
     {
@@ -497,7 +497,7 @@ bool term::operator==(const token_data &t) const
     return false;
 }
 
-bool term::operator!=(const token_data &t) const
+bool grammar::term::operator!=(const token_data &t) const
 {
     switch(_type)
     {
@@ -509,11 +509,11 @@ bool term::operator!=(const token_data &t) const
     return true;
 }
 
-term::~term()
+grammar::term::~term()
 {
 }
 
-std::string term::operator()() const
+std::string grammar::term::operator()() const
 {
     stracc str;
     str << a();
@@ -540,20 +540,20 @@ std::string term::operator()() const
     return str();
 }
 
-rule::rule(const std::string &a_id)
+grammar::rule::rule(const std::string &a_id)
 {
     _id = a_id;
     sequences.push_back({});
     seq = sequences.begin();
 }
 
-rule::~rule()
+grammar::rule::~rule()
 {
     sequences.clear();
     _id.clear();
 }
 
-rule &rule::new_sequence()
+grammar::rule & grammar::rule::new_sequence()
 {
     sequences.push_back(term_seq());
     seq = --sequences.end();
@@ -561,7 +561,7 @@ rule &rule::new_sequence()
     return *this;
 }
 
-rule &rule::operator|(rule *_r)
+grammar::rule & grammar::rule::operator|(rule *_r)
 {
     term t = term(_r);
     t.a = a;
@@ -570,7 +570,7 @@ rule &rule::operator|(rule *_r)
     return *this;
 }
 
-rule &rule::operator|(xio::type::T _t)
+grammar::rule & grammar::rule::operator|(xio::type::T _t)
 {
     term t = term(_t);
     t.a = a;
@@ -579,7 +579,7 @@ rule &rule::operator|(xio::type::T _t)
     return *this;
 }
 
-rule &rule::operator|(mnemonic _t)
+grammar::rule & grammar::rule::operator|(mnemonic _t)
 {
     term t = term(_t);
     t.a = a;
@@ -588,38 +588,38 @@ rule &rule::operator|(mnemonic _t)
     return *this;
 }
 
-term term_seq::next(term::const_iterator &it) const
+grammar::term grammar::term_seq::next(term::const_iterator &it) const
 {
     if(it != terms.end())
         ++it;
     return *it;
 }
 
-term_seq &term_seq::operator<<(term a_t)
+grammar::term_seq & grammar::term_seq::operator<<(term a_t)
 {
     terms.push_back(a_t);
     return *this;
 }
 
-term_seq &term_seq::operator<<(xio::type::T a_t)
+grammar::term_seq & grammar::term_seq::operator<<(xio::type::T a_t)
 {
     terms.emplace_back(a_t);
     return *this;
 }
 
-term_seq &term_seq::operator<<(mnemonic a_t)
+grammar::term_seq & grammar::term_seq::operator<<(mnemonic a_t)
 {
     terms.emplace_back(a_t);
     return *this;
 }
 
-term_seq &term_seq::operator<<(rule *a_t)
+grammar::term_seq & grammar::term_seq::operator<<(rule *a_t)
 {
     terms.emplace_back(a_t);
     return *this;
 }
 
-std::string term_properties::operator()()
+std::string grammar::term_properties::operator()()
 {
     stracc str;
     if(Z)
