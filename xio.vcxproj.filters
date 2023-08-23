@@ -48,6 +48,9 @@
     <ClInclude Include="include\xio\compiler\parser.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="include\xio\s++\spp.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\alu.cc">
@@ -78,6 +81,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="src\lexer\lexer_color.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\s++\spp.cc">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

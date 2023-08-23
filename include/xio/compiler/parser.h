@@ -28,6 +28,7 @@ class XIO_PUBLIC parser
     
     token_data::collection* _tokens_stream{ nullptr };
     const char* _filename_or_source{ nullptr };
+    std::string _rules_src;
 
 
 
