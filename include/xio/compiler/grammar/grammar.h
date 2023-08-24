@@ -32,6 +32,7 @@ class XIO_PUBLIC grammar
     struct rule;
     friend class ::xio::cc::parser;
     friend class xio_interpreter;
+public:
     /*!
         * @brief
         * @todo Holly shit!! Confused on X flag: accept state and Implicit-Rule Flag!!!! ^^ ?
@@ -113,7 +114,7 @@ class XIO_PUBLIC grammar
     struct XIO_PUBLIC term
     {
         mutable term_properties a = { 0, 0, 0, 0, 0 }; ///< default : punctual, strict match
-
+    
         enum class type : uint8_t
         {
             //term,

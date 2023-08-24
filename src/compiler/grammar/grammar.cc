@@ -13,6 +13,16 @@ namespace xio
 //
 
 
+std::map<grammar::term::type, color::type> colours = 
+{
+    {grammar::term::type::m, color::LightSteelBlue3},
+    {grammar::term::type::r, color::LightSalmon4},
+    {grammar::term::type::s, color::Lime},
+    {grammar::term::type::s, color::White}
+};
+
+
+
 
 
 grammar::Dictionary grammar::grammar_dictionnary = {
@@ -516,26 +526,27 @@ grammar::term::~term()
 std::string grammar::term::operator()() const
 {
     stracc str;
-    str << a();
-    switch(_type)
-    {
-        case term::type::m:
-        {
-            token_data tok = token_data()[object.m];
-            str << color::DarkOrange << tok.text(); // String (TEXT)
-        }
-            break;
-        case term::type::r:
-            // Can't happen but we never know: (nullptr)
-            if(object.r)
-                str << color::Black << object.r->_id;
-            break;
-        case term::type::s:
-            str << color::DarkMagenta <<  xio::type::name(object.sem);
-            break;
-        default:str << "nil";
-            break;
-    }
+    str << a() << colours[_type];
+
+    //switch(_type)
+    //{
+    //    case term::type::m:
+    //    {
+    //        token_data tok = token_data()[object.m];
+    //        str << color::DarkOrange << tok.text(); // String (TEXT)
+    //    }
+    //        break;
+    //    case term::type::r:
+    //        // Can't happen but we never know: (nullptr)
+    //        if(object.r)
+    //            str << color::Black << object.r->_id;
+    //        break;
+    //    case term::type::s:
+    //        str << color::DarkMagenta <<  xio::type::name(object.sem);
+    //        break;
+    //    default:str << "nil";
+    //        break;
+    //}
 
     return str();
 }
@@ -623,13 +634,13 @@ std::string grammar::term_properties::operator()()
 {
     stracc str;
     if(Z)
-        str << color::DarkGreen << '*';
+        str << color::LightCyan3 << '*';
     if(R)
-        str << color::DarkRed << '+';
+        str << color::White << '+';
     if(L)
         str << color::CadetBlue << '?';
     if(X)
-        str << color::DarkBlue << '#';
+        str << color::LighcoreateBlue << '#';
     return str();
 }
 

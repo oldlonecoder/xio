@@ -23,16 +23,26 @@ namespace xio::cc { class parser; }
 namespace xio::spp
 {
 
-class interpretr : public xiobloc
+class XIO_PUBLIC interpretr : public xiobloc
 {
 
-    
-
+    std::string name;
+    rbase::dictionary_t rt; ///< runtime base object dictionary.
 public:
 
     interpretr() = default;
     interpretr(const interpretr&) = delete;
-    interpretr(const std::string name, )
+    interpretr(const std::string interp_name);
+    ~interpretr() override;
+
+    interpretr& operator=(interpretr&&) noexcept = delete;
+    interpretr& operator=(const interpretr&) = delete;
+
+    // Quick arithmetic expression evaluator ( small source text ):
+    alu operator[](const std::string& expr);
+
+
+
 };
 
 }
