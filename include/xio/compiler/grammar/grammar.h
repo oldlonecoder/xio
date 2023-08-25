@@ -29,7 +29,9 @@ class parser;
 
 class XIO_PUBLIC grammar
 {
-    struct rule;
+public:
+    struct XIO_PUBLIC rule;
+private:
     friend class ::xio::cc::parser;
     friend class xio_interpreter;
 public:
@@ -216,7 +218,7 @@ public:
         //static term query(mnemonic M_);
     };
 
-    struct term_seq
+    struct XIO_PUBLIC term_seq
     {
         term_properties a = { 0, 0, 0, 0, 0 }; ///< default : punctual, strict match
 
@@ -255,7 +257,7 @@ public:
         term_seq& operator<<(rule* a_t);
     };
 
-    struct rule
+    struct XIO_PUBLIC rule
     {
         term_seq::collection sequences;
         // ---------------------------------------

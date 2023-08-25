@@ -143,12 +143,12 @@ std::string grammar::dump_sequence(const term_seq& seq)
 void grammar::dump()
 {
 
-    book::rem::out() << color::DarkRed2 << "%-15s" << "rule" <<  color::Black << " | terms sequence:";
+    book::rem::out() << color::Red4 << "%-15s" << "rule" <<  color::Black << " | terms sequence:";
     book::rem::out() << "-----------------------------------------------------------------------------------";
     stracc Out;
     for(const auto &rule: rules)
     {
-        Out << color::DarkRed2 << "%-15s" << rule.second->_id;
+        Out << color::Red4 << "%-15s" << rule.second->_id;
         for(auto seq: rule.second->sequences)
         {
             stracc SeqStr;
@@ -528,25 +528,25 @@ std::string grammar::term::operator()() const
     stracc str;
     str << a() << colours[_type];
 
-    //switch(_type)
-    //{
-    //    case term::type::m:
-    //    {
-    //        token_data tok = token_data()[object.m];
-    //        str << color::DarkOrange << tok.text(); // String (TEXT)
-    //    }
-    //        break;
-    //    case term::type::r:
-    //        // Can't happen but we never know: (nullptr)
-    //        if(object.r)
-    //            str << color::Black << object.r->_id;
-    //        break;
-    //    case term::type::s:
-    //        str << color::DarkMagenta <<  xio::type::name(object.sem);
-    //        break;
-    //    default:str << "nil";
-    //        break;
-    //}
+    switch(_type)
+    {
+        case term::type::m:
+        {
+            token_data tok = token_data()[object.m];
+            str << tok.text(); // String (TEXT)
+        }
+            break;
+        case term::type::r:
+            // Can't happen but we never know: (nullptr)
+            if(object.r)
+                str << object.r->_id;
+            break;
+        case term::type::s:
+            str <<  xio::type::name(object.sem);
+            break;
+        default:str << "nil";
+            break;
+    }
 
     return str();
 }
