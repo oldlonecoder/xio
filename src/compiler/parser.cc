@@ -26,6 +26,19 @@ namespace xio::cc
 {
 
 
+
+std::map<std::string, book::rem::code(parser::*)()> extern_parsers =
+{
+    {"expression", &parser::parse_expr},
+    {"functionid", nullptr},
+    {"newvar", nullptr},
+    {"obj_instance",nullptr},
+    {"objectid", nullptr},
+    {"var_id", nullptr}
+};
+
+
+
 /**
  * \brief parser::context_data 
  * 
@@ -57,23 +70,37 @@ void parser::context_data::assign_token_stream(token_data::collection* tkstream)
     source_end = tkstream->end();
 }
 
+
+parser::parser(const char* source_or_filename): _filename_or_source(source_or_filename)
+{}
+
+parser::parser(const char* source_or_filename, const std::string& use_this_rules_text):
+    _filename_or_source(source_or_filename),
+    _rules_src(use_this_rules_text)
+{}
+
+
+
+
+
+
 /**
  *  \brief parse_expr  Explicitely parses rule 'expression'.
- * 
+ *
  * \return book::rem::accepted, or book::rem::error if failed.
  * \author &copy; August 23, 2023; oldlonecoder, (serge.lussier@oldlonecoder.club)
 
  */
 book::rem::code parser::parse_expr()
 {
-    
+
     return book::rem::notimplemented;
 }
 
 
 /**
- * \brief parse_rule 
- * 
+ * \brief parse_rule
+ *
  * \param rule_name
  * \return book::rem::accepted, or book::rem::rejected if <i>rule name</i> does not matches the code.
  * \author &copy; August 23, 2023; oldlonecoder, (serge.lussier@oldlonecoder.club)
@@ -81,22 +108,39 @@ book::rem::code parser::parse_expr()
  */
 book::rem::code parser::parse_rule(const std::string& rule_name)
 {
+    grammar::rule* rule = grammar::rules[rule_name];
+    if (!rule)
+    {
+        book::rem::push_error() << " the rule identified by '" << rule_name << "' doe not exist.";
+        return book::rem::notexist;
+    }
+
+    if (rule->a.is_extern())
+    {
+        for (auto& [rid, fn] : extern_parsers)
+        {
+            if (rid == rule_name)
+            {
+                if (!fn)
+                {
+                    book::rem::push_error() << "[parser rule]: The external rule identified by '" << rule->a() << color::Reset << '\'' << color::Yellow << rule_name << color::Reset << "' is " << book::rem::notimplemented;
+                    return book::rem::notimplemented;
+                }
+                return (this->*fn)();
+            }
+        }
+        book::rem::push_error() << "[parser rule]: The external rule identified by '" << color::Yellow << rule_name << color::Reset << "' is out of bounds : " << book::rem::notexist;
+    }
+
+    //...
+    book::rem::push_message() << "[parser rule]: The sequential rule identified by " << rule->a() << color::Reset << '\''
+        << color::Yellow 
+        << rule_name
+        << color::Reset << "' is" 
+        << book::rem::notimplemented;
+
     return book::rem::notimplemented;
 }
-
-parser::parser(const char* source_or_filename, token_data::collection* token_stream):
-    _filename_or_source(source_or_filename),
-    _tokens_stream(token_stream)
-{}
-
-parser::parser(const char* source_or_filename, token_data::collection* token_stream, const std::string& use_this_rules_text):
-    _filename_or_source(source_or_filename),
-    _tokens_stream(token_stream),
-    _rules_src(use_this_rules_text)
-{}
-
-
-
 
 
 }

@@ -103,6 +103,11 @@ public:
         {
             return S != 0;
         }
+        [[nodiscard]] bool is_extern()
+        {
+            return X == 1;
+        }
+
         void accept()
         {
             S = 1;

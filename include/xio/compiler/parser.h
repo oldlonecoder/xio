@@ -26,11 +26,11 @@ class xiobloc;
 class XIO_PUBLIC parser
 {
     
-    token_data::collection* _tokens_stream{ nullptr };
+    token_data::collection _tokens_stream;
     const char* _filename_or_source{ nullptr };
     std::string _rules_src;
 
-
+    
 
     struct context_data
     {
@@ -74,10 +74,7 @@ class XIO_PUBLIC parser
     //void accept();
     //void reject();
 
-    // ------------------ parsers -Cannot be used yet-----------
-    book::rem::code parse_expr();
-    book::rem::code parse_rule(const std::string& rule_name);
-    // ---------------------------------------------------------
+
 
 public:
 
@@ -87,13 +84,19 @@ public:
     parser(const parser&) = delete;
     parser(parser&&) noexcept = delete;
 
-    parser(const char* source_or_filename, token_data::collection* token_stream);
-    parser(const char* source_or_filename, token_data::collection* token_stream, const std::string& use_this_rules_text);
+    parser(const char* source_or_filename);
+    parser(const char* source_or_filename, const std::string& use_this_rules_text);
 
 
 
     parser& operator = (parser&&) noexcept = delete;
     parser& operator = (const parser&) = delete;
+
+
+    // ------------------ parsers -Cannot be used yet-----------
+    book::rem::code parse_expr();
+    book::rem::code parse_rule(const std::string& rule_name);
+    // ---------------------------------------------------------
 
 };
 

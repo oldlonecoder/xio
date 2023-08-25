@@ -26,6 +26,10 @@ alu interpretr::operator[](const std::string& expr)
     grammar g;
     g.build();
     g.dump();
+    cc::parser parser;
+    auto R = parser.parse_rule("expression");
+
+
     return 0;
 }
 
