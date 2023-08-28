@@ -45,7 +45,7 @@ public:
         uint8_t Z : 1; ///< Zero or one (optional * )
         uint8_t R : 1; ///< Repeat      (        + )
         uint8_t L : 1; ///< List        (one of  ~ ?)
-        uint8_t X : 1; ///< eXclude    ( Exclude from normal ast build : ast Parser term)
+        uint8_t X : 1; ///< parserctrl    ( Parser to takes control of this rule: ast Parser term)
         uint8_t S : 1; ///< State!! 0 = unset/rejected; 1 = set/accepted !!!
 
         term_properties& operator|(term_properties const& _)
@@ -103,7 +103,7 @@ public:
         {
             return S != 0;
         }
-        [[nodiscard]] bool is_extern()
+        [[nodiscard]] bool is_parserctrl()
         {
             return X == 1;
         }
@@ -383,7 +383,7 @@ public:
         book::rem::code set_optional(strbrk::token_t::iterator& crs);
         book::rem::code enter_litteral(strbrk::token_t::iterator& crs);
         book::rem::code set_oneof(strbrk::token_t::iterator& crs);
-        book::rem::code set_directive(strbrk::token_t::iterator& crs);
+        book::rem::code set_parserctrl(strbrk::token_t::iterator& crs);
 };
 
 }

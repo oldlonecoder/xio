@@ -115,7 +115,7 @@ book::rem::code parser::parse_rule(const std::string& rule_name)
         return book::rem::notexist;
     }
 
-    if (rule->a.is_extern())
+    if (rule->a.is_parserctrl())
     {
         for (auto& [rid, fn] : extern_parsers)
         {

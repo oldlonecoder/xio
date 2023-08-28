@@ -34,7 +34,7 @@ grammar::Dictionary grammar::grammar_dictionnary = {
     {'?', &grammar::set_oneof}, // One of
     {'\'', &grammar::enter_litteral},
     {'"', &grammar::enter_litteral},
-    {'#', &grammar::set_directive},
+    {'#', &grammar::set_parserctrl},
 };
 
 grammar::rule::collection grammar::rules;
@@ -96,8 +96,9 @@ book::rem::code grammar::build()
         << color::White << "\n----------------------------------\n";
 
     _words = _text();
+    book::rem::push_debug() << "Tokenizing rules source text:";
     std::size_t   count = _words(tokens, ":.+*?#", true);
-    book::rem::push_debug() << "building words list...";
+    
     auto crs=tokens.begin();
     // for(; crs != tokens.end(); crs++)
     //     words.push_back(s());
@@ -108,12 +109,14 @@ book::rem::code grammar::build()
         return book::rem::empty;
     }
 
-    book::rem::push_debug() << tokens.size() << " words.";
+    book::rem::push_debug() << tokens.size() << " tokens.";
     _state = st_begin;
+    book::rem::push_debug(HERE) << " state machine set to '" << color::Yellow << "st_begin" << color::Reset << "'";
     do
     {
         book::rem::code r;
         auto      p = grammar::grammar_dictionnary.find((*crs)().c_str()[0]);
+
         if(p != grammar::grammar_dictionnary.end())
         {
             r = (this->*(p->second))(crs);
@@ -126,7 +129,24 @@ book::rem::code grammar::build()
             return r;
     }
     while(crs != tokens.end());
-    book::rem::push_debug() << ":";
+    
+    book::rem::push_message() << " finalizing rules:";
+    
+    for (auto& [rule_name, rule_addr] : rules)
+    {
+        stracc str;
+        str << "'" << color::Yellow << rule_name << color::Reset << "' :";
+        if (rule_addr->empty())
+        {
+            str << " set to direct parser control";
+            rule_addr->a.X = 1;
+        }
+        else
+            str << "has " << color::Yellow << rule_addr->sequences.size() << color::Reset << " sequence(s) of terms ( and / or sub rules).";
+        book::rem::push_info() << str;
+    }
+        
+    book::rem::push_message() << "done building rules...";
     return book::rem::accepted;
 }
 
@@ -175,7 +195,7 @@ book::rem::code grammar::parse_identifier(strbrk::token_t::iterator  &crs)
             {
                 if(!r->empty())
                 {
-                    book::rem::push_fatal() << " rule, named: " << (*crs)() << " already exists in the context of a new rule definition.";
+                    book::rem::push_fatal() << " rule, identified by '" << color::Yellow << (*crs)() << color::Red4 <<" already exists in the context of a new rule definition = " << book::rem::rejected;
                     return book::rem::rejected;
                 }
                 _rule = r;
@@ -186,7 +206,6 @@ book::rem::code grammar::parse_identifier(strbrk::token_t::iterator  &crs)
                 _rule = new rule(rule_name);
                 _rule->a = a;
                 rules[rule_name] = _rule;
-                book::rem::push_debug(HERE) << "new rule :'" << color::Yellow << _rule->name() << ::color::Reset << "' attr:" << _rule->a();
             }
             a.Reset();
             _state = st_init_rule; //  expect ':' as next token in main loop.
@@ -228,7 +247,6 @@ book::rem::code grammar::parse_identifier(strbrk::token_t::iterator  &crs)
                 _rule->a = a;
                 _state = st_seq; //  expect ':' as next token in main loop.
                 (*_rule) | r;
-                book::rem::push_debug(HERE) << "new rule :'" << color::Yellow << _rule->name() << ::color::Reset << "' attr:" << _rule->a();
                 a.Reset();
             }
             break;
@@ -300,7 +318,7 @@ book::rem::code grammar::set_repeat(strbrk::token_t::iterator &crs)
     return book::rem::accepted;
 }
 
-book::rem::code grammar::set_directive(strbrk::token_t::iterator &crs)
+book::rem::code grammar::set_parserctrl(strbrk::token_t::iterator &crs)
 {
     !a;
     _state = st_option;
@@ -393,9 +411,10 @@ book::rem::code grammar::set_oneof(strbrk::token_t::iterator &crs)
     return 0;
 }
 
-grammar::rule *grammar::query_rule(const std::string &a_id)
+grammar::rule *grammar::query_rule(const std::string &rule_id)
 {
-    auto i = rules.find(a_id);
+    //book::rem::push_debug(HERE) << " '" << color::Yellow << rule_id << color::Reset << "':";
+    auto i = rules.find(rule_id);
     return i == rules.end() ? nullptr : i->second;
 }
 
@@ -577,7 +596,7 @@ grammar::rule & grammar::rule::new_sequence()
 
 grammar::rule & grammar::rule::operator|(rule *_r)
 {
-    term t = term(_r);
+    term t = term(_r, _r->a);
     t.a = a;
     a.Reset();
     *seq << t;
