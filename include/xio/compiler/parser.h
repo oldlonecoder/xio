@@ -95,6 +95,7 @@ public:
 
     // ------------------ parsers -Cannot be used yet-----------
     book::rem::code parse_expr();
+    xio* make_instruction(token_data* token);
     book::rem::code parse_rule(const std::string& rule_name);
     // ---------------------------------------------------------
 

@@ -143,4 +143,21 @@ book::rem::code parser::parse_rule(const std::string& rule_name)
 }
 
 
+
+/**
+ * \brief make_instruction callback function invoked from xio::input.
+ * 
+ * Will create the proper instance of the instruction from the token_data infos.
+ * \param token  pointer to the current token. 
+ * \return pointer to newly created xio;
+ * \note As of 2023-08-28, only xio's POD variable types are created on identifier token restricted to arithmetic expressions.
+ * \author &copy; August 28, 2023; oldlonecoder, (serge.lussier@oldlonecoder.club)
+ */
+xio* parser::make_instruction(token_data* token)
+{
+        
+    return nullptr;
+}
+
+
 }

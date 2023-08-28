@@ -9,7 +9,7 @@ auto main(int argc, char** argv) -> int
  
     
     interpretr i;
-    auto alu = i["z = Δx + 4ac;"];
+    auto alu = i["z = ax + 4ac;"];
 
     rem::push_message() << rem::success << "\\O/ !!!";
 
