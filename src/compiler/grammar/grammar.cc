@@ -184,7 +184,9 @@ book::rem::code grammar::parse_identifier(strbrk::token_t::iterator  &crs)
             {
                 std::string rule_name = (*crs)();
                 _rule = new rule(rule_name);
+                _rule->a = a;
                 rules[rule_name] = _rule;
+                book::rem::push_debug(HERE) << "new rule :'" << color::Yellow << _rule->name() << ::color::Reset << "' attr:" << _rule->a();
             }
             a.Reset();
             _state = st_init_rule; //  expect ':' as next token in main loop.
@@ -226,6 +228,7 @@ book::rem::code grammar::parse_identifier(strbrk::token_t::iterator  &crs)
                 _rule->a = a;
                 _state = st_seq; //  expect ':' as next token in main loop.
                 (*_rule) | r;
+                book::rem::push_debug(HERE) << "new rule :'" << color::Yellow << _rule->name() << ::color::Reset << "' attr:" << _rule->a();
                 a.Reset();
             }
             break;
