@@ -71,12 +71,13 @@ void parser::context_data::assign_token_stream(token_data::collection* tkstream)
 }
 
 
-parser::parser(const char* source_or_filename): _filename_or_source(source_or_filename)
+parser::parser(xiobloc* bloc, const char* source_or_filename): _filename_or_source(source_or_filename),_bloc(bloc)
 {}
 
-parser::parser(const char* source_or_filename, const std::string& use_this_rules_text):
+parser::parser(xiobloc* bloc, const char* source_or_filename, const std::string& use_this_rules_text):
     _filename_or_source(source_or_filename),
-    _rules_src(use_this_rules_text)
+    _rules_src(use_this_rules_text),
+    _bloc(bloc)
 {}
 
 

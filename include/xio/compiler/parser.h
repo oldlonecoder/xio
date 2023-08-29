@@ -29,7 +29,7 @@ class XIO_PUBLIC parser
     token_data::collection _tokens_stream;
     const char* _filename_or_source{ nullptr };
     std::string _rules_src;
-
+    xiobloc* _bloc{ nullptr };
     
 
     struct context_data
@@ -84,8 +84,8 @@ public:
     parser(const parser&) = delete;
     parser(parser&&) noexcept = delete;
 
-    parser(const char* source_or_filename);
-    parser(const char* source_or_filename, const std::string& use_this_rules_text);
+    parser(xiobloc* bloc, const char* source_or_filename);
+    parser(xiobloc* bloc, const char* source_or_filename, const std::string& use_this_rules_text);
 
 
 
