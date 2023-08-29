@@ -25,8 +25,9 @@ add_library(
         include/${TargetName}/xiovar.h                  src/xiovar.cc
         include/${TargetName}/lexer/lexer.h             src/lexer/lexer.cc
         include/${TargetName}/lexer/lexer_color.h       src/lexer/lexer_color.cc
-        include/${TargetName}/compiler/grammar/grammar.h        src/compiler/grammar/grammar.cc
-        include/${TargetName}/compiler/parser.h                 src/compiler/parser.cc
+        include/${TargetName}/compiler/grammar/grammar.h src/compiler/grammar/grammar.cc
+        include/${TargetName}/compiler/parser.h         src/compiler/parser.cc
+        include/${TargetName}/s++/spp.h                 src/s++/spp.cc
         # ...Will grow...
 )
 
@@ -72,3 +73,4 @@ add_custom_command(
     COMMAND xargs rm -vf < install_manifest.txt || echo Nothing in
             install_manifest.txt to be uninstalled!
 )
+add_subdirectory(devprogapp)
