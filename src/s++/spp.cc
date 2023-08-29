@@ -15,9 +15,9 @@ interpretr::~interpretr()
 
 /**
  * \brief operator[] Quick arithmetic expression evaluator (small source code)
- * 
+ *
  * \param expr
- * \return 
+ * \return
  * \author &copy; August 24, 2023; oldlonecoder, (serge.lussier@oldlonecoder.club)
 
  */
@@ -28,8 +28,6 @@ alu interpretr::operator[](const std::string& expr)
     g.dump();
     cc::parser parser;
     auto R = parser.parse_rule("expression");
-
-
     return 0;
 }
 
