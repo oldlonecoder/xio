@@ -65,7 +65,9 @@ parser::parser(xiobloc* bloc, const char* source_or_filename, const std::string&
  */
 book::rem::code parser::parse_expr()
 {
-
+    
+    book::rem::push_debug(HERE) << " At last! We got here \\O/;)";
+    
     return book::rem::notimplemented;
 }
 
@@ -127,9 +129,51 @@ book::rem::code parser::parse_rule(const std::string& rule_name)
  */
 xio* parser::make_instruction(token_data* token)
 {
-
+    
     return nullptr;
 }
 
 
+
+
+
+
+// ------------------------------------- parser::context -----------------------------------------------
+parser::context::context()
+{
+    
+}
+
+parser::context::context(context &&cx) noexcept
+{
+    
+}
+
+parser::context::context(const context &cx)
+{
+    
+}
+
+parser::context::context(xiobloc *blk, token_data::iterator start, token_data::iterator i_end, token_data::iterator i_endstream)
+{
+    
+}
+
+parser::context::~context()
+{
+    
+}
+
+parser::context &parser::context::operator =(parser::context &&cx) noexcept
+{
+    return *this;
+}
+
+parser::context &parser::context::operator = (parser::context const & cx)
+{
+    
+}
+
+
+// ------------------------------------- parser::context ^^^--------------------------------------------
 }

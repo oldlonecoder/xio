@@ -38,8 +38,27 @@ class XIO_PUBLIC parser
 
     //void accept();
     //void reject();
-
-
+    
+    struct context
+    {
+        token_data::iterator start, end_stream, end, cur;
+        xiobloc*             bloc{nullptr};
+        ::xio::type::T       current_type = ::xio::type::Number;
+        ///...
+        
+        context();
+        context(parser::context&& cx) noexcept;
+        context(parser::context const& cx);
+        
+        context(xiobloc* blk, token_data::iterator start, token_data::iterator i_end, token_data::iterator i_endstream);
+        
+        ~context();
+        
+        context& operator = (context&& cx) noexcept;
+        context &operator = (context const & cx);
+        
+        
+    };
 
 public:
 
