@@ -21,10 +21,7 @@
 
 namespace xio
 {
-namespace cc 
-{
-class parser;
-}
+
 
 
 class XIO_PUBLIC grammar
@@ -32,8 +29,8 @@ class XIO_PUBLIC grammar
 public:
     struct XIO_PUBLIC rule;
 private:
-    friend class ::xio::cc::parser;
-    friend class xio_interpreter;
+    friend class parser;
+    friend class interpretr;
 public:
     /*!
         * @brief
@@ -121,7 +118,7 @@ public:
     struct XIO_PUBLIC term
     {
         mutable term_properties a = { 0, 0, 0, 0, 0 }; ///< default : punctual, strict match
-    
+
         enum class type : uint8_t
         {
             //term,

@@ -32,7 +32,7 @@ public:
 
     interpretr() = default;
     interpretr(const interpretr&) = delete;
-    interpretr(const std::string interp_name);
+    interpretr(const std::string& interp_name);
     ~interpretr() override;
 
     interpretr& operator=(interpretr&&) noexcept = delete;

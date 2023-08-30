@@ -11,7 +11,7 @@
  ***************************************************************************/
 
 
- 
+
 
 /**
  * \file parser.cc
@@ -22,7 +22,8 @@
 
 #include <xio/compiler/parser.h>
 
-namespace xio::cc
+namespace xio
+
 {
 
 
@@ -39,36 +40,6 @@ std::map<std::string, book::rem::code(parser::*)()> extern_parsers =
 
 
 
-/**
- * \brief parser::context_data 
- * 
- * \ingroup compiler
- * 
- * \param token_stream
- * \author &copy; August 23, 2023; oldlonecoder, (serge.lussier@oldlonecoder.club)
-
- */
-parser::context_data::context_data(token_data::collection* token_stream)
-{
-    assign_token_stream(token_stream);
-}
-
-parser::context_data::~context_data()
-{
-}
-
-parser::context_data& parser::context_data::operator=(token_data::collection* tkptr)
-{
-    assign_token_stream(tkptr);
-    return *this;
-
-}
-
-void parser::context_data::assign_token_stream(token_data::collection* tkstream)
-{
-    begin = cursor = end = tkstream->begin();
-    source_end = tkstream->end();
-}
 
 
 parser::parser(xiobloc* bloc, const char* source_or_filename): _filename_or_source(source_or_filename),_bloc(bloc)
@@ -135,9 +106,9 @@ book::rem::code parser::parse_rule(const std::string& rule_name)
 
     //...
     book::rem::push_message() << "[parser rule]: The sequential rule identified by " << rule->a() << color::Reset << '\''
-        << color::Yellow 
+        << color::Yellow
         << rule_name
-        << color::Reset << "' is" 
+        << color::Reset << "' is"
         << book::rem::notimplemented;
 
     return book::rem::notimplemented;
@@ -147,16 +118,16 @@ book::rem::code parser::parse_rule(const std::string& rule_name)
 
 /**
  * \brief make_instruction callback function invoked from xio::input.
- * 
+ *
  * Will create the proper instance of the instruction from the token_data infos.
- * \param token  pointer to the current token. 
+ * \param token  pointer to the current token.
  * \return pointer to newly created xio;
  * \note As of 2023-08-28, only xio's POD variable types are created on identifier token restricted to arithmetic expressions.
  * \author &copy; August 28, 2023; oldlonecoder, (serge.lussier@oldlonecoder.club)
  */
 xio* parser::make_instruction(token_data* token)
 {
-        
+
     return nullptr;
 }
 
