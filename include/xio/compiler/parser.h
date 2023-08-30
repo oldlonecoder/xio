@@ -57,9 +57,13 @@ class XIO_PUBLIC parser
         context& operator = (context&& cx) noexcept;
         context &operator = (context const & cx);
         
+        void accept(parser::context& cx);
+        void reject(parser::context& cx);
         
     };
-
+    
+    parser::context ctx;
+    
 public:
 
     //----------- Public access & callables: -------------------
@@ -75,10 +79,12 @@ public:
 
     parser& operator = (parser&&) noexcept = delete;
     parser& operator = (const parser&) = delete;
-
-
+    
     // ------------------ parsers -Cannot be used yet-----------
-    book::rem::code parse_expr();
+    book::rem::code parse_expression();
+    book::expect<alu> parse_expr(xiobloc* blk, const char* expr_text);
+    
+    // -------------------Cannot be used yet--------------------
     xio* make_instruction(token_data* token);
     book::rem::code parse_rule(const std::string& rule_name);
     // ---------------------------------------------------------

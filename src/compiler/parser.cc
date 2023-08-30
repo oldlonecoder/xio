@@ -51,6 +51,33 @@ parser::parser(xiobloc* bloc, const char* source_or_filename, const std::string&
     _bloc(bloc)
 {}
 
+book::expect<alu> parser::parse_expr(xiobloc *blk, const char *expr_text)
+{
+    _bloc = blk; ///< Interpreter's bloc address likelly...
+    lexer lex;
+    lex.config() =
+    {
+        expr_text,
+        &_tokens_stream
+    };
+    
+    auto R = lex();
+    if(R!=book::rem::accepted)
+    {
+        return book::rem::push_error() << R;
+    }
+    
+    ctx = context(_bloc, _tokens_stream.begin(), _tokens_stream.begin(), _tokens_stream.end());
+    book::rem::push_debug(HERE) << " parser::context initialized : dumping tokens (coloured) details";
+    for(auto & token: _tokens_stream)
+    {
+        lexer_color lc;
+        book::rem::out() << lc.mark(token);
+    }
+    rem::push_debug() << " returning dummy float alu";
+    return alu(1.42f);
+}
+
 
 
 
@@ -63,7 +90,7 @@ parser::parser(xiobloc* bloc, const char* source_or_filename, const std::string&
  * \author &copy; August 23, 2023; oldlonecoder, (serge.lussier@oldlonecoder.club)
 
  */
-book::rem::code parser::parse_expr()
+book::rem::code parser::parse_expression()
 {
     
     book::rem::push_debug(HERE) << " At last! We got here \\O/;)";
@@ -139,6 +166,7 @@ xio* parser::make_instruction(token_data* token)
 
 
 // ------------------------------------- parser::context -----------------------------------------------
+
 parser::context::context()
 {
     
@@ -154,10 +182,17 @@ parser::context::context(const context &cx)
     
 }
 
-parser::context::context(xiobloc *blk, token_data::iterator start, token_data::iterator i_end, token_data::iterator i_endstream)
-{
-    
-}
+
+/*!
+ * \brief parser::context::context New context with specific iterators and initial scope bloc.
+ * \param blk
+ * \param start
+ * \param i_end
+ * \param i_endstream
+ */
+parser::context::context(xiobloc *blk, token_data::iterator start, token_data::iterator i_end, token_data::iterator i_endstream):
+    bloc(blk), start(start), end(i_end), end_stream(i_endstream)
+{}
 
 parser::context::~context()
 {
@@ -166,14 +201,36 @@ parser::context::~context()
 
 parser::context &parser::context::operator =(parser::context &&cx) noexcept
 {
+    
     return *this;
 }
 
+
 parser::context &parser::context::operator = (parser::context const & cx)
+{
+    return *this;
+}
+
+
+// ------------------------------------- parser::context ^^^--------------------------------------------
+
+
+
+
+void parser::context::accept(context &cx)
+{
+    
+}
+
+void parser::context::reject(context &cx)
 {
     
 }
 
 
-// ------------------------------------- parser::context ^^^--------------------------------------------
 }
+
+
+
+
+
