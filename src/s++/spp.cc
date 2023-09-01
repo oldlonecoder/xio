@@ -27,9 +27,19 @@ alu interpretr::operator[](const std::string& expr)
     g.build();
     g.dump();
     parser expr_parser(this, expr.c_str());
-    auto R = expr_parser.parse_rule("expression");
-    
-    return 0;
+    auto R = expr_parser.parse_expr(this, expr.c_str());
+    if(!R)
+      return alu(1.42f);
+    return *R;
+}
+
+void interpretr::syntax(token_data* token_ptr, token_data::collection const& stream)
+{
+    lexer_color lc;
+    std::string code = token_ptr->text_line();
+    auto token = token_ptr->back_to_startof_line(stream);
+    lc.process(code, _tokens_stream);
+    book::rem::push_syntax() << " in arithmetic expression parsing context. " << book::rem::endl << lc.mark(*token);
 }
 
 

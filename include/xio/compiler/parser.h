@@ -38,32 +38,33 @@ class XIO_PUBLIC parser
 
     //void accept();
     //void reject();
-    
+
     struct context
     {
         token_data::iterator start, end_stream, end, cur;
         xiobloc*             bloc{nullptr};
         ::xio::type::T       current_type = ::xio::type::Number;
         ///...
-        
+
         context();
         context(parser::context&& cx) noexcept;
         context(parser::context const& cx);
-        
+
         context(xiobloc* blk, token_data::iterator start, token_data::iterator i_end, token_data::iterator i_endstream);
-        
+
         ~context();
-        
+
         context& operator = (context&& cx) noexcept;
         context &operator = (context const & cx);
-        
+
         void accept(parser::context& cx);
         void reject(parser::context& cx);
-        
+        token_data* token() { return &(*cur); }
+        bool operator++(int);
     };
-    
+
     parser::context ctx;
-    
+
 public:
 
     //----------- Public access & callables: -------------------
@@ -79,16 +80,18 @@ public:
 
     parser& operator = (parser&&) noexcept = delete;
     parser& operator = (const parser&) = delete;
-    
+
     // ------------------ parsers -Cannot be used yet-----------
     book::rem::code parse_expression();
     book::expect<alu> parse_expr(xiobloc* blk, const char* expr_text);
-    
+
     // -------------------Cannot be used yet--------------------
-    xio* make_instruction(token_data* token);
+    ::xio::xio* make_instruction(token_data* token);
     book::rem::code parse_rule(const std::string& rule_name);
     // ---------------------------------------------------------
 
+  private:
+    xio* parse_expr_keyword(token_data*);
 };
 
 }
