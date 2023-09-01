@@ -76,9 +76,9 @@ public:
 
 
 
-    using maker = std::function<xio* (token_data*)>;
+    using maker = std::function<::xio::xio* (token_data*)>;
     alu acu() { return (acc ? *acc : alu(0.0f)); }
-
+    alu* aluptr() { return acc; }
     virtual alu jsr(); // "Jump Subroutine" :)
 
 
@@ -151,7 +151,7 @@ public:
 
 #pragma endregion INPUT
 
-    static xio* begin(xio* parent_, token_data* token);
+    static xio* begin(xio* parent_, token_data* token, xio::maker xmk=nullptr);
     xio* to_right(xio* in_rhs);
     xio* to_left(xio* in_lhs);
 

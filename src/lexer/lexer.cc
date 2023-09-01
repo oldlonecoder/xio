@@ -1,6 +1,14 @@
-//
-// Created by slussier on 21-08-08.
-//
+/***************************************************************************
+ *   Copyright (C) 1965/1987/2023 by Serge Lussier                         *
+ *   serge.lussier@oldlonecoder.club                                       *
+ *                                                                         *
+ *                                                                         *
+ *   Unless otherwise specified, all code in this project is written       *
+ *   by the author (Serge Lussier)                                         *
+ *   and no one else then not even {copilot, chatgpt, or any other AI}     *
+ *   --------------------------------------------------------------------- *
+ *   Copyrights from authors other than Serge Lussier also apply here      *
+ ***************************************************************************/
 
 #include "xio/lexer/lexer.h"
 #include <array>
@@ -695,12 +703,21 @@ rem::code lexer::Push(token_data &atoken)
     atoken.mLoc.offset = static_cast<ptrdiff_t>(atoken.mLoc.begin - src_cursor.B);
     src_cursor.C += sz;
     src_cursor.Col += static_cast<int>(sz);
+
+    // ------------------- Add link pointers for direct access to the previous and next instance in the 'list/array/vector'---------
+    if(!mConfig.Tokens->empty())
+    {
+        auto& tok = mConfig.Tokens->back(); // First or last inserted token.
+        tok.__next = &atoken;
+        atoken.__prev = &tok;
+    }
+    // -----------------------------------------------------------------------------------------------------------------------------
+
     mConfig.Tokens->push_back(atoken);
     src_cursor.skip_ws();
-    //rem::codeDebug(__PRETTY_FUNCTION__) << "lexer::Push: Size of Token:" << sz << ", token_data " << atoken.details(true);
-    //rem::codeDebug() << "Cursor(Next Token):" << mCursor.Location() << '\n' << mCursor.mark();
     return rem::accepted;
 }
+
 
 rem::code lexer::operator()()
 {

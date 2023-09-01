@@ -97,9 +97,11 @@ bool xiobloc::operator!=(const xiobloc& other) const
  */
 xiovar* xiobloc::new_var(token_data* info_)
 {
+    book::rem::push_debug() << "xiobloc::new_var(" << color::Yellow << info_->text() << color::Reset << "):";
     auto* v = query_var(info_->text());
     if(!v)
     {
+        book::rem::push_info() << "xiobloc::new_var(" << color::Yellow << info_->text() << color::Reset << ") new local variable.";
         if(!_xiovars) _xiovars = new xiovar::list;
         _xiovars->push_back(new xiovar(this, info_));
         xiovar* xv = _xiovars->back();
@@ -107,7 +109,7 @@ xiovar* xiobloc::new_var(token_data* info_)
         return _xiovars->back();
     }
 
-    book::rem::push_error() << " xiovar '" << color::Yellow << info_->text() << color::Reset << book::rem::exist;
+    book::rem::push_error() << "xiobloc::new_var(" << color::Yellow << info_->text() << color::Reset << "): cannot create new variable - variable exists";
     return nullptr;
 }
 

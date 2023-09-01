@@ -93,8 +93,8 @@ public:
     using list = std::vector<xiobloc*>;
 protected:
 
-    xio::list* _instructions  = nullptr;
-    xiovar::list*   _xiovars       = nullptr; ///< Represent the stack xiobloc.
+    xio::list* _instructions{nullptr};
+    xiovar::list*   _xiovars{nullptr}; ///< Represent the stack bloc.
     // xiobloc::list* _functions = nullptr; ///< ...
     // xiobloc::list* _structs = nullptr;
     friend class function_descriptor;
@@ -115,7 +115,7 @@ public:
     /**
      * Destructor
      */
-    ~xiobloc();
+    ~xiobloc() override;
 
     /**
      * Assignment operator
@@ -137,7 +137,6 @@ public:
     xiovar* query_var(const std::string& id_);
     xiovar* query_local_var(const std::string& id_);
     xiovar* new_var(xio* var_); ///< ?? When parsing (compiling) the xio node is created (...or not?)
-    // xiovar* new_var(xiovar* xvar);
     xiovar* new_var(token_data* info_); ///< ?? When parsing (compiling) the xio node is created (...or not?)
 
     rem::code detach(xio* x) override;

@@ -961,16 +961,26 @@ xio* xio::pop_par()
 }
 
 
-xio* xio::begin(xio* parent_, token_data* token)
+xio* xio::begin(xio* parent_, token_data* token, xio::maker xmk)
 {
     if (!token->_flags.V)
     {
         return nullptr;
     }
-    xio* a = new xio(parent_, token);
+
+    xio* a{nullptr};
+    if(xmk)
+        a = xmk(token);
+    else
+        a = new xio(parent_, token);
+
+    if(!a)
+        return nullptr;
+
     if (a->t0->c == mnemonic::OpenPar) push_par(a);
     return a;
 }
+
 
 xio* xio::tree_close()
 {

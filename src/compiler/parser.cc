@@ -23,14 +23,13 @@
 #include <xio/compiler/parser.h>
 
 namespace xio
-
 {
 
 
 
 std::map<std::string, book::rem::code(parser::*)()> extern_parsers =
 {
-    {"expression", &parser::parse_expr},
+    {"expression", &parser::parse_expression},
     {"functionid", nullptr},
     {"newvar", nullptr},
     {"obj_instance",nullptr},
@@ -60,21 +59,37 @@ book::expect<alu> parser::parse_expr(xiobloc *blk, const char *expr_text)
         expr_text,
         &_tokens_stream
     };
-    
+
     auto R = lex();
     if(R!=book::rem::accepted)
     {
         return book::rem::push_error() << R;
     }
-    
-    ctx = context(_bloc, _tokens_stream.begin(), _tokens_stream.begin(), _tokens_stream.end());
+
+
     book::rem::push_debug(HERE) << " parser::context initialized : dumping tokens (coloured) details";
-    for(auto & token: _tokens_stream)
-    {
-        lexer_color lc;
-        book::rem::out() << lc.mark(token);
-    }
+
+    lexer_color lc;
+    std::string code = expr_text;
+    lc.process(code, _tokens_stream);
+    for(auto & token: _tokens_stream) book::rem::out() << lc.mark(token);
     rem::push_debug() << " returning dummy float alu";
+
+    book::rem::push_debug(HERE) << "\\O/ - Now let's parse:";
+     ctx = context(_bloc, _tokens_stream.begin(), _tokens_stream.end(), _tokens_stream.end());
+
+    xio* x{nullptr};
+    x = xio::begin(ctx.bloc, ctx.token(), [this](token_data* t)->xio*{ return make_instruction(t); });
+
+    if(!x)
+        return book::rem::push_info() << " failed ... " << book::rem::endl << lc.mark(*ctx.cur);
+
+
+    do{
+
+    }while(ctx.cur < _tokens_stream.end());
+
+
     return alu(1.42f);
 }
 
@@ -92,9 +107,7 @@ book::expect<alu> parser::parse_expr(xiobloc *blk, const char *expr_text)
  */
 book::rem::code parser::parse_expression()
 {
-    
-    book::rem::push_debug(HERE) << " At last! We got here \\O/;)";
-    
+
     return book::rem::notimplemented;
 }
 
@@ -143,6 +156,12 @@ book::rem::code parser::parse_rule(const std::string& rule_name)
     return book::rem::notimplemented;
 }
 
+xio* parser::parse_expr_keyword(token_data*)
+{
+    book::rem::push_info(HERE) << book::rem::notimplemented;
+    return nullptr;
+}
+
 
 
 /**
@@ -154,9 +173,45 @@ book::rem::code parser::parse_rule(const std::string& rule_name)
  * \note As of 2023-08-28, only xio's POD variable types are created on identifier token restricted to arithmetic expressions.
  * \author &copy; August 28, 2023; oldlonecoder, (serge.lussier@oldlonecoder.club)
  */
-xio* parser::make_instruction(token_data* token)
+::xio::xio* parser::make_instruction(token_data* token)
 {
-    
+    // "Branch" on token type
+    book::rem::push_debug(HERE) << " Entering xio producer with " << token->mark();
+
+    switch(token->t)
+    {
+        case ::xio::type::Operator:
+            return new xio(_bloc, token, nullptr);
+        break;
+        case ::xio::type::Keyword:
+        {
+            if(token->_flags.V)
+            {
+                return parse_expr_keyword(token);
+            }
+        }
+        break;
+        case type::Id:
+        {
+            // Handling only POD variables.
+            xiovar* var = ctx.bloc->query_var(token->text());
+            if(!var)
+                return ctx.bloc->new_var(token);
+            else
+                return new xio(ctx.bloc, token, var->aluptr());
+
+            //...
+        }
+        break;
+        case  type::Number:
+            return new xio(ctx.bloc,token);
+        break;
+        default: break;
+    }
+    lexer_color lc;
+    std::string code = _filename_or_source;
+    lc.process(code, _tokens_stream);
+    book::rem::push_syntax() << " in arithmetic expression parsing context. " << book::rem::endl << lc.mark(*token);
     return nullptr;
 }
 
@@ -169,17 +224,17 @@ xio* parser::make_instruction(token_data* token)
 
 parser::context::context()
 {
-    
+
 }
 
 parser::context::context(context &&cx) noexcept
 {
-    
+
 }
 
 parser::context::context(const context &cx)
 {
-    
+
 }
 
 
@@ -190,24 +245,36 @@ parser::context::context(const context &cx)
  * \param i_end
  * \param i_endstream
  */
-parser::context::context(xiobloc *blk, token_data::iterator start, token_data::iterator i_end, token_data::iterator i_endstream):
-    bloc(blk), start(start), end(i_end), end_stream(i_endstream)
+parser::context::context(xiobloc *blk, token_data::iterator i_start, token_data::iterator i_end, token_data::iterator i_endstream):
+  bloc(blk), start(i_start), cur(i_start), end(i_end), end_stream(i_endstream)
 {}
 
 parser::context::~context()
 {
-    
+
 }
 
 parser::context &parser::context::operator =(parser::context &&cx) noexcept
 {
-    
+    start = std::move(cx.start);
+    cur   = std::move(cx.cur);
+    end   = std::move(cx.end);
+    end_stream = std::move(cx.end_stream);
+    bloc = cx.bloc;
+    current_type = cx.current_type;
     return *this;
 }
 
 
 parser::context &parser::context::operator = (parser::context const & cx)
 {
+    start = cx.start;
+    cur   = cx.cur;
+    end   = cx.end;
+    end_stream = cx.end_stream;
+    bloc = cx.bloc;
+    current_type = cx.current_type;
+
     return *this;
 }
 
@@ -219,18 +286,24 @@ parser::context &parser::context::operator = (parser::context const & cx)
 
 void parser::context::accept(context &cx)
 {
-    
+
 }
 
 void parser::context::reject(context &cx)
 {
-    
-}
-
 
 }
 
+bool parser::context::operator++(int)
+{
+    if( cur >= end_stream) return false;
+    ++cur;
+    ++end;
+    return cur < end_stream;
+}
 
 
+
+}
 
 

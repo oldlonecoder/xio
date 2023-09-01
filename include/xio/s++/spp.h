@@ -41,6 +41,8 @@ public:
     // Quick arithmetic expression evaluator ( small source text ):
     alu operator[](const std::string& expr);
 
+    static void syntax(token_data* token_ptr);
+
 
 
 };

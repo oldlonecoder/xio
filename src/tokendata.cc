@@ -174,6 +174,52 @@ std::string token_data::mark(int nspc) const
     return tstr();
 }
 
+
+
+
+/*!
+ * \brief token_data::text_line
+ * \return std::string the string content of the line
+ */
+std::string token_data::text_line()
+{
+    stracc str;
+    const char* B = mLoc.begin - mLoc.offset;
+    const char* cc = mLoc.begin;
+    // localiser le debut de la ligne;
+    while (*cc && (cc > B) && (*cc != '\n') && (*cc != '\r'))
+        --cc;
+    // debut de la ligne ou de la source:
+    if (cc >= B)
+    {
+        if ((*cc == '\n') || (*cc == '\r'))
+            ++cc;
+        while (*cc && (*cc != '\n') && (*cc != '\r'))
+            str += *cc++;
+    }
+    return str();
+}
+
+token_data* token_data::back_to_startof_line()
+{
+
+    token_data* token = this;
+    token_data* first = token;
+    do{
+
+        if(token->mLoc.linenum == mLoc.linenum)
+            if(!(token=token->__prev)) return token;
+        else
+            return token->__next;
+    }while(token);
+
+    if(!token)
+        book::rem::push_error(HERE) << " internal...  token adresse is null.";
+    return token;
+
+}
+
+
 std::string token_data::location() const
 {
     if(mLoc.linenum <= 0) return "[]";
