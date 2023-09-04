@@ -208,30 +208,15 @@ token_data* token_data::back_to_startof_line()
     do{
 
         if(token->mLoc.linenum == mLoc.linenum)
-<<<<<<< HEAD
             if(!(token=token->__prev)) return token;
-=======
-            if(!token=token->__prev) return token;
->>>>>>> b283fc07283aa82fca2b4179f77bc3ce0d5e139c
         else
             return token->__next;
     }while(token);
 
     if(!token)
-<<<<<<< HEAD
         book::rem::push_error(HERE) << " internal...  token adresse is null.";
     return token;
 
-=======
-        book::rem::push_error() <<
-    return token;
-
-    while((i->mLoc.linenum == mLoc.linenum) &&(i>stream->begin())) --i;
-    if(i==stream->end())
-        book::rem::push_error() << book::rem::notexist << " ???...";
-
-    return i;
->>>>>>> b283fc07283aa82fca2b4179f77bc3ce0d5e139c
 }
 
 
