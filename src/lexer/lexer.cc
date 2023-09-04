@@ -693,9 +693,8 @@ rem::code lexer::scan_postfix(token_data &atoken)
 rem::code lexer::Push(token_data &atoken)
 {
     if(!atoken)
-        return rem::rejected;//rem::codePush() << //rem::codexio::type::Error << ": Attempt to push a null_t token_data into the Tokens stream.";
+        return rem::rejected;
 
-    //mCursor.Sync();
     atoken.mLoc.linenum = src_cursor.L;
     atoken.mLoc.colnum  = src_cursor.Col;
 
@@ -704,14 +703,9 @@ rem::code lexer::Push(token_data &atoken)
     src_cursor.C += sz;
     src_cursor.Col += static_cast<int>(sz);
 
-    // ------------------- Add link pointers for direct access to the previous and next instance in the 'list/array/vector'---------
-    if(!mConfig.Tokens->empty())
-    {
-        auto& tok = mConfig.Tokens->back(); // First or last inserted token.
-        tok.__next = &atoken;
-        atoken.__prev = &tok;
-    }
-    // -----------------------------------------------------------------------------------------------------------------------------
+
+    // First or last inserted token.
+    //auto& tok = mConfig.Tokens->empty() ? token_data::mNull : mConfig.Tokens->back();
 
     mConfig.Tokens->push_back(atoken);
     src_cursor.skip_ws();

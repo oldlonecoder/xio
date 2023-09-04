@@ -21,6 +21,7 @@
 
 
 #include <xio/compiler/parser.h>
+#include "xio/s++/spp.h"
 
 namespace xio
 {
@@ -82,7 +83,11 @@ book::expect<alu> parser::parse_expr(xiobloc *blk, const char *expr_text)
     x = xio::begin(ctx.bloc, ctx.token(), [this](token_data* t)->xio*{ return make_instruction(t); });
 
     if(!x)
-        return book::rem::push_info() << " failed ... " << book::rem::endl << lc.mark(*ctx.cur);
+    {
+        auto tokens = tokens_line_from(ctx.token());
+        spp::interpretr::trace_line(ctx.cur, tokens);
+        return alu(1.42f);
+    }
 
 
     do{
@@ -160,6 +165,17 @@ xio* parser::parse_expr_keyword(token_data*)
 {
     book::rem::push_info(HERE) << book::rem::notimplemented;
     return nullptr;
+}
+
+token_data::collection parser::tokens_line_from(token_data* token)
+{
+    token_data::collection tokens;
+    for(auto it = _tokens_stream.begin(); it != _tokens_stream.end(); it++)
+    {
+        if(it->mLoc.linenum == token->mLoc.linenum) tokens.push_back(*it);
+    }
+
+    return tokens;
 }
 
 

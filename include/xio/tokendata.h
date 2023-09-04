@@ -34,10 +34,10 @@ namespace xio
         xio::distance::T d = xio::distance::noop_;
         void* vdata = nullptr;
 
-        // --------------------- Add link pointers to previous and forward tokens because there situations where giving the std container is so overload and overbloated!
-        token_data* __prev{nullptr};
-        token_data* __next{nullptr};
-        // --------------------------------------------------------------------------------------------------------------------------------------------------------------
+//        // --------------------- Add link pointers to previous and forward tokens because there situations where giving the std container is so overload and overbloated!
+//        token_data* __prev{nullptr};
+//        token_data* __next{nullptr};
+//        // --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         using collection = std::vector<token_data>;
         // ----------------------------------------
@@ -76,14 +76,12 @@ namespace xio
         token_data(mnemonic Code_, xio::type::T Type_, xio::type::T Sem_, xio::distance::T Delta_, token_data::location_data LocationData_, token_data::Flag Flags_, void* Ptr_ = nullptr);
         token_data(const token_data& Token_);
         token_data(token_data&& Token_) noexcept;
-
         token_data& operator=(token_data&& Token_) noexcept;
         token_data& operator=(const token_data& Token_);
         token_data operator[](mnemonic CC);
-        //ArgToken* ptr() { return this; }
         std::string mark(int nspc = 0) const;
         std::string text_line();
-        token_data* back_to_startof_line();
+        //token_data* back_to_startof_line();
 
         explicit operator bool() const
         {

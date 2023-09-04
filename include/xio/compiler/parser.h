@@ -92,6 +92,8 @@ public:
 
   private:
     xio* parse_expr_keyword(token_data*);
+    token_data::collection tokens_line_from(token_data* token);
+
 };
 
 }

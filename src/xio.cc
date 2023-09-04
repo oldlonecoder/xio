@@ -15,7 +15,7 @@
 #include "xio/xio.h"
 #include <chrtools/geometry.h>
 
-
+#include "xio/s++/spp.h"
 
 namespace xio
 {
@@ -965,6 +965,7 @@ xio* xio::begin(xio* parent_, token_data* token, xio::maker xmk)
 {
     if (!token->_flags.V)
     {
+        book::rem::push_syntax() << book::rem::expected << " right or left value token in arithmetic expression";
         return nullptr;
     }
 

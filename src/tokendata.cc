@@ -200,25 +200,6 @@ std::string token_data::text_line()
     return str();
 }
 
-token_data* token_data::back_to_startof_line()
-{
-
-    token_data* token = this;
-    token_data* first = token;
-    do{
-
-        if(token->mLoc.linenum == mLoc.linenum)
-            if(!(token=token->__prev)) return token;
-        else
-            return token->__next;
-    }while(token);
-
-    if(!token)
-        book::rem::push_error(HERE) << " internal...  token adresse is null.";
-    return token;
-
-}
-
 
 std::string token_data::location() const
 {
