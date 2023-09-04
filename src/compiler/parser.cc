@@ -84,13 +84,29 @@ book::expect<alu> parser::parse_expr(xiobloc *blk, const char *expr_text)
 
     if(!x)
     {
+bail:
+        if(!ctx.cur->_flags.V)
+            book::rem::push_syntax() << book::rem::expected << color::Red4 << " right or left value token in arithmetic expression";
+
         auto tokens = tokens_line_from(ctx.token());
         spp::interpretr::trace_line(ctx.cur, tokens);
+        book::rem::push_message() << "parse arithmetic expression failed.";
+        ctx.reject();
+
         return alu(1.42f);
     }
 
 
     do{
+
+        //...
+        ctx++;
+        x = x->input(ctx.bloc, ctx.token(), [this](token_data* token)-> xio*{
+            return make_instruction(token);
+        });
+        if(!x)
+            goto bail;
+        ctx.instruction = x;
 
     }while(ctx.cur < _tokens_stream.end());
 
@@ -161,11 +177,12 @@ book::rem::code parser::parse_rule(const std::string& rule_name)
     return book::rem::notimplemented;
 }
 
-xio* parser::parse_expr_keyword(token_data*)
+xio* parser::parse_rvalue_keyword()
 {
-    book::rem::push_info(HERE) << book::rem::notimplemented;
+    book::rem::push_debug(HERE) << book::rem::notimplemented << ctx.token()->mark();
     return nullptr;
 }
+
 
 token_data::collection parser::tokens_line_from(token_data* token)
 {
@@ -200,12 +217,7 @@ token_data::collection parser::tokens_line_from(token_data* token)
             return new xio(_bloc, token, nullptr);
         break;
         case ::xio::type::Keyword:
-        {
-            if(token->_flags.V)
-            {
-                return parse_expr_keyword(token);
-            }
-        }
+            return parse_rvalue_keyword();
         break;
         case type::Id:
         {
@@ -215,19 +227,16 @@ token_data::collection parser::tokens_line_from(token_data* token)
                 return ctx.bloc->new_var(token);
             else
                 return new xio(ctx.bloc, token, var->aluptr());
-
             //...
         }
         break;
         case  type::Number:
             return new xio(ctx.bloc,token);
         break;
-        default: break;
+        default:
+            book::rem::push_message() << "unhandled token:";
+        break;
     }
-    lexer_color lc;
-    std::string code = _filename_or_source;
-    lc.process(code, _tokens_stream);
-    book::rem::push_syntax() << " in arithmetic expression parsing context. " << book::rem::endl << lc.mark(*token);
     return nullptr;
 }
 
@@ -300,24 +309,39 @@ parser::context &parser::context::operator = (parser::context const & cx)
 
 
 
-void parser::context::accept(context &cx)
+void parser::context::accept()
 {
 
+    start = cur; ///< Pass the consumed tokens
+    state = book::rem::accepted;
 }
 
-void parser::context::reject(context &cx)
+void parser::context::reject()
 {
-
+    cur = start;
+    instruction = nullptr;
+    state = book::rem::rejected;
 }
 
 bool parser::context::operator++(int)
 {
     if( cur >= end_stream) return false;
     ++cur;
-    ++end;
-    return cur < end_stream;
+    return cur < end;
 }
 
+bool parser::context::eof()
+{
+    return cur == end;
+}
+
+bool parser::context::operator++()
+{
+    if( cur >= end_stream) return false;
+    ++cur;
+    ++end;
+    return cur < end;
+}
 
 
 }

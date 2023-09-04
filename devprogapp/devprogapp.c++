@@ -46,7 +46,7 @@ auto main(int argc, char** argv) -> int
 
     interpretr i;
     //auto alu = i["z = ax + 4ac;"];
-    auto alu = i["return ax + 4ac;"];
+    auto alu = i["ax + 4ac;"];
 
     rem::out() << " Result: " << color::Yellow << alu();
     rem::push_message() << rem::success << "\\O/ !!!";

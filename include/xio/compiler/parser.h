@@ -45,6 +45,9 @@ class XIO_PUBLIC parser
         xiobloc*             bloc{nullptr};
         ::xio::type::T       current_type = ::xio::type::Number;
         ///...
+        book::rem::code state = book::rem::none;
+
+        xio* instruction{nullptr};
 
         context();
         context(parser::context&& cx) noexcept;
@@ -57,10 +60,13 @@ class XIO_PUBLIC parser
         context& operator = (context&& cx) noexcept;
         context &operator = (context const & cx);
 
-        void accept(parser::context& cx);
-        void reject(parser::context& cx);
+        void accept();
+        void reject();
         token_data* token() { return &(*cur); }
         bool operator++(int);
+        bool operator++();
+
+        bool eof();
     };
 
     parser::context ctx;
@@ -91,7 +97,7 @@ public:
     // ---------------------------------------------------------
 
   private:
-    xio* parse_expr_keyword(token_data*);
+    xio* parse_rvalue_keyword();
     token_data::collection tokens_line_from(token_data* token);
 
 };
