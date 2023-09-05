@@ -27,10 +27,17 @@ alu interpretr::operator[](const std::string& expr)
     g.build();
     g.dump();
     parser expr_parser(this, expr.c_str());
-    auto R = expr_parser.parse_expr(this, expr.c_str());
-    if(!R)
+    book::rem::code R = expr_parser.parse_expr(this, expr.c_str());
+    if(R != book::rem::accepted)
       return alu(1.42f);
-    return *R;
+    stracc str = "";
+    xio::dot_tree_start(str, expr);
+    xio::dot_tree(_instructions->front(), str);
+    str << "}";
+    book::rem::push_debug(HERE) << " tree output: ";
+    book::rem::out() << str;
+
+    return jsr();
 }
 
 

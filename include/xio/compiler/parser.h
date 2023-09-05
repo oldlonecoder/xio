@@ -47,7 +47,8 @@ class XIO_PUBLIC parser
         ///...
         book::rem::code state = book::rem::none;
 
-        xio* instruction{nullptr};
+
+        xio::list instructions; ///< filling the temp xio buffer before the commit into the instructions list of the scope-bloc ( local stack ).
 
         context();
         context(parser::context&& cx) noexcept;
@@ -60,7 +61,7 @@ class XIO_PUBLIC parser
         context& operator = (context&& cx) noexcept;
         context &operator = (context const & cx);
 
-        void accept();
+        void accept(xio* instruction);
         void reject();
         token_data* token() { return &(*cur); }
         bool operator++(int);
@@ -89,7 +90,7 @@ public:
 
     // ------------------ parsers -Cannot be used yet-----------
     book::rem::code parse_expression();
-    book::expect<alu> parse_expr(xiobloc* blk, const char* expr_text);
+    book::rem::code parse_expr(xiobloc* blk, const char* expr_text);
 
     // -------------------Cannot be used yet--------------------
     ::xio::xio* make_instruction(token_data* token);

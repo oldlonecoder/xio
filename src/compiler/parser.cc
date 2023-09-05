@@ -51,7 +51,7 @@ parser::parser(xiobloc* bloc, const char* source_or_filename, const std::string&
     _bloc(bloc)
 {}
 
-book::expect<alu> parser::parse_expr(xiobloc *blk, const char *expr_text)
+book::rem::code parser::parse_expr(xiobloc *blk, const char *expr_text)
 {
     _bloc = blk; ///< Interpreter's bloc address likelly...
     lexer lex;
@@ -64,7 +64,8 @@ book::expect<alu> parser::parse_expr(xiobloc *blk, const char *expr_text)
     auto R = lex();
     if(R!=book::rem::accepted)
     {
-        return book::rem::push_error() << R;
+        book::rem::push_error() << R;
+        return book::rem::rejected;
     }
 
 
@@ -86,30 +87,33 @@ book::expect<alu> parser::parse_expr(xiobloc *blk, const char *expr_text)
     {
 bail:
         if(!ctx.cur->_flags.V)
-            book::rem::push_syntax() << book::rem::expected << color::Red4 << " right or left value token in arithmetic expression";
-
+        {
+            book::rem::out(HERE) << color::Yellow << " arithmetic expression stopped by non-value token - returning.";
+            goto end_of_expr;
+        }
         auto tokens = tokens_line_from(ctx.token());
         spp::interpretr::trace_line(ctx.cur, tokens);
         book::rem::push_message() << "parse arithmetic expression failed.";
         ctx.reject();
 
-        return alu(1.42f);
+        return book::rem::accepted;
     }
 
-
-    do{
-
-        //...
-        ctx++;
+    ctx++;
+    while((ctx.cur < _tokens_stream.end()) && (ctx.cur->c != ::xio::mnemonic::Semicolon)){
         x = x->input(ctx.bloc, ctx.token(), [this](token_data* token)-> xio*{
             return make_instruction(token);
         });
         if(!x)
             goto bail;
-        ctx.instruction = x;
-
-    }while(ctx.cur < _tokens_stream.end());
-
+        ctx.instructions.push_back(x);
+        ctx++;
+    }
+end_of_expr:
+    xio* root = ctx.instructions.back()->tree_close();
+    if(!root)
+        ctx.reject();
+    ctx.accept(root);
 
     return alu(1.42f);
 }
@@ -209,32 +213,32 @@ token_data::collection parser::tokens_line_from(token_data* token)
 ::xio::xio* parser::make_instruction(token_data* token)
 {
     // "Branch" on token type
-    book::rem::push_debug(HERE) << " Entering xio producer with " << token->mark();
+    book::rem::push_debug(HERE) << " Entering xio producer with "<< book::rem::endl << token->mark();
 
     switch(token->t)
     {
-        case ::xio::type::Operator:
-            return new xio(_bloc, token, nullptr);
+        case ::xio::type::Binary:
+        case ::xio::type::Prefix:
+        case ::xio::type::Postfix:
+        case ::xio::type::Unary:
+        case ::xio::type::Assign:
+        case ::xio::type::OpenPair:
+        case ::xio::type::ClosePair:
+            return new xio(ctx.bloc, token, nullptr);
         break;
         case ::xio::type::Keyword:
             return parse_rvalue_keyword();
         break;
         case type::Id:
-        {
-            // Handling only POD variables.
-            xiovar* var = ctx.bloc->query_var(token->text());
-            if(!var)
-                return ctx.bloc->new_var(token);
-            else
-                return new xio(ctx.bloc, token, var->aluptr());
+            // As of 09-2023, Handling only POD variables.
+            return ctx.bloc->new_var(token);
             //...
-        }
         break;
         case  type::Number:
             return new xio(ctx.bloc,token);
         break;
         default:
-            book::rem::push_message() << "unhandled token:";
+            book::rem::push_message(HERE) << "unhandled token:";
         break;
     }
     return nullptr;
@@ -309,17 +313,24 @@ parser::context &parser::context::operator = (parser::context const & cx)
 
 
 
-void parser::context::accept()
+void parser::context::accept(xio* instruction)
 {
 
     start = cur; ///< Pass the consumed tokens
+    bloc->append_instruction(instruction);
+    instructions.clear(); // Reset the xio::list buffer
     state = book::rem::accepted;
 }
 
 void parser::context::reject()
 {
     cur = start;
-    instruction = nullptr;
+    for(auto* x : instructions)
+    {
+        bloc->detach(x);
+        delete x;
+    }
+
     state = book::rem::rejected;
 }
 

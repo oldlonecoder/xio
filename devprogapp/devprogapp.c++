@@ -14,23 +14,25 @@ using xio::spp::interpretr;
 
 void sig_int( int s )
 {
-  rem::push_interrupted() << " dump messages stream and exit:";
-  rem::clear([](rem& r){ std::cerr << r.cc(); });
-  exit(3);
+    rem::push_interrupted() << " dump messages stream and exit:";
+    rem::clear([](rem& r){ std::cerr << r.cc(); });
+    std::cerr << " sig interrupt caugh...\n";
+    exit(3);
 }
 
 void sig_fault( int s)
 {
-  rem::push_segfault() << " dump messages stream and exit:";
-  rem::clear([](rem& r){ std::cerr << r.cc(); });
-  exit(127);
+    rem::push_segfault() << " dump messages stream and exit:";
+    rem::clear([](rem& r){ std::cerr << r.cc(); });
+    std::cerr << " sigfault caught...\n";
+    exit(127);
 }
 
 void sig_abort( int s)
 {
-  rem::push_aborted() << " dump messages stream and exit:";
-  rem::clear([](rem& r){ std::cerr << r.cc(); });
-  std::cerr << s << '\n';
+   rem::push_aborted() << " dump messages stream and exit:";
+   rem::clear([](rem& r){ std::cerr << r.cc(); });
+   std::cerr << s << '\n';
 
   exit(127);
 }
@@ -46,7 +48,7 @@ auto main(int argc, char** argv) -> int
 
     interpretr i;
     //auto alu = i["z = ax + 4ac;"];
-    auto alu = i["ax + 4ac;"];
+    auto alu = i["x == 42(3+4*8) return 0;"];
 
     rem::out() << " Result: " << color::Yellow << alu();
     rem::push_message() << rem::success << "\\O/ !!!";

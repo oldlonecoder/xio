@@ -97,20 +97,20 @@ bool xiobloc::operator!=(const xiobloc& other) const
  */
 xiovar* xiobloc::new_var(token_data* info_)
 {
-    book::rem::push_debug() << "xiobloc::new_var(" << color::Yellow << info_->text() << color::Reset << "):";
+    book::rem::push_debug() << __LINE__ << ": xiobloc::new_var(" << color::Yellow << info_->text() << color::Reset << "):";
     auto* v = query_var(info_->text());
     if(!v)
     {
-        book::rem::push_info() << "xiobloc::new_var(" << color::Yellow << info_->text() << color::Reset << ") new local variable.";
+        book::rem::push_info() << __LINE__ << ": xiobloc::new_var(" << color::Yellow << info_->text() << color::Reset << ") new local variable.";
         if(!_xiovars) _xiovars = new xiovar::list;
         _xiovars->push_back(new xiovar(this, info_));
         xiovar* xv = _xiovars->back();
         xv->_index = _xiovars->size()-1;
-        return _xiovars->back();
+        return xv;
     }
-
-    book::rem::push_error() << "xiobloc::new_var(" << color::Yellow << info_->text() << color::Reset << "): cannot create new variable - variable exists";
-    return nullptr;
+    xiovar* var = new xiovar(this,info_, v->_index, v->acc);
+    book::rem::push_debug() << __LINE__ << ": xiobloc::new_var(" << color::Yellow << info_->text() << color::Reset << "): created new ref to variable.";
+    return var;
 }
 
 book::rem::code xiobloc::detach(xio *x)
@@ -161,19 +161,6 @@ book::rem::code xiobloc::instanciate()
     return book::rem::notimplemented;
 }
 
-/*!
-    @brief Creates a new xiovar inside this xiobloc scope.
-
-    @return xiovar pointer or a book::rem::error/warning if the xiovar already exists in this xiobloc or in the parent scopes...
-    @author @copy; 2022, Serge Lussier <oldlonecoder; bretzel> lussier.serge@gmail.com
-
-    @note ( dev note: Make declaration rule syntax mandatory for creating any var, anywhere, thus prevent using new vars into middle of expression )
- */
-xiovar* xiobloc::new_var(xio* var_)
-{
-    book::rem::push_message(HERE) << " Not there yet...Will be implemented."; ///< Not there yet; It depends on the arithmetics expression tree building...
-    return nullptr;
-}
 
 
 
@@ -183,6 +170,7 @@ xiovar *xiobloc::query_local_var(const std::string &id_)
     for(auto * v : *_xiovars)  if(v) return v;
     return nullptr;
 }
+
 
 xiovar* xiobloc::query_var(const std::string& id_)
 {

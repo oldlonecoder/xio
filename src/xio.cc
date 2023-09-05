@@ -709,7 +709,7 @@ xio::input_table_t xio::input_tbl =
     {{type::Binary,  type::Prefix},     "&xio::_prefix"},
     {{type::Prefix | type::Binary | type::OpenPair | type::Assign,    type::Leaf | type::Number | type::OpenPair | type::Id | type::Prefix},  "&xio::_leaf"},
     {{type::Prefix | type::Binary | type::OpenPair,    type::OpenPair},    "&xio::_open_pair"},
-    {{type::Postfix| type::Const | type::Id | type::OpenPair | type::ClosePair,    type::ClosePair}, "&xio::_close_pair"}
+    {{type::Postfix| type::Const | type::Number | type::Id | type::OpenPair | type::ClosePair,    type::ClosePair}, "&xio::_close_pair"}
 };
 
 
@@ -755,7 +755,7 @@ void xio::header(xio* input_node, book::source_location&& Loc)
  * \note Call to this function is stricly, restricted to the Arithmetic Expression Tree/AST build context.
  * \param parent_bloc
  * \param token
- * \return Insertion vertex xio.
+ * \return new Insertion node ( or vertex? ).
  *
  * ex.: if x-1 + 12 ==  0 return 12;
  */
@@ -772,9 +772,11 @@ xio* xio::input(xio* parent_bloc, token_data* token, xio::maker mk)
             xio* a;
             if(mk)
                 a = mk(token);
+
             else
                 a  = new xio(parent_bloc,token);
 
+            if(!a) return nullptr;
             auto fn = xio::query(this, a);
             if (!fn)
             {
@@ -792,9 +794,9 @@ xio* xio::input(xio* parent_bloc, token_data* token, xio::maker mk)
         }
     }
 
-    book::rem::push_info(HERE) << t0->text()
-        << "::input(" << token->text() << ") invalid relational operands at "
-        << token->location() << " - unexpected token : "
+    book::rem::push_info(HERE) << color::White << "'" << color::Yellow << t0->text() << color::White << "'" << color::Reset
+                               << "::input(" << color::Yellow <<  token->text() << color::Reset << ") => invalid relational operands at "
+        << token->location() << " - unexpected token."
         << book::rem::endl << token->mark();
     book::rem::out() << t0->details() << " || " << token->details() << book::rem::endl << "Returning nullptr";
 
@@ -1035,25 +1037,25 @@ xio* xio::tree_root(bool skip_syntax)
             case type::Binary:
                 if (!x->lhs)
                 {
-                    book::rem::push_error() << "Syntax error: binary operator is missing its left operand." << book::rem::endl << x->t0->mark();
+                    book::rem::push_error() << "Syntax error: binary operator has no left operand." << book::rem::endl << x->t0->mark();
                     return nullptr;
                 }
                 if (!x->rhs)
                 {
-                    book::rem::push_error() << "Syntax error: binary operator is missing its right operand." << book::rem::endl << x->t0->mark();
+                    book::rem::push_error() << "Syntax error: binary operator has no right operand." << book::rem::endl << x->t0->mark();
                     return nullptr;
                 }
             case type::Prefix:
                 if (!x->rhs)
                 {
-                    book::rem::push_error() << "Syntax error: prefix unary operator is missing its (right) operand." << book::rem::endl << x->t0->mark();
+                    book::rem::push_error() << "Syntax error: prefix unary operator has no (right) operand." << book::rem::endl << x->t0->mark();
                     return nullptr;
                 }
                 break;
             case type::Postfix:
                 if (!x->lhs)
                 {
-                    book::rem::push_error() << "Syntax error: postfix unary operator is missing its (left) operand." << book::rem::endl << x->t0->mark();
+                    book::rem::push_error() << "Syntax error: postfix unary operator has no (left) operand." << book::rem::endl << x->t0->mark();
                     return nullptr;
                 }
                 break;
