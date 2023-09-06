@@ -131,19 +131,15 @@ std::string  alu::mNil = "";
             v = rhs.v;
             return *this; // WTF???????
         }
-        if (T & xio::type::Number)
-        {
-            *this = {(bool)(((cast(*this)) == (cast(rhs))))};
-            return *this;
-        }
+
         if (T & xio::type::Text)
         {
-            *this = {text == rhs.text};
+            text = rhs.text;
             return *this;
         }
         if (T & xio::type::Any)
         {
-            *this = {v.p == rhs.v.p};
+            v.p = rhs.v.p;
             return *this;
         }
         *this = false;
