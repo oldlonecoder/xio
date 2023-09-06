@@ -134,7 +134,7 @@ xio::xio(object* parent_bloc, token_data* atoken, alu* a_alu): object(parent_blo
 {
     t0 = atoken;
 
-    book::rem::push_debug() << "xio::xio => token details:[" << (t0 ? t0->details() : "nullptr") << "] \n";
+    //book::rem::push_debug() << "xio::xio => token details:[" << (t0 ? t0->details() : "nullptr") << "]"<< book::rem::endl << book::rem::commit;
 
     if (a_alu != nullptr)
     {
@@ -160,7 +160,7 @@ xio::xio(object* parent_bloc, token_data* atoken, alu* a_alu): object(parent_blo
             double d;
             (stracc(atoken->text())) >> d;
             *acc = d;
-            book::rem::push_debug() << " acc: " << color::Yellow << (*acc)();
+            book::rem::push_debug() << " acc: " << color::Yellow << (*acc)()<<  book::rem::commit;
         }
     }
     return;
@@ -183,7 +183,7 @@ xio::xio(object* parent_bloc, token_data* atoken, alu* a_alu): object(parent_blo
 
     auto i = xio::xio_operators_table.find(atoken->c);
     xio_fn = i != xio::xio_operators_table.end() ? i->second : nullptr;
-    book::rem::push_debug(HERE) << " acc: '" << color::Yellow << (*acc)() << color::White << "'";
+    //book::rem::push_debug(HERE) << " acc: '" << color::Yellow << (*acc)() << color::White << "'"<< book::rem::commit;
 }
 
 xio::list::iterator xio::query(xio* c)
@@ -207,7 +207,7 @@ alu xio::jsr()
 
     book::rem::push_debug(HERE) << book::rem::endl << t0->mark();
     if(t0->is_binary())
-        book::rem::out() << xio::trace_connect_binary_operands(this);
+        book::rem::out() << xio::trace_connect_binary_operands(this)<< book::rem::endl << book::rem::commit;
 
 
 
@@ -219,7 +219,7 @@ alu xio::jsr()
         return (this->*xio_fn)();// All operators assign acc.
     else {
         if (t0->is_operator()) {
-            book::rem::push_warning() << "operator xio [" << color::Yellow << t0->text() << color::Reset << "] has no implementation (yet?).:\n" << t0->mark();
+            book::rem::push_warning() << "operator xio [" << color::Yellow << t0->text() << color::Reset << "] has no implementation (yet?).:\n" << t0->mark()<< book::rem::endl << book::rem::commit;
         }
     }
     t0->s |= acc->T; ///< Why is that ?
@@ -269,7 +269,7 @@ alu xio::LeftShift()
     if((lhs->t0->s & type::Float) || (rhs->t0->s & type::Float))
     {
         *acc = 0.f;
-        book::rem::push_warning() << lhs->t0->type_name() << " " << t0->text() << " " << rhs->t0->type_name() << " are incompatible";
+        book::rem::push_warning() << lhs->t0->type_name() << " " << t0->text() << " " << rhs->t0->type_name() << " are incompatible" << book::rem::commit;
     }
 
     *acc = lhs->acc->number<uint64_t>() << rhs->acc->number<uint64_t>();
@@ -407,9 +407,9 @@ alu xio::Neq()
 
 alu xio::Add()
 {
-    book::rem::push_debug(HERE) << color::Yellow << lhs->acu()() << " " << color::CornflowerBlue << attribute() << " " << color::Yellow << rhs->acu()() << ":";
+    book::rem::push_debug(HERE) << color::Yellow << lhs->acu()() << " " << color::CornflowerBlue << attribute() << " " << color::Yellow << rhs->acu()() << ":"<< book::rem::commit;
     *acc = *lhs->acc + *rhs->acc;
-    book::rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)();
+    book::rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 alu xio::Sub()
@@ -418,9 +418,9 @@ alu xio::Sub()
     if (t0->s & type::Sign)
         return Negative();
     book::rem::push_debug(HERE) << color::Lime
-        << color::Yellow << lhs->acu()() << " " << color::CornflowerBlue << attribute() << " " << color::Yellow << rhs->acu()() << ":";
+        << color::Yellow << lhs->acu()() << " " << color::CornflowerBlue << attribute() << " " << color::Yellow << rhs->acu()() << ":"<< book::rem::commit;
     *acc = *lhs->acc - *rhs->acc;
-    book::rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)();
+    book::rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
 
     return *acc;
 }
@@ -430,9 +430,9 @@ alu xio::Mul()
         << color::Yellow << lhs->attribute()
         << color::CornflowerBlue << attribute()
         << color::Yellow << rhs->attribute()
-      << color::White;
+      << color::White<< book::rem::commit;
     *acc = *lhs->acc * *rhs->acc;
-    book::rem::out(HEREF) << color::CornflowerBlue << " => " << color::Lime << (*acc)();
+    book::rem::out(HEREF) << color::CornflowerBlue << " => " << color::Lime << (*acc)() << book::rem::commit;
     return *acc;
 }
 alu xio::Modulo()
@@ -456,12 +456,12 @@ alu xio::Assign()
         << color::Aquamarine3 << lhs->attribute() << color::Reset << " "
         << " " << color::CornflowerBlue << attribute() << " "
         << color::Yellow
-        << rhs->acu()() << ":";
+        << rhs->acu()() << ":"<< book::rem::commit;
 
     *lhs->acc = *rhs->acc;
     *acc = *rhs->acc;
 
-    book::rem::out(HEREF) << color::CornflowerBlue << " => " << color::Lime << (*acc)();
+    book::rem::out(HEREF) << color::CornflowerBlue << " => " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -524,10 +524,10 @@ alu xio::Division()
         << color::Yellow << lhs->acu()()
         << " " << color::CornflowerBlue << attribute() << " "
         << color::Yellow
-        << rhs->acu()() << ":";
+        << rhs->acu()() << ":"<< book::rem::commit;
 
     *acc = *lhs->acc / *rhs->acc;
-    book::rem::out(HEREF) << color::CornflowerBlue << " => " << color::Lime << (*acc)();
+    book::rem::out(HEREF) << color::CornflowerBlue << " => " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
     //book::rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)();
 }
@@ -537,7 +537,7 @@ alu xio::Factorial()
 {
     //*acc = acc->factorial(*lhs->acc);
     *acc = lhs->acc->factorial();
-    book::rem::out(HEREF) << color::CornflowerBlue << " => " << color::Lime << (*acc)();
+    book::rem::out(HEREF) << color::CornflowerBlue << " => " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -558,13 +558,13 @@ alu xio::Negative()
     book::rem::push_debug(HERE) << color::Lime
         << color::CornflowerBlue << attribute()
         << color::Yellow << rhs->attribute()
-        << color::White << "=";
+        << color::White << "=" << book::rem::commit;
 
     if (rhs->acc->number<double>() > 0) // ==> a = -1;  -a = ?
         *rhs->acc *= -1;
 
     *acc = *rhs->acc;
-    book::rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)();
+    book::rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -734,7 +734,7 @@ xio::input_table_t xio::input_tbl =
 
 void xio::syntax_error(xio* e)
 {
-    throw book::rem::push_syntax() << "at " << e->t0->location() << book::rem::endl << e->t0->mark();
+    throw book::rem::push_syntax() << "at " << e->t0->location() << book::rem::endl << e->t0->mark() << book::rem::endl << book::rem::commit;
 }
 
 xio *xio::warning(xio *)
@@ -748,7 +748,8 @@ void xio::make_error(book::rem::code ErrCode, xio* source_node, xio* input_node)
         << ErrCode
         << input_node->attribute()
         << book::rem::endl
-        << input_node->t0->mark();
+        << input_node->t0->mark()
+        << book::rem::endl << book::rem::commit;
 }
 
 void xio::make_error(book::rem::code ErrCode, xio* source_node, token_data* inputoken)
@@ -758,12 +759,15 @@ void xio::make_error(book::rem::code ErrCode, xio* source_node, token_data* inpu
         << ErrCode
         << inputoken->text()
         << book::rem::endl
-        << inputoken->mark();
+        << inputoken->mark()
+        << book::rem::endl << book::rem::commit;
 }
 
 void xio::header(xio* input_node, book::source_location&& Loc)
 {
-    book::rem::push_debug(std::move(Loc)) << t0->text() << "<-" << input_node->t0->text() << book::rem::endl << input_node->t0->mark();
+    book::rem::push_debug(std::move(Loc)) << color::Yellow << t0->text() << color::White << "<-" <<
+      color::Yellow << input_node->t0->text() <<
+      book::rem::endl << input_node->t0->mark() << book::rem::endl << book::rem::commit;
 }
 
 
@@ -777,6 +781,7 @@ void xio::header(xio* input_node, book::source_location&& Loc)
  * \return new Insertion node ( or vertex? ).
  *
  * ex.: if x-1 + 12 ==  0 return 12;
+ * * ex.: if a+1+b+c d = 12;
  */
 xio* xio::input(xio* parent_bloc, token_data* token, xio::maker mk)
 {
@@ -785,7 +790,7 @@ xio* xio::input(xio* parent_bloc, token_data* token, xio::maker mk)
         auto [l, r] = lr;
         if ((t0->t & l) && (token->t & r))
         {
-            book::rem::push_debug(HERE) << color::Yellow << t0->text() << " <- " << color::Yellow << token->text() << color::Reset << " Input token validated... ";
+            book::rem::push_debug(HERE) << color::Yellow << t0->text() << " <- " << color::Yellow << token->text() << color::Reset << " Input token validated... " << book::rem::commit;
             ///@todo Check id tokens for function_call and other id-constructs before calling xio::input(...).
 
             xio* a;
@@ -804,10 +809,10 @@ xio* xio::input(xio* parent_bloc, token_data* token, xio::maker mk)
                     a->detach();
                     delete a;
                 }
-                book::rem::push_syntax() << " invalid relational operands at " << token->location() << " - unexpected token:" << book::rem::endl << token->mark();
+                book::rem::push_syntax() << " invalid relational operands at " << token->location() << " - unexpected token:" << book::rem::endl << token->mark() << book::rem::endl << book::rem::commit;
                 return nullptr;
             }
-            book::rem::push_debug() << t0->text() << "::input(" << token->text() << "):" << book::rem::endl << token->mark();
+            book::rem::push_debug() << t0->text() << "::input(" << token->text() << "):" << book::rem::endl << token->mark()<< book::rem::endl << book::rem::commit;
 
             return (this->*fn)(a);
         }
@@ -816,8 +821,8 @@ xio* xio::input(xio* parent_bloc, token_data* token, xio::maker mk)
     book::rem::push_info(HERE) << color::White << "'" << color::Yellow << t0->text() << color::White << "'" << color::Reset
                                << "::input(" << color::Yellow <<  token->text() << color::Reset << ") => invalid relational operands at "
         << token->location() << " - unexpected token."
-        << book::rem::endl << token->mark();
-    book::rem::out() << t0->details() << " || " << token->details() << book::rem::endl << "Returning nullptr";
+        << book::rem::endl << token->mark()<< book::rem::endl << book::rem::commit;
+    book::rem::out() << t0->details() << " || " << token->details() << book::rem::endl << "Returning nullptr" << book::rem::commit;
 
     return nullptr;
 }
@@ -837,7 +842,7 @@ xio* xio::_binary(xio* a)
 
     if (t0->is_binary())
     {
-        if (!rhs) syntax_error(a);
+        //if (!rhs) syntax_error(a);
 
         if (a->t0->d < t0->d)
             return to_right(a);
@@ -850,7 +855,10 @@ xio* xio::_binary(xio* a)
             return (op->*fn)(a);
         }
 
-        return a->to_left(this);
+        a->to_left(this); // returns "this" but from here we must return a as the new insertion node into the tree...
+        // The only case when it is required to return lhs ( left-hand-side node) is on openning par or left-pair(operator) that isolates the
+        // inner expression between open-close pair.
+        return a;
     }
 
     if (op) {
@@ -870,7 +878,7 @@ xio* xio::_close_pair(xio* a)
     xio* x = xio::pop_par();
     if (!x)
     {
-        book::rem::push_error() << "Unmatched left paranthese:" << book::rem::endl << a->t0->mark();
+        book::rem::push_error() << "Unmatched left paranthese:" << book::rem::endl << a->t0->mark()<< book::rem::endl << book::rem::commit;
         return nullptr;
     }
     a->op = x->op;
@@ -889,7 +897,7 @@ xio* xio::_close_pair(xio* a)
         << a->t0->text()
         << color::Reset
         << "]" << book::rem::endl
-        << a->t0->mark();
+        << a->t0->mark()<< book::rem::endl << book::rem::commit;
 
     return a;
 }
@@ -901,7 +909,7 @@ xio* xio::_close_par(xio* a)
     xio* x = xio::pop_par();
     if (!x)
     {
-        book::rem::push_error() << "Unmatched left paranthese." << a->t0->mark();
+        book::rem::push_error() << "Unmatched left paranthese." << a->t0->mark()<< book::rem::endl << book::rem::commit;
         return nullptr;
     }
     a->op = x->op;
@@ -920,7 +928,7 @@ xio* xio::_close_par(xio* a)
         << a->t0->text()
         << color::Reset
         << "]" << book::rem::endl
-        << a->t0->mark();
+        << a->t0->mark()<< book::rem::endl << book::rem::commit;
 
     return a;
 }
@@ -941,7 +949,7 @@ xio* xio::collapse_par_pair(xio* a)
         book::rem::out()
             << color::Yellow << v->op->attribute() << color::CornflowerBlue
             << " <-- "
-            << color::Yellow << a->attribute();
+            << color::Yellow << a->attribute()<< book::rem::commit;
 
         auto p_fn = query(v->op, a);
         if (!p_fn)
@@ -984,6 +992,8 @@ xio* xio::pop_par()
 
 xio* xio::begin(xio* parent_, token_data* token, xio::maker xmk)
 {
+    book::rem::push_debug(HEREF) << color::Yellow << token->text() << book::rem::endl <<  book::rem::commit;
+
     if (!token->_flags.V)
         return nullptr;
 
@@ -1007,7 +1017,7 @@ xio* xio::tree_close()
 
     if (t0->c == mnemonic::OpenPar)
     {
-        book::rem::push_error() << " unexpected end of file.";
+        book::rem::push_error() << " unexpected end of file." << book::rem::commit;
         return nullptr;
     }
 
@@ -1015,17 +1025,17 @@ xio* xio::tree_close()
     {
         xio* x = xio::pars.top();
         xio::pars.pop();
-        book::rem::push_error() << " umatched closing parenthese from:" << book::rem::endl << x->t0->mark();
+        book::rem::push_error() << " umatched closing parenthese from:" << book::rem::endl << x->t0->mark()<< book::rem::endl << book::rem::commit;
         return nullptr;
     }
 
 
     if (t0->c == mnemonic::ClosePar) {
-        book::rem::push_debug() << "Closing the tree on close parenthese:";
+        book::rem::push_debug() << "Closing the tree on close parenthese:"<< book::rem::commit;
         if (lhs)
         {
             xio* x = lhs;
-            book::rem::push_debug() << "left hand side operand: " << lhs->t0->details() << ":" << book::rem::endl << lhs->t0->mark();
+            book::rem::push_debug() << "left hand side operand: " << lhs->t0->details() << ":" << book::rem::endl << lhs->t0->mark()<< book::rem::endl << book::rem::commit;
 
             lhs->op = op;
 
@@ -1044,7 +1054,7 @@ xio* xio::tree_close()
 
 xio* xio::tree_root(bool skip_syntax)
 {
-    book::rem::push_debug(HERE) << "query tree ins from xio node:" << book::rem::endl << t0->mark();
+    book::rem::push_debug(HERE) << "query tree ins from xio node:" << book::rem::endl << t0->mark()<< book::rem::endl << book::rem::commit;
     xio* x = this;
     xio* p = x;
     do {
@@ -1056,25 +1066,25 @@ xio* xio::tree_root(bool skip_syntax)
             case type::Binary:
                 if (!x->lhs)
                 {
-                    book::rem::push_error() << "Syntax error: binary operator has no left operand." << book::rem::endl << x->t0->mark();
+                    book::rem::push_error() << "Syntax error: binary operator has no left operand." << book::rem::endl << x->t0->mark()<< book::rem::endl << book::rem::commit;
                     return nullptr;
                 }
                 if (!x->rhs)
                 {
-                    book::rem::push_error() << "Syntax error: binary operator has no right operand." << book::rem::endl << x->t0->mark();
+                    book::rem::push_error() << "Syntax error: binary operator has no right operand." << book::rem::endl << x->t0->mark()<< book::rem::endl << book::rem::commit;
                     return nullptr;
                 }
             case type::Prefix:
                 if (!x->rhs)
                 {
-                    book::rem::push_error() << "Syntax error: prefix unary operator has no (right) operand." << book::rem::endl << x->t0->mark();
+                    book::rem::push_error() << "Syntax error: prefix unary operator has no (right) operand." << book::rem::endl << x->t0->mark()<< book::rem::endl << book::rem::commit;
                     return nullptr;
                 }
                 break;
             case type::Postfix:
                 if (!x->lhs)
                 {
-                    book::rem::push_error() << "Syntax error: postfix unary operator has no (left) operand." << book::rem::endl << x->t0->mark();
+                    book::rem::push_error() << "Syntax error: postfix unary operator has no (left) operand." << book::rem::endl << x->t0->mark()<< book::rem::endl << book::rem::commit;
                     return nullptr;
                 }
                 break;
@@ -1083,7 +1093,7 @@ xio* xio::tree_root(bool skip_syntax)
         p = p->op;
     } while (p);
 
-    book::rem::push_debug(HERE) << "query tree ins returning node: " << x->t0->details() << book::rem::endl << x->t0->mark();
+    book::rem::push_debug(HERE) << "query tree ins returning node: " << x->t0->details() << book::rem::endl << x->t0->mark()<< book::rem::endl << book::rem::commit;
     return  x;
 }
 
@@ -1106,7 +1116,7 @@ xio* xio::to_right(xio* in_rhs)
         book::rem::push_debug() << t0->text() << " -> " << rhs->t0->text()
             << color::Lime << "tree_set_right "
             << color::White << " <- "
-            << color::Yellow << in_rhs->t0->text();
+            << color::Yellow << in_rhs->t0->text()<< book::rem::commit;
         rhs->op = in_rhs;
         in_rhs->lhs = rhs;
     }
@@ -1114,7 +1124,7 @@ xio* xio::to_right(xio* in_rhs)
     in_rhs->op = this;
     if (t0->is_binary())
     {
-        book::rem::push_debug(HERE) << xio::trace_connect_binary_operands(this);
+        book::rem::push_debug(HERE) << xio::trace_connect_binary_operands(this)<< book::rem::commit;
     }
     return in_rhs;
 }

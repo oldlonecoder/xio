@@ -51,6 +51,18 @@ parser::parser(xiobloc* bloc, const char* source_or_filename, const std::string&
     _bloc(bloc)
 {}
 
+
+
+
+/*!
+ * \brief parser::parse_expr  - Directly invokable independently. Cannot be called from within the normal complete rules parsing...
+ *
+ *
+ * \param blk
+ * \param expr_text
+ * \return rem::code::accepted or rejected;
+ * \author &copy; 2023, oldlonecoder (serge.lussier@goldlonecoder.club) ;)
+ */
 book::rem::code parser::parse_expr(xiobloc *blk, const char *expr_text)
 {
     _bloc = blk; ///< Interpreter's bloc address likelly...
@@ -69,7 +81,7 @@ book::rem::code parser::parse_expr(xiobloc *blk, const char *expr_text)
     }
 
 
-    book::rem::push_debug(HERE) << " parser::context initialized : dumping tokens (coloured) details" << book::rem::endl;
+    book::rem::push_debug(HERE) << " parser::context initialized : dumping tokens (coloured) details" << book::rem::endl << book::rem::commit;
 
     lexer_color lc;
     std::string code = expr_text;
@@ -77,12 +89,12 @@ book::rem::code parser::parse_expr(xiobloc *blk, const char *expr_text)
     book::rem::push_info() <<  color::BlueViolet << "xio" << color::White << "::" <<
       color::BlueViolet << "parser" << color::White << "::" <<
       color::BlueViolet << "parse_expr" << color::White << "(" <<
-      lc.Product() << color::White << ") :" << book::rem::endl;
+      lc.Product() << color::White << ") :" << book::rem::endl  << book::rem::commit;
 
-    for(auto & token: _tokens_stream) book::rem::out() << lc.mark(token);
-    rem::push_debug() << " returning dummy float alu";
+    for(auto & token: _tokens_stream) book::rem::out() << lc.mark(token) << book::rem::commit;
+    rem::push_debug() << " returning dummy float alu"  << book::rem::commit;
 
-    book::rem::push_debug(HERE) << "\\O/ - Now let's parse:";
+    book::rem::push_debug(HERE) << "\\O/ - Now let's parse:" << book::rem::commit;
      ctx = context(_bloc, _tokens_stream.begin(), _tokens_stream.end(), _tokens_stream.end());
 
     xio* x{nullptr};
@@ -90,15 +102,14 @@ book::rem::code parser::parse_expr(xiobloc *blk, const char *expr_text)
 
     if(!x)
     {
-bail:
         if(!ctx.cur->_flags.V)
         {
-            book::rem::out(HERE) << color::Yellow << " arithmetic expression stopped by non-value token - returning.";
+            book::rem::out(HERE) << color::Yellow << " arithmetic expression inputs stopped by non-value token - returning.";
             goto end_of_expr;
         }
         auto tokens = tokens_line_from(ctx.token());
         spp::interpretr::trace_line(ctx.cur, tokens);
-        book::rem::push_message() << "parse arithmetic expression failed.";
+        book::rem::push_message() << "parse arithmetic expression failed." << book::rem::commit;
         ctx.reject();
 
         return book::rem::accepted;
@@ -110,7 +121,10 @@ bail:
             return make_instruction(token);
         });
         if(!x)
-            goto bail;
+        {
+            book::rem::out(HERE) << color::Yellow << " arithmetic expression inputs stopped  by unexpected token - returning.";
+            break;
+        }
         ctx.instructions.push_back(x);
         ctx++;
     }
@@ -155,7 +169,7 @@ book::rem::code parser::parse_rule(const std::string& rule_name)
     grammar::rule* rule = grammar::rules[rule_name];
     if (!rule)
     {
-        book::rem::push_error() << " the rule identified by '" << rule_name << "' doe not exist.";
+        book::rem::push_error() << " the rule identified by '" << rule_name << "' doe not exist."  << book::rem::commit;
         return book::rem::notexist;
     }
 
@@ -167,13 +181,13 @@ book::rem::code parser::parse_rule(const std::string& rule_name)
             {
                 if (!fn)
                 {
-                    book::rem::push_error() << "[parser rule]: The external rule identified by '" << rule->a() << color::Reset << '\'' << color::Yellow << rule_name << color::Reset << "' is " << book::rem::notimplemented;
+                    book::rem::push_error() << "[parser rule]: The external rule identified by '" << rule->a() << color::Reset << '\'' << color::Yellow << rule_name << color::Reset << "' is " << book::rem::notimplemented << book::rem::commit;
                     return book::rem::notimplemented;
                 }
                 return (this->*fn)();
             }
         }
-        book::rem::push_error() << "[parser rule]: The external rule identified by '" << color::Yellow << rule_name << color::Reset << "' is out of bounds : " << book::rem::notexist;
+        book::rem::push_error() << "[parser rule]: The external rule identified by '" << color::Yellow << rule_name << color::Reset << "' is out of bounds : " << book::rem::notexist << book::rem::commit;
     }
 
     //...
@@ -181,14 +195,14 @@ book::rem::code parser::parse_rule(const std::string& rule_name)
         << color::Yellow
         << rule_name
         << color::Reset << "' is"
-        << book::rem::notimplemented;
+        << book::rem::notimplemented << book::rem::commit;
 
     return book::rem::notimplemented;
 }
 
 xio* parser::parse_rvalue_keyword()
 {
-    book::rem::push_debug(HERE) << book::rem::notimplemented << ctx.token()->mark();
+    book::rem::push_debug(HERE) << book::rem::notimplemented << ctx.token()->mark()  << book::rem::commit;
     return nullptr;
 }
 
@@ -218,7 +232,7 @@ token_data::collection parser::tokens_line_from(token_data* token)
 ::xio::xio* parser::make_instruction(token_data* token)
 {
     // "Branch" on token type
-    book::rem::push_debug(HERE) << " Entering xio producer with "<< book::rem::endl << token->mark();
+    book::rem::push_debug(HERE) << " Entering xio producer with "<< book::rem::endl << token->mark() << book::rem::commit;
 
     switch(token->t)
     {
@@ -243,7 +257,7 @@ token_data::collection parser::tokens_line_from(token_data* token)
             return new xio(ctx.bloc,token);
         break;
         default:
-            book::rem::push_message(HERE) << "unhandled token:";
+            book::rem::push_message(HERE) << "unhandled token:" << book::rem::commit;
         break;
     }
     return nullptr;

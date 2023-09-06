@@ -567,13 +567,26 @@ rem::code lexer::scan_identifier(token_data &atoken)
     atoken._flags.V = 1;// src_cursor._F ? 1 : 0; //Subject to be modified
     Push(atoken);
     if(src_cursor._F && !mConfig.Tokens->back().is_operator())
-        insert_multiply(atoken);
+        if((atoken.mLoc.colnum - mConfig.Tokens->back().mLoc.colnum) < 2) // no spaces between multiply two adjacent letters!!! ( 2023-07-sept oldlonecoder).
+            insert_multiply(atoken);
 
     return rem::accepted;
 }
 
 void lexer::insert_multiply(token_data &atoken)
 {
+
+    auto i = --mConfig.Tokens->end();
+    --i;
+    book::rem::push_debug(HERE) << atoken.text() << "::colnum :" << color::Yellow << atoken.mLoc.colnum << book::rem::commit;
+    book::rem::push_debug(HERE) << i->text() << "::colnum :" << color::Yellow << i->mLoc.colnum << book::rem::commit;
+
+    if((atoken.mLoc.colnum - i->mLoc.colnum) >= 2)
+    {
+        book::rem::push_debug(HERE) << " rejected because there must be no spaces between the involved tokens..." << book::rem::commit;
+        return;
+    }
+    ++i;
     token_data Mul;
     Mul = atoken; // Push atoken properties in the incoming virtual multiply operator
     Mul.t        = xio::type::Binary;
@@ -581,7 +594,7 @@ void lexer::insert_multiply(token_data &atoken)
     Mul.d        = distance::product;
     Mul._flags.M = Mul._flags.V = 1;
     Mul.c        = mnemonic::Mul;
-    auto i = --mConfig.Tokens->end();
+
     mConfig.Tokens->insert(i, Mul);
     //logger::debug() << __PRETTY_FUNCTION__ << ":\n Details:" << Mul.details() << "\n" << Mul.mark();
 }

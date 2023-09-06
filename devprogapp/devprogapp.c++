@@ -47,9 +47,15 @@ auto main(int argc, char** argv) -> int
     ::signal(SIGABRT, sig_abort);
 
     interpretr i;
-    auto alu = i["x = 42(3+4*8) return 0;"];
+    try{
+        auto alu = i["x = 42/4 + 5(3+4*3/5+34) - 42 d = 12;"];
+        rem::out() << " Result: " << color::Yellow << alu();
+    }
+    catch(book::rem & )
+    {
+        // no need to do thingss here ...
+    }
+    book::rem::clear();
 
-    rem::out() << " Result: " << color::Yellow << alu();
-    rem::clear(nullptr);
     return 0;
 }

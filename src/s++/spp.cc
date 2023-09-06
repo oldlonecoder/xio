@@ -1,5 +1,8 @@
 #include "xio/s++/spp.h"
 #include "xio/compiler/parser.h"
+#include <fstream>
+
+
 
 namespace xio::spp
 {
@@ -27,7 +30,8 @@ alu interpretr::operator[](const std::string& expr)
     g.build();
     g.dump();
     parser expr_parser(this, expr.c_str());
-    book::rem::code R = expr_parser.parse_expr(this, expr.c_str());
+    auto R = expr_parser.parse_expr(this, expr.c_str());
+    //auto R = expr_parser.parse_rule("expression");
     if(R != book::rem::accepted)
       return alu(1.42f);
 
@@ -35,8 +39,12 @@ alu interpretr::operator[](const std::string& expr)
     xio::dot_tree_start(str, expr);
     xio::dot_tree(_instructions->front(), str);
     str << "}";
-    book::rem::push_debug(HERE) << " tree output: ";
-    book::rem::out() << str;
+    //book::rem::push_debug(HERE) << " tree output: ";
+    //book::rem::out() << str;
+    std::ofstream of("./xio.dot");
+    of << str();
+    of.close();
+    (void)system("dot -O xio.dot -Tpng && xdg-open xio.dot.png");
 
     alu r = jsr();
     book::rem::push_debug(HERE) << " result: " << color::Yellow << r() << ": " << book::rem::endl;
