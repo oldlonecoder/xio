@@ -129,6 +129,7 @@ std::string  alu::mNil = "";
         {
             T = rhs.T;
             v = rhs.v;
+            return *this; // WTF???????
         }
         if (T & xio::type::Number)
         {

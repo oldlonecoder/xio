@@ -29,6 +29,10 @@
 
 namespace xio
 {
+namespace spp
+{
+    class interpretr;
+}
 /*!
     @brief Executable Instruction Object.
 
@@ -38,6 +42,7 @@ namespace xio
 class  XIO_PUBLIC xio : public book::object
 {
     friend class compiler;
+    friend class ::xio::spp::interpretr;
 protected:
     xio* op = nullptr; ///< Parent Operator
     xio* lhs = nullptr; ///< Left Hand Side Operand.

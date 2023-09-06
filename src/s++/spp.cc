@@ -30,6 +30,7 @@ alu interpretr::operator[](const std::string& expr)
     book::rem::code R = expr_parser.parse_expr(this, expr.c_str());
     if(R != book::rem::accepted)
       return alu(1.42f);
+
     stracc str = "";
     xio::dot_tree_start(str, expr);
     xio::dot_tree(_instructions->front(), str);
@@ -37,7 +38,14 @@ alu interpretr::operator[](const std::string& expr)
     book::rem::push_debug(HERE) << " tree output: ";
     book::rem::out() << str;
 
-    return jsr();
+    alu r = jsr();
+    book::rem::push_debug(HERE) << " result: " << color::Yellow << r() << ": " << book::rem::endl;
+    if(_xiovars)
+    {
+      for(auto* v : *_xiovars)
+          book::rem::out() << color::White << "'" << v->t0->text() << color::White << "' :" <<color::Yellow << v->acu()();
+    }
+    return r;
 }
 
 

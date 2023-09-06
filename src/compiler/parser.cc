@@ -69,11 +69,16 @@ book::rem::code parser::parse_expr(xiobloc *blk, const char *expr_text)
     }
 
 
-    book::rem::push_debug(HERE) << " parser::context initialized : dumping tokens (coloured) details";
+    book::rem::push_debug(HERE) << " parser::context initialized : dumping tokens (coloured) details" << book::rem::endl;
 
     lexer_color lc;
     std::string code = expr_text;
     lc.process(code, _tokens_stream);
+    book::rem::push_info() <<  color::BlueViolet << "xio" << color::White << "::" <<
+      color::BlueViolet << "parser" << color::White << "::" <<
+      color::BlueViolet << "parse_expr" << color::White << "(" <<
+      lc.Product() << color::White << ") :" << book::rem::endl;
+
     for(auto & token: _tokens_stream) book::rem::out() << lc.mark(token);
     rem::push_debug() << " returning dummy float alu";
 

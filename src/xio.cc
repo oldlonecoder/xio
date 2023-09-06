@@ -152,7 +152,7 @@ xio::xio(object* parent_bloc, token_data* atoken, alu* a_alu): object(parent_blo
     case type::Text:
         *acc = atoken->text();
         return;
-    case type::Leaf:
+    case type::Number:
     {
         ///@todo Attention enlever le court-circuit du type-size!!!
         if (t0->s & type::Number)
@@ -204,6 +204,13 @@ xio::list::iterator xio::query(xio* c)
 alu xio::jsr()
 {
     //...
+
+    book::rem::push_debug(HERE) << book::rem::endl << t0->mark();
+    if(t0->is_binary())
+        book::rem::out() << xio::trace_connect_binary_operands(this);
+
+
+
 
     if (lhs) *acc = lhs->jsr(); // Always catch the lhs value so we return that one if there is no rhs operand.
     if (rhs) *acc = rhs->jsr(); // Always catch the rhs value because it is the value to be returned after being applied to the lhs (if applicable).
@@ -423,9 +430,9 @@ alu xio::Mul()
         << color::Yellow << lhs->attribute()
         << color::CornflowerBlue << attribute()
         << color::Yellow << rhs->attribute()
-        << color::White << "=";
+      << color::White;
     *acc = *lhs->acc * *rhs->acc;
-    book::rem::out() << (*acc)();
+    book::rem::out(HEREF) << color::CornflowerBlue << " => " << color::Lime << (*acc)();
     return *acc;
 }
 alu xio::Modulo()
@@ -451,30 +458,40 @@ alu xio::Assign()
         << color::Yellow
         << rhs->acu()() << ":";
 
-    *acc = *lhs->acc = *rhs->acc;
-    book::rem::out() << color::CornflowerBlue << " => " << color::Lime << (*acc)();
+    *lhs->acc = *rhs->acc;
+    *acc = *rhs->acc;
+
+    book::rem::out(HEREF) << color::CornflowerBlue << " => " << color::Lime << (*acc)();
     return *acc;
 }
+
+
 alu xio::BinAnd()
 {
     *acc = *lhs->acc & *rhs->acc;
     return *acc;
 }
+
+
 alu xio::BinOr()
 {
     *acc = *lhs->acc | *rhs->acc;
     return *acc;
 }
+
+
 alu xio::BitXor()
 {
     *acc = *lhs->acc ^ *rhs->acc;
     return *acc;
 }
+
 alu xio::X1()
 {
     *acc = ~(*lhs->acc);
     return *acc;
 }
+
 alu xio::X2()
 {
     *acc = ~(*lhs->acc) + alu(1);
@@ -510,6 +527,7 @@ alu xio::Division()
         << rhs->acu()() << ":";
 
     *acc = *lhs->acc / *rhs->acc;
+    book::rem::out(HEREF) << color::CornflowerBlue << " => " << color::Lime << (*acc)();
     return *acc;
     //book::rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)();
 }
@@ -519,6 +537,7 @@ alu xio::Factorial()
 {
     //*acc = acc->factorial(*lhs->acc);
     *acc = lhs->acc->factorial();
+    book::rem::out(HEREF) << color::CornflowerBlue << " => " << color::Lime << (*acc)();
     return *acc;
 }
 
