@@ -30,8 +30,8 @@ alu interpretr::operator[](const std::string& expr)
     g.build();
     g.dump();
     parser expr_parser(this, expr.c_str());
-    auto R = expr_parser.parse_expr(this, expr.c_str());
-    //auto R = expr_parser.parse_rule("expression");
+    //auto R = expr_parser.parse_expr(this, expr.c_str());
+    auto R = expr_parser.parse_rule("expression");
     if(R != book::rem::accepted)
       return alu(1.42f);
 

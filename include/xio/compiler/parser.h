@@ -15,7 +15,7 @@
 #include <xio/lexer/lexer_color.h>
 #include <xio/compiler/grammar/grammar.h>
 #include <xio/xiobloc.h>
-
+#include <stack>
 
 
 namespace xio
@@ -45,8 +45,8 @@ class XIO_PUBLIC parser
         xiobloc*             bloc{nullptr};
         ::xio::type::T       current_type = ::xio::type::Number;
         ///...
-        book::rem::code state = book::rem::none;
 
+        book::rem::code state = book::rem::none;
 
         xio::list instructions; ///< filling the temp xio buffer before the commit into the instructions list of the scope-bloc ( local stack ).
 

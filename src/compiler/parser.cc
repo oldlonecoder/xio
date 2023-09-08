@@ -151,7 +151,7 @@ end_of_expr:
  */
 book::rem::code parser::parse_expression()
 {
-
+    book::rem::push_error(HERE) << " This rule parser is not yet implemented. " << book::rem::commit;
     return book::rem::notimplemented;
 }
 
