@@ -1,0 +1,46 @@
+digraph arithmetic_expressionree {
+ratio=compress; ranksep=.55; size = "6.5,6.5";
+    node [fontname="Source Code Pro", fontsize=12];
+    label="Arithmetic Expr Tree:[x = 42/(-4)! + 5(3+4*3/5+34) - 42 d = 12;]"; fontsize = 10;
+    xioNode0x564ecb5d4a20 [shape=none, label="="]
+    xioNode0x564ecb5c55e0 [shape=none, label="x"]
+    xioNode0x564ecb5dc4e0 [shape=none, label="-"]
+    xioNode0x564ecb5dfd00 [shape=none, label="+"]
+    xioNode0x564ecb5df5c0 [shape=none, label="/"]
+    xioNode0x564ecb5d5050 [shape=none, label="42"]
+    xioNode0x564ecb5e0050 [shape=none, label="!"]
+    xioNode0x564ecb5dfe40 [shape=none, label="-"]
+    xioNode0x564ecb5e0190 [shape=none, label="4"]
+    xioNode0x564ecb5df450 [shape=none, label="*"]
+    xioNode0x564ecb5df830 [shape=none, label="5"]
+    xioNode0x564ecb5db780 [shape=none, label="+"]
+    xioNode0x564ecb5d9f70 [shape=none, label="+"]
+    xioNode0x564ecb5e05f0 [shape=none, label="3"]
+    xioNode0x564ecb5dad70 [shape=none, label="/"]
+    xioNode0x564ecb5da540 [shape=none, label="*"]
+    xioNode0x564ecb5da1e0 [shape=none, label="4"]
+    xioNode0x564ecb5da850 [shape=none, label="3"]
+    xioNode0x564ecb5db1d0 [shape=none, label="5"]
+    xioNode0x564ecb5dbb60 [shape=none, label="34"]
+    xioNode0x564ecb5dc8e0 [shape=none, label="42"]
+    xioNode0x564ecb5d4a20 -> xioNode0x564ecb5c55e0;
+    xioNode0x564ecb5d4a20 -> xioNode0x564ecb5dc4e0;
+    xioNode0x564ecb5dc4e0 -> xioNode0x564ecb5dfd00;
+    xioNode0x564ecb5dfd00 -> xioNode0x564ecb5df5c0;
+    xioNode0x564ecb5df5c0 -> xioNode0x564ecb5d5050;
+    xioNode0x564ecb5df5c0 -> xioNode0x564ecb5e0050;
+    xioNode0x564ecb5e0050 -> xioNode0x564ecb5dfe40;
+    xioNode0x564ecb5dfe40 -> xioNode0x564ecb5e0190;
+    xioNode0x564ecb5dfd00 -> xioNode0x564ecb5df450;
+    xioNode0x564ecb5df450 -> xioNode0x564ecb5df830;
+    xioNode0x564ecb5df450 -> xioNode0x564ecb5db780;
+    xioNode0x564ecb5db780 -> xioNode0x564ecb5d9f70;
+    xioNode0x564ecb5d9f70 -> xioNode0x564ecb5e05f0;
+    xioNode0x564ecb5d9f70 -> xioNode0x564ecb5dad70;
+    xioNode0x564ecb5dad70 -> xioNode0x564ecb5da540;
+    xioNode0x564ecb5da540 -> xioNode0x564ecb5da1e0;
+    xioNode0x564ecb5da540 -> xioNode0x564ecb5da850;
+    xioNode0x564ecb5dad70 -> xioNode0x564ecb5db1d0;
+    xioNode0x564ecb5db780 -> xioNode0x564ecb5dbb60;
+    xioNode0x564ecb5dc4e0 -> xioNode0x564ecb5dc8e0;
+}

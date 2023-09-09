@@ -203,6 +203,7 @@ constexpr T scope      = 0;
 constexpr T assign_rhs = 1;
 constexpr T deref      = 2;
 constexpr T prefix     = 3;
+constexpr T postfix    = 3;
 constexpr T unary      = 3;
 constexpr T paranthese = 5;
 constexpr T exponent   = 6;

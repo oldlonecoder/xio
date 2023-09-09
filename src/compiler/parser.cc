@@ -83,7 +83,7 @@ book::rem::code parser::parse_expr(xiobloc *blk, const char *expr_text)
     }
 
 
-    book::rem::push_debug(HERE) << " parser::context initialized : dumping tokens (coloured) details" << book::rem::endl << book::rem::commit;
+    book::rem::push_debug(HERE) << " lexer terminate successfully : prepare (coloured) tokens with details [lexer_color]:" << book::rem::endl << book::rem::commit;
 
     lexer_color lc;
     std::string code = expr_text;
@@ -91,22 +91,22 @@ book::rem::code parser::parse_expr(xiobloc *blk, const char *expr_text)
     book::rem::push_info() <<  color::BlueViolet << "xio" << color::White << "::" <<
       color::BlueViolet << "parser" << color::White << "::" <<
       color::BlueViolet << "parse_expr" << color::White << "(" <<
-      lc.Product() << color::White << ") :" << book::rem::endl  << book::rem::commit;
+      lc.Product() << color::White << ") : dumping tokens: " << book::rem::commit;
 
     for(auto & token: _tokens_stream) book::rem::out() << lc.mark(token) << book::rem::commit;
-    rem::push_debug() << " returning dummy float alu"  << book::rem::commit;
 
-    book::rem::push_debug(HERE) << "\\O/ - Now let's parse:" << book::rem::commit;
-     ctx = context(_bloc, _tokens_stream.begin(), _tokens_stream.end(), _tokens_stream.end());
+    book::rem::push_info(HERE) << "init context data;" << book::rem::commit;
+    ctx = context(_bloc, _tokens_stream.begin(), _tokens_stream.end(), _tokens_stream.end());
 
+    book::rem::push_info() << "begin parse and build expr binary tree ( of xio nodes ): " << book::rem::commit;
     xio* x{nullptr};
-    x = xio::begin(ctx.bloc, ctx.token(), [this](token_data* t)->xio*{ return make_instruction(t); });
+    x = xio::begin(ctx.bloc, ctx.token(), [this](token_data* t)->xio*{ return make_xio_node(t); });
 
     if(!x)
     {
         if(!ctx.cur->_flags.V)
         {
-            book::rem::out(HERE) << color::Yellow << " arithmetic expression inputs stopped by non-value token - returning.";
+            book::rem::out(HERE) << color::Yellow << " arithmetic expression inputs stopped by non-value token - returning." << book::rem::commit;
             goto end_of_expr;
         }
         auto tokens = tokens_line_from(ctx.token());
@@ -120,11 +120,11 @@ book::rem::code parser::parse_expr(xiobloc *blk, const char *expr_text)
     ctx++;
     while((ctx.cur < _tokens_stream.end()) && (ctx.cur->c != ::xio::mnemonic::Semicolon)){
         x = x->input(ctx.bloc, ctx.token(), [this](token_data* token)-> xio*{
-            return make_instruction(token);
+            return make_xio_node(token);
         });
         if(!x)
         {
-            book::rem::out(HERE) << color::Yellow << " arithmetic expression inputs stopped  by unexpected token - returning.";
+            book::rem::out(HERE) << color::Yellow << " arithmetic expression inputs stopped  by unexpected token - returning." << book::rem::commit;
             break;
         }
         ctx.instructions.push_back(x);
@@ -134,8 +134,13 @@ end_of_expr:
     xio* root = ctx.instructions.back()->tree_close();
     if(!root)
         ctx.reject();
-    ctx.accept(root);
 
+    book::rem::push_info() << " Returning accepted." << book::rem::commit;
+    ctx.accept(root);
+    // jnl.info() << ....
+    // jnl.error() << ....
+    // jnl.warning() << ....
+    // jnl.debug() << ....
     return alu(1.42f);
 }
 
@@ -297,10 +302,10 @@ token_data::collection parser::tokens_line_from(token_data* token)
  * Will create the proper instance of the instruction from the token_data infos.
  * \param token  pointer to the current token.
  * \return pointer to newly created xio;
- * \note As of 2023-08-28, only xio's POD variable types are created on identifier token restricted to arithmetic expressions.
+ * \note As of 2023-08-28, only xio's POD ( Plain Old Data ) variable types are created on identifier token restricted to arithmetic expressions.
  * \author &copy; August 28, 2023; oldlonecoder, (serge.lussier@oldlonecoder.club)
  */
-::xio::xio* parser::make_instruction(token_data* token)
+::xio::xio* parser::make_xio_node(token_data* token)
 {
     // "Branch" on token type
     book::rem::push_debug(HERE) << " Entering xio producer with "<< book::rem::endl << token->mark() << book::rem::commit;

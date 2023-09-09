@@ -223,11 +223,11 @@ book::rem::code grammar::parse_identifier(strbrk::token_t::iterator  &crs)
                 a.reset();
                 break;
             }*/
-            book::rem::out() << " `in sequence state`: Checking type (token text) '" << color::LightGoldenrod3 << (*crs)() << color::Reset << "':" << book::rem::commit;
+            //book::rem::out() << " `in sequence state`: Checking type (token text) '" << color::LightGoldenrod3 << (*crs)() << color::Reset << "':" << book::rem::commit;
             type::T t = type::from_str((*crs)());
             if(t)// & teacc::type::bloc_t) // Quick and dirty hack about bypassing the lexer::teacc::type::bloc type:
             {
-                book::rem::out() << " type name:'" << type::name(t) << "' <==> token:'" << (*crs)() << " properties: [" << a() << "]" << book::rem::commit;
+               // book::rem::out() << " type name:'" << type::name(t) << "' <==> token:'" << (*crs)() << " properties: [" << a() << "]" << book::rem::commit;
                 _rule->a = a;
                 (*_rule) | t;
                 a.Reset();
@@ -236,7 +236,7 @@ book::rem::code grammar::parse_identifier(strbrk::token_t::iterator  &crs)
 
             if(r)
             {
-                book::rem::out() << " rule name:'" << _rule->name() << "' <==> token:'" << (*crs)() << " properties: [" << a() << "]" << book::rem::commit;
+                //book::rem::out() << " rule name:'" << _rule->name() << "' <==> token:'" << (*crs)() << " properties: [" << a() << "]" << book::rem::commit;
                 _rule->a = a;
                 (*_rule) | r;
                 a.Reset();
@@ -245,8 +245,8 @@ book::rem::code grammar::parse_identifier(strbrk::token_t::iterator  &crs)
             else
             {
                 r = new rule((*crs)());
-                book::rem::out() << "Creating new forward rule ( rule term ) identified by:" << color::LightGoldenrod4 << r->name()
-                    << color::Reset << " - properties: " << a() << book::rem::commit;
+                //book::rem::out() << "Creating new forward rule ( rule term ) identified by:" << color::LightGoldenrod4 << r->name()
+                //    << color::Reset << " - properties: " << a() << book::rem::commit;
                 rules[(*crs)()] = r;
                 _rule->a = a;
                 _state = st_seq; //  expect ':' as next token in main loop.
@@ -429,7 +429,7 @@ const grammar::rule *grammar::operator[](const std::string &r_id) const
     auto i = grammar::rules.find(r_id);
     if(i == grammar::rules.end())
     {
-        book::rem::push_error() << " no such rule: '" << r_id << "'" << book::rem::commit;
+        //book::rem::push_error() << " no such rule: '" << r_id << "'" << book::rem::commit;
         return nullptr;
     }
     book::rem::push_debug() << " rule '" << r_id << "' found." << book::rem::commit;

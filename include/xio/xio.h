@@ -36,7 +36,7 @@ namespace spp
 /*!
     @brief Executable Instruction Object.
 
-    @author copy;2022, oldlonecoder (Serge Lussier, lussier.serge@gmail.com)
+    @author copy;2008-2023, oldlonecoder (Serge Lussier, lussier.serge@gmail.com)
 */
 
 class  XIO_PUBLIC xio : public book::object
@@ -186,6 +186,7 @@ public:
 
 #pragma endregion TRIGRAPH
     static std::string trace_connect_binary_operands(xio* x);
+    static std::string trace_connect_postfix_operands(xio* x);
 private:
 
     static xio* _global_root_bloc;

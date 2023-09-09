@@ -95,7 +95,7 @@ public:
     book::rem::code parse_expr(xiobloc* blk, const char* expr_text);
 
     // -------------------Cannot be used yet--------------------
-    ::xio::xio* make_instruction(token_data* token);
+    ::xio::xio* make_xio_node(token_data* token);
     book::rem::code parse_rule(const std::string& rule_name);
     // ---------------------------------------------------------
     book::rem::code compile();

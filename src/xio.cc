@@ -205,7 +205,7 @@ alu xio::jsr()
 {
     //...
 
-    book::rem::push_debug(HERE) << book::rem::endl << t0->mark();
+    book::rem::push_debug(HERE) << color::White << attribute() << " value:" << color::Yellow << acc->number<uint64_t>() << book::rem::endl << t0->mark();
     if(t0->is_binary())
         book::rem::out() << xio::trace_connect_binary_operands(this)<< book::rem::endl << book::rem::commit;
 
@@ -536,8 +536,15 @@ alu xio::Division()
 alu xio::Factorial()
 {
     //*acc = acc->factorial(*lhs->acc);
+    book::rem::push_debug(HERE) << color::Lime << lhs->attribute()
+                                << color::Yellow << " " << (*lhs->acc)() << " "
+                                << color::CornflowerBlue << attribute() << color::White << ":" << book::rem::commit;
+
+    book::rem::out() << xio::trace_connect_postfix_operands(this) << book::rem::commit;
+
     *acc = lhs->acc->factorial();
-    book::rem::out(HEREF) << color::CornflowerBlue << " => " << color::Lime << (*acc)()<< book::rem::commit;
+
+    book::rem::out() << color::CornflowerBlue << " => " << color::Yellow << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -665,7 +672,8 @@ alu xio::KI32()
 
 alu xio::KI64()
 {
-    *acc = (int64_t)(rhs->acc->number<int64_t>() & 0xFFFFFFFFFFFFFFFF);
+    //*acc = (int64_t)(rhs->acc->number<int64_t>() & 0xFFFFFFFFFFFFFFFF);
+    *acc = rhs->acc->number<int64_t>();
     return *acc;
 }
 
@@ -933,33 +941,58 @@ xio* xio::_close_par(xio* a)
     return a;
 }
 
+
+
+
+/*!
+ * \brief xio::collapse_par_pair
+ * \param a
+ * \return
+ *
+    \code
+     [/]                  [/] <- !
+    /  \                   \
+   42   ) <-- !             -
+       /                     \
+      -                       4
+       \
+        4
+    \endcode
+ */
 xio* xio::collapse_par_pair(xio* a)
 {
     header(a, HERE);
-    xio* v = lhs;
+    //xio* v = lhs;
 
     // Collapse lhs
 
-    v->op = op;
-    if (op) op->rhs = v;
+    lhs->op = op;
+    if (op)
+    {
+        op->rhs = lhs;
+        if(a->t0->d < op->t0->d)
+        {
+            return op->to_right(a);
+        }
+    }
 
     // discard();
 
-    if (v->op) {
+    if (lhs->op) {
         book::rem::out()
-            << color::Yellow << v->op->attribute() << color::CornflowerBlue
+            << color::Yellow << lhs->op->attribute() << color::CornflowerBlue
             << " <-- "
             << color::Yellow << a->attribute()<< book::rem::commit;
 
-        auto p_fn = query(v->op, a);
+        auto p_fn = query(lhs->op, a);
         if (!p_fn)
             xio::syntax_error(a);
 
-        return (v->op->*p_fn)(a);
+        return (lhs->op->*p_fn)(a);
     }
 
-    v->op = a;
-    a->lhs = v;
+    lhs->op = a;
+    a->lhs = lhs;
     return a;
 }
 
@@ -1254,6 +1287,36 @@ std::string xio::trace_connect_binary_operands(xio* x)
     return area;
 }
 
+
+std::string xio::trace_connect_postfix_operands(xio* x)
+{
+    // assume this binary operator already has its lhs rhs operands !!
+    //stracc str;
+    auto lw = x->lhs->attribute().length();
+    //auto rw = x->rhs->attribute().length();
+    auto ow = x->attribute().length();
+    auto w = lw + 3; // total width
+    w -= lw % 2 == 0;
+
+
+    auto m_lhs = lw - (lw > 1 ? 1 : 0);
+
+    point oper_xy = point(static_cast<int>(m_lhs) + 1, 0);
+    oper_xy.x -= ow % 2 == 0 ? 1 : 0;
+
+    winbuffer area;
+    area.set_geometry(static_cast<int>(w), 3); // pour l'instant c'est hardcodé.
+    area.gotoxy(oper_xy.x, 0);
+    area << x->attribute();
+    area << point{ static_cast<int>(m_lhs),1 } << "/ \\";
+
+    area.gotoxy(0, 2);
+    area << x->lhs->attribute();
+
+    //area.gotoxy(static_cast<int>(m_lhs) + 2;
+    //area << x->rhs->attribute();
+    return area;
+}
 #pragma endregion TRIGRAPH
 
 

@@ -211,7 +211,7 @@ struct XIO_PUBLIC alu
     alu operator --(int);
 
     alu radical(const alu & Lhs_) const;
-    alu factorial(const alu & Lhs_) const;
+    //alu factorial(const alu & Lhs_) const; //?????
     alu factorial() const;
     bool type_size(const alu & Rhs_) const;
     std::string operator()()const { return (std::string) *this; }

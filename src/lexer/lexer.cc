@@ -678,7 +678,13 @@ rem::code lexer::scan_sign_prefix(token_data &atoken)
  */
 rem::code lexer::scan_prefix(token_data &atoken)
 {
-
+    // Possible prefix and Postfix unary operators:
+    if((atoken.c == mnemonic::BinaryNot) || (atoken.c == mnemonic::Decr) || (atoken.c == mnemonic::Incr))
+    {
+        if(mConfig.Tokens->empty() || (mConfig.Tokens->back().s & xio::type::Binary))
+            return Push(atoken);
+        return scan_postfix(atoken);
+    }
     return Push(atoken);
 }
 
@@ -697,7 +703,6 @@ rem::code lexer::scan_postfix(token_data &atoken)
     if(atoken.c == mnemonic::BinaryNot)
         atoken.c = mnemonic::Factorial;
 
-    //mCursor.Sync();
     return Push(atoken);
 }
 
