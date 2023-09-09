@@ -22,6 +22,10 @@
 
 #include <xio/compiler/parser.h>
 #include "xio/s++/spp.h"
+#include <errno.h>
+#include <fstream>
+
+
 
 namespace xio
 {
@@ -37,8 +41,6 @@ std::map<std::string, book::rem::code(parser::*)()> extern_parsers =
     {"objectid", nullptr},
     {"var_id", nullptr}
 };
-
-
 
 
 
@@ -139,9 +141,6 @@ end_of_expr:
 
 
 
-
-
-
 /**
  *  \brief parse_expr  Explicitely parses rule 'expression'.
  *
@@ -198,6 +197,78 @@ book::rem::code parser::parse_rule(const std::string& rule_name)
         << book::rem::notimplemented << book::rem::commit;
 
     return book::rem::notimplemented;
+}
+
+rem::code parser::compile()
+{
+    open_file();
+    lexical_analyse();
+
+    ctx = context(_bloc, _tokens_stream.begin(), _tokens_stream.end(), _tokens_stream.end());
+
+    return book::rem::notimplemented;
+}
+
+rem::code parser::lexical_analyse()
+{
+
+    lexer lex;
+    lex.config() =
+      {
+          source_content().c_str(),
+          &_tokens_stream
+      };
+
+    auto R = lex();
+    if(R!=book::rem::accepted)
+    {
+        book::rem::push_error() << R;
+        return book::rem::rejected;
+    }
+
+
+    book::rem::push_debug(HERE) << " parser::context initialized : dumping tokens (coloured) details" << book::rem::endl << book::rem::commit;
+
+    lexer_color lc;
+    std::string code = source_content().c_str();
+    lc.process(code, _tokens_stream);
+    book::rem::push_info() <<  color::BlueViolet << "xio" << color::White << "::" <<
+      color::BlueViolet << "parser" << color::White << "::" <<
+      color::BlueViolet << "parse_expr" << color::White << "(" <<
+      lc.Product() << color::White << ") :" << book::rem::endl  << book::rem::commit;
+
+    for(auto & token: _tokens_stream) book::rem::out() << lc.mark(token) << book::rem::commit;
+    rem::push_debug() << " returning dummy float alu"  << book::rem::commit;
+
+    return book::rem::notimplemented;
+}
+
+rem::code parser::open_file()
+{
+
+    int a = access(_filename_or_source, F_OK|R_OK);
+    if(a)
+    {
+        book::rem::push_error(HEREF) << strerror(errno) << book::rem::commit;
+        return book::rem::notexist;
+    }
+
+    std::ifstream in; // std::iobase::in
+    in.open(_filename_or_source);
+    if(in.is_open())
+    {
+        char  line[256];
+        while(!in.eof())
+        {
+            in.getline(line,255);
+            source_content << line;
+        }
+        in.close();
+    }
+    else
+        return book::rem::failed;
+
+    return book::rem::ok;
 }
 
 xio* parser::parse_rvalue_keyword()

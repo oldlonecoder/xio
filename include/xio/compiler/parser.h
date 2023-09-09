@@ -27,6 +27,8 @@ class XIO_PUBLIC parser
 
     token_data::collection _tokens_stream;
     const char* _filename_or_source{ nullptr };
+    stracc source_content;
+
     std::string _rules_src;
     xiobloc* _bloc{ nullptr };
 
@@ -96,8 +98,13 @@ public:
     ::xio::xio* make_instruction(token_data* token);
     book::rem::code parse_rule(const std::string& rule_name);
     // ---------------------------------------------------------
-
+    book::rem::code compile();
   private:
+    book::rem::code lexical_analyse();
+    book::rem::code open_file();
+    book::rem::code load_source();
+    book::rem::code close_file();
+
     xio* parse_rvalue_keyword();
     token_data::collection tokens_line_from(token_data* token);
 
