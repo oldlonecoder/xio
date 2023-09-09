@@ -32,9 +32,9 @@ namespace xio
 
 
 
-std::map<std::string, book::rem::code(parser::*)()> extern_parsers =
+std::map<std::string, book::rem::code(compiler::*)()> extern_parsers =
 {
-    {"expression", &parser::parse_expression},
+    {"expression", &compiler::parse_expression},
     {"functionid", nullptr},
     {"newvar", nullptr},
     {"obj_instance",nullptr},
@@ -44,10 +44,10 @@ std::map<std::string, book::rem::code(parser::*)()> extern_parsers =
 
 
 
-parser::parser(xiobloc* bloc, const char* source_or_filename): _filename_or_source(source_or_filename),_bloc(bloc)
+compiler::compiler(xiobloc* bloc, const char* source_or_filename): _filename_or_source(source_or_filename),_bloc(bloc)
 {}
 
-parser::parser(xiobloc* bloc, const char* source_or_filename, const std::string& use_this_rules_text):
+compiler::compiler(xiobloc* bloc, const char* source_or_filename, const std::string& use_this_rules_text):
     _filename_or_source(source_or_filename),
     _rules_src(use_this_rules_text),
     _bloc(bloc)
@@ -65,7 +65,7 @@ parser::parser(xiobloc* bloc, const char* source_or_filename, const std::string&
  * \return rem::code::accepted or rejected;
  * \author &copy; 2023, oldlonecoder (serge.lussier@goldlonecoder.club) ;)
  */
-book::rem::code parser::parse_expr(xiobloc *blk, const char *expr_text)
+book::rem::code compiler::parse_expr(xiobloc *blk, const char *expr_text)
 {
     _bloc = blk; ///< Interpreter's bloc address likelly...
     lexer lex;
@@ -153,7 +153,7 @@ end_of_expr:
  * \author &copy; August 23, 2023; oldlonecoder, (serge.lussier@oldlonecoder.club)
 
  */
-book::rem::code parser::parse_expression()
+book::rem::code compiler::parse_expression()
 {
     book::rem::push_error(HERE) << " This rule parser is not yet implemented. " << book::rem::commit;
     return book::rem::notimplemented;
@@ -168,7 +168,7 @@ book::rem::code parser::parse_expression()
  * \author &copy; August 23, 2023; oldlonecoder, (serge.lussier@oldlonecoder.club)
 
  */
-book::rem::code parser::parse_rule(const std::string& rule_name)
+book::rem::code compiler::parse_rule(const std::string& rule_name)
 {
     grammar::rule* rule = grammar::rules[rule_name];
     if (!rule)
@@ -204,7 +204,7 @@ book::rem::code parser::parse_rule(const std::string& rule_name)
     return book::rem::notimplemented;
 }
 
-rem::code parser::compile()
+rem::code compiler::compile()
 {
     open_file();
     lexical_analyse();
@@ -214,7 +214,7 @@ rem::code parser::compile()
     return book::rem::notimplemented;
 }
 
-rem::code parser::lexical_analyse()
+rem::code compiler::lexical_analyse()
 {
 
     lexer lex;
@@ -248,7 +248,7 @@ rem::code parser::lexical_analyse()
     return book::rem::notimplemented;
 }
 
-rem::code parser::open_file()
+rem::code compiler::open_file()
 {
 
     int a = access(_filename_or_source, F_OK|R_OK);
@@ -276,14 +276,14 @@ rem::code parser::open_file()
     return book::rem::ok;
 }
 
-xio* parser::parse_rvalue_keyword()
+xio* compiler::parse_rvalue_keyword()
 {
     book::rem::push_debug(HERE) << book::rem::notimplemented << ctx.token()->mark()  << book::rem::commit;
     return nullptr;
 }
 
 
-token_data::collection parser::tokens_line_from(token_data* token)
+token_data::collection compiler::tokens_line_from(token_data* token)
 {
     token_data::collection tokens;
     for(auto it = _tokens_stream.begin(); it != _tokens_stream.end(); it++)
@@ -305,7 +305,7 @@ token_data::collection parser::tokens_line_from(token_data* token)
  * \note As of 2023-08-28, only xio's POD ( Plain Old Data ) variable types are created on identifier token restricted to arithmetic expressions.
  * \author &copy; August 28, 2023; oldlonecoder, (serge.lussier@oldlonecoder.club)
  */
-::xio::xio* parser::make_xio_node(token_data* token)
+::xio::xio* compiler::make_xio_node(token_data* token)
 {
     // "Branch" on token type
     book::rem::push_debug(HERE) << " Entering xio producer with "<< book::rem::endl << token->mark() << book::rem::commit;
@@ -346,17 +346,17 @@ token_data::collection parser::tokens_line_from(token_data* token)
 
 // ------------------------------------- parser::context -----------------------------------------------
 
-parser::context::context()
+compiler::context::context()
 {
 
 }
 
-parser::context::context(context &&cx) noexcept
+compiler::context::context(context &&cx) noexcept
 {
 
 }
 
-parser::context::context(const context &cx)
+compiler::context::context(const context &cx)
 {
 
 }
@@ -369,16 +369,16 @@ parser::context::context(const context &cx)
  * \param i_end
  * \param i_endstream
  */
-parser::context::context(xiobloc *blk, token_data::iterator i_start, token_data::iterator i_end, token_data::iterator i_endstream):
+compiler::context::context(xiobloc *blk, token_data::iterator i_start, token_data::iterator i_end, token_data::iterator i_endstream):
   bloc(blk), start(i_start), cur(i_start), end(i_end), end_stream(i_endstream)
 {}
 
-parser::context::~context()
+compiler::context::~context()
 {
 
 }
 
-parser::context &parser::context::operator =(parser::context &&cx) noexcept
+compiler::context &compiler::context::operator =(compiler::context &&cx) noexcept
 {
     start = std::move(cx.start);
     cur   = std::move(cx.cur);
@@ -390,7 +390,7 @@ parser::context &parser::context::operator =(parser::context &&cx) noexcept
 }
 
 
-parser::context &parser::context::operator = (parser::context const & cx)
+compiler::context &compiler::context::operator = (compiler::context const & cx)
 {
     start = cx.start;
     cur   = cx.cur;
@@ -408,7 +408,7 @@ parser::context &parser::context::operator = (parser::context const & cx)
 
 
 
-void parser::context::accept(xio* instruction)
+void compiler::context::accept(xio* instruction)
 {
 
     start = cur; ///< Pass the consumed tokens
@@ -417,7 +417,7 @@ void parser::context::accept(xio* instruction)
     state = book::rem::accepted;
 }
 
-void parser::context::reject()
+void compiler::context::reject()
 {
     cur = start;
     for(auto* x : instructions)
@@ -429,19 +429,19 @@ void parser::context::reject()
     state = book::rem::rejected;
 }
 
-bool parser::context::operator++(int)
+bool compiler::context::operator++(int)
 {
     if( cur >= end_stream) return false;
     ++cur;
     return cur < end;
 }
 
-bool parser::context::eof()
+bool compiler::context::eof()
 {
     return cur == end;
 }
 
-bool parser::context::operator++()
+bool compiler::context::operator++()
 {
     if( cur >= end_stream) return false;
     ++cur;

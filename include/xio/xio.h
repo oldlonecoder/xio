@@ -41,7 +41,7 @@ namespace spp
 
 class  XIO_PUBLIC xio : public book::object
 {
-    friend class compiler;
+    //friend class compiler;
     friend class ::xio::spp::interpretr;
 protected:
     xio* op = nullptr; ///< Parent Operator

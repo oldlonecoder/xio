@@ -22,7 +22,7 @@ namespace xio
 {
 
 
-class XIO_PUBLIC parser
+class XIO_PUBLIC compiler
 {
 
     token_data::collection _tokens_stream;
@@ -53,8 +53,8 @@ class XIO_PUBLIC parser
         xio::list instructions; ///< filling the temp xio buffer before the commit into the instructions list of the scope-bloc ( local stack ).
 
         context();
-        context(parser::context&& cx) noexcept;
-        context(parser::context const& cx);
+        context(compiler::context&& cx) noexcept;
+        context(compiler::context const& cx);
 
         context(xiobloc* blk, token_data::iterator start, token_data::iterator i_end, token_data::iterator i_endstream);
 
@@ -72,23 +72,23 @@ class XIO_PUBLIC parser
         bool eof();
     };
 
-    parser::context ctx;
+    compiler::context ctx;
 
 public:
 
     //----------- Public access & callables: -------------------
 
-    parser() = default;
-    parser(const parser&) = delete;
-    parser(parser&&) noexcept = delete;
+  compiler() = default;
+  compiler(const compiler&) = delete;
+  compiler(compiler&&) noexcept = delete;
 
-    parser(xiobloc* bloc, const char* source_or_filename);
-    parser(xiobloc* bloc, const char* source_or_filename, const std::string& use_this_rules_text);
+  compiler(xiobloc* bloc, const char* source_or_filename);
+  compiler(xiobloc* bloc, const char* source_or_filename, const std::string& use_this_rules_text);
 
 
 
-    parser& operator = (parser&&) noexcept = delete;
-    parser& operator = (const parser&) = delete;
+  compiler& operator = (compiler&&) noexcept = delete;
+  compiler& operator = (const compiler&) = delete;
 
     // ------------------ parsers -Cannot be used yet-----------
     book::rem::code parse_expression();

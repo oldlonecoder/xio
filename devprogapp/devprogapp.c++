@@ -48,8 +48,7 @@ auto main(int argc, char** argv) -> int
 
     interpretr i;
     try{
-        //auto alu = i["x = 42/4 + 5(3+4*3/5+34) - 42 d = 12;"];
-        auto alu = i["x = 42/(-4)! + 5(3+4*3/5+34) - 42 d = 12;"];
+        auto alu = i["x = 42/4 + 5(3+4*3/5+34) - 42 d = 12;"];
         rem::out() << " Result: " << color::Yellow << alu();
     }
     catch(book::rem & )

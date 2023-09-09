@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13..3.26 FATAL_ERROR)
+compilercmake_minimum_required(VERSION 3.13..3.26 FATAL_ERROR)
 ## Project name
 
 project(xio VERSION 0.1.0 LANGUAGES CXX)
@@ -26,7 +26,7 @@ add_library(
         include/${TargetName}/lexer/lexer.h             src/lexer/lexer.cc
         include/${TargetName}/lexer/lexer_color.h       src/lexer/lexer_color.cc
         include/${TargetName}/compiler/grammar/grammar.h src/compiler/grammar/grammar.cc
-        include/${TargetName}/compiler/parser.h         src/compiler/parser.cc
+        include/${TargetName}/compiler/compiler.h       src/compiler/compiler.cc
         include/${TargetName}/s++/spp.h                 src/s++/spp.cc
         # ...Will grow...
 )
