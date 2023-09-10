@@ -805,7 +805,7 @@ rem::code lexer::Exec()
     {
         if(C == src_cursor.C)
         {
-            rem::push_error() << "lexer: internal infinite loop! cursor at:" << rem::endl  << src_cursor.mark();
+            rem::push_error() << "lexer: internal infinite loop! cursor at:" << rem::endl  << src_cursor.mark()  << book::rem::commit;
             return rem::rejected;
         }
 
@@ -819,7 +819,7 @@ rem::code lexer::Exec()
 
             if((this->*S)(atoken) != rem::accepted)
             {
-                rem::push_fatal() << "lexer: aborted: unexpected scan rejection at position:" << src_cursor.mark();
+                rem::push_aborted() << "lexer: aborted: unexpected scan rejection at position:" << src_cursor.mark() << book::rem::commit;
                 return rem::rejected;
             }
         }
@@ -830,7 +830,7 @@ rem::code lexer::Exec()
                 skip_cpp_comment();
                 continue;
             }
-            rem::push_error() << "lexer loop: there is no scanner for token:" << src_cursor.mark();
+            rem::push_aborted() << "lexer loop: there is no scanner for token:" << src_cursor.mark()  << book::rem::commit;
             return rem::rejected;
         }
 

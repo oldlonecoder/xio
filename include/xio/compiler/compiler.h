@@ -26,7 +26,7 @@ class XIO_PUBLIC compiler
 {
 
     token_data::collection _tokens_stream;
-    const char* _filename_or_source{ nullptr };
+    std::string _filename;
     stracc source_content;
 
     std::string _rules_src;
@@ -113,7 +113,7 @@ public:
     compiler(xiobloc* bloc, const char* source_or_filename);
     compiler(xiobloc* bloc, const char* source_or_filename, const std::string& use_this_rules_text);
 
-
+    ~compiler();
 
     compiler& operator = (compiler&&) noexcept = delete;
     compiler& operator = (const compiler&) = delete;
@@ -127,6 +127,8 @@ public:
     book::rem::code parse_rule(const std::string& rule_name);
     // ---------------------------------------------------------
     book::rem::code compile();
+    void set_source_file(const std::string& sf) { _filename = sf; }
+    const char* source_code() { return source_content().c_str(); }
 private:
     book::rem::code lexical_analyse();
     book::rem::code open_file();

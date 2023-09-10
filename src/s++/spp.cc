@@ -16,7 +16,30 @@ interpretr::interpretr(const std::string& interp_name): xiobloc(),
 
 interpretr::~interpretr()
 {
+
 }
+
+
+
+
+
+
+/*!
+ * \brief interpretr::process Load sources from the file or expression given on the commandline
+ * \param argc
+ * \param argv
+ * \return
+ */
+book::rem::code interpretr::process(int argc, char** argv)
+{
+    compiler cc(this,"nan");
+    compiler::Argc A(&cc, argc,argv);
+    auto R = A.process();
+    if(R != book::rem::accepted) return R;
+    alu a = jsr();
+    return book::rem::accepted;
+}
+
 
 /**
  * \brief operator[] Quick arithmetic expression evaluator (small source code)
@@ -74,21 +97,6 @@ void interpretr::error(book::rem::type ertype, book::rem::code ercode, token_dat
 }
 
 
-/*!
- * \brief interpretr::process Load sources from the file or expression given on the commandline
- * \param argc
- * \param argv
- * \return
- */
-alu interpretr::process(int argc, char** argv)
-{
-    compiler cc(this,"nan");
-    compiler::Argc A(&cc, argc,argv);
-    auto R = A.process();
-    if(R != book::rem::accepted) return R;
-    alu a = jsr();
-    return a;
-}
 
 /*!
  * \brief interpretr::warning

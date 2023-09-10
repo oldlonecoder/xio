@@ -44,14 +44,19 @@ std::map<std::string, book::rem::code(compiler::*)()> extern_parsers =
 
 
 
-compiler::compiler(xiobloc* bloc, const char* source_or_filename): _filename_or_source(source_or_filename),_bloc(bloc)
+compiler::compiler(xiobloc* bloc, const char* source_or_filename): _filename(source_or_filename),_bloc(bloc)
 {}
 
 compiler::compiler(xiobloc* bloc, const char* source_or_filename, const std::string& use_this_rules_text):
-    _filename_or_source(source_or_filename),
+    _filename(source_or_filename),
     _rules_src(use_this_rules_text),
-    _bloc(bloc)
+  _bloc(bloc)
 {}
+
+compiler::~compiler()
+{
+    _tokens_stream.clear();
+}
 
 
 
@@ -206,8 +211,13 @@ book::rem::code compiler::parse_rule(const std::string& rule_name)
 
 rem::code compiler::compile()
 {
-    open_file();
-    lexical_analyse();
+    book::rem::code  R = open_file();
+    if(R != book::rem::ok)
+        return R;
+    R = lexical_analyse();
+    if(R != book::rem::accepted)
+        return R;
+
 
     ctx = context(_bloc, _tokens_stream.begin(), _tokens_stream.end(), _tokens_stream.end());
 
@@ -227,7 +237,7 @@ rem::code compiler::lexical_analyse()
     auto R = lex();
     if(R!=book::rem::accepted)
     {
-        book::rem::push_error() << R;
+        book::rem::push_error() << R << book::rem::commit;
         return book::rem::rejected;
     }
 
@@ -251,7 +261,7 @@ rem::code compiler::lexical_analyse()
 rem::code compiler::open_file()
 {
 
-    int a = access(_filename_or_source, F_OK|R_OK);
+    int a = access(_filename.c_str(), F_OK|R_OK);
     if(a)
     {
         book::rem::push_error(HEREF) << strerror(errno) << book::rem::commit;
@@ -259,14 +269,14 @@ rem::code compiler::open_file()
     }
 
     std::ifstream in; // std::iobase::in
-    in.open(_filename_or_source);
+    in.open(_filename);
     if(in.is_open())
     {
         char  line[256];
         while(!in.eof())
         {
             in.getline(line,255);
-            source_content << line;
+            source_content << line << '\n';
         }
         in.close();
     }
@@ -459,7 +469,7 @@ compiler::Argc::Argc(compiler* ac, int argc, char** argv): acc(ac)
 {
     for(int a=1; a<argc ; a++) args.push_back(argv[a]);
     arg = args.begin();
-    book::rem::push_debug(HERE) << "count: " << color::Yellow << args.size() << book::rem::commit;
+ //   book::rem::push_debug(HERE) << "count: " << color::Yellow << args.size() << book::rem::commit;
 }
 
 compiler::Argc::Argc()
@@ -488,11 +498,18 @@ bool compiler::Argc::operator >>(std::string& str)
 
 book::rem::code compiler::Argc::process()
 {
-    if(args.empty()) return book::rem::empty;
+    if(args.empty())
+    {
+        book::rem::push_error() << "expected arguments :" << book::rem::endl << usage() << book::rem::commit;
+        return book::rem::rejected;
+    }
     reset();
-    std::string a;
-    // Switch:
+//    std::string a;
+//    // debug:
+//    while((*this) >> a) book::rem::out() << a << book::rem::commit;
 
+    // Switch:
+    reset();
     if(*arg == "-e")
     {
         ++arg;
@@ -506,19 +523,36 @@ book::rem::code compiler::Argc::process()
     }
     if(*arg == "-f")
     {
-        return book::rem::notimplemented;
+        ++arg;
+        if(arg < args.end())
+        {
+            book::rem::push_debug(HERE) << color::Reset << "compiling file '" << color::Aquamarine3 << *arg << color::Reset << "':" << book::rem::commit;
+            acc->set_source_file(*arg);
+            return acc->compile();
+//            auto R = acc->open_file();
+//            if(R != book::rem::ok) return book::rem::rejected;
+//            book::rem::out() << " compiler now has source content: " <<  book::rem::endl << color::White <<
+//              "---------------------------------------------------------------------------------------" << color::Reset << book::rem::endl <<
+//              acc->source_code() << color::White <<
+//                "---------------------------------------------------------------------------------------" << book::rem::commit;
+//            return book::rem::notimplemented;
+        }
+        book::rem::push_error() << "-f requires [path]/filename as the source code." << book::rem::endl << usage() << book::rem::commit;
+
+        return book::rem::rejected;
     }
 
-    book::rem::push_error() << "expected expression text of filename." << book::rem::endl << usage() << book::rem::commit;
+    book::rem::push_error() << "expected arguments :" << book::rem::endl << usage() << book::rem::commit;
     return book::rem::rejected;
 }
 
 std::string compiler::Argc::usage()
 {
     stracc str;
-    str << "Usage:\n";
-    str << "-e \"arithmetic expression \"\n";
-    str << "-f \\path\\source_file.s++ \n";
+    str << "----------------------------------------\n";
+    str << "-e \"expression\"\n";
+    str << "-f [path]/source_file.s++ \n";
+    str << "----------------------------------------\n";
 
     return str();
 }

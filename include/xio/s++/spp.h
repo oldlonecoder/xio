@@ -41,7 +41,7 @@ public:
 
     // Quick arithmetic expression evaluator ( small source text ):
     alu operator[](const std::string& expr);
-    alu process(int argc, char** argv);
+    book::rem::code process(int argc, char** argv);
 
     static void error(book::rem::type ertype, book::rem::code ercode, token_data::iterator token, const token_data::collection& line_seq);
     static void warning(book::rem::type wtype, book::rem::code wcode, token_data::iterator token, const token_data::collection& line_seq);

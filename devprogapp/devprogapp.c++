@@ -43,21 +43,18 @@ auto main(int argc, char** argv) -> int
     ::signal(SIGSEGV, sig_fault);
     ::signal(SIGABRT, sig_abort);
 
-    book::rem::push_info(HERE) << " cmd args:" << book::rem::commit;
-
-
     interpretr i;
 
     try{
-        xio::alu a = i.process(argc,argv);
+        auto R = i.process(argc,argv);
         //auto alu = i["x = 42/4 + 5(3+4*3/5+34) - 42 d = 12;"];
-        rem::out() << " Result: " << color::Yellow << a() << book::rem::commit;
+        rem::out() << " Result: " << color::Yellow << R << book::rem::commit;
     }
     catch(book::rem & )
     {
         // no need to do thingss here ...
     }
-    book::rem::clear();
+    book::rem::clear([](book::rem&){;});
 
     return 0;
 }

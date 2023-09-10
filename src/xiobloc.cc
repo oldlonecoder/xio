@@ -44,13 +44,20 @@ xiobloc::~xiobloc()
     if(!mem.xshared)
     {
         if(_instructions)
+        {
             _instructions->clear();
+            delete _instructions;
+        }
         if(_xiovars)
+        {
             _xiovars->clear();
+            delete _xiovars;
+        }
         // if(_functions)
+        // {
         //     for(auto* f : *_functions) delete f;
-        // if(_structs)
-        //     for(auto s :*_structs) delete s;
+        //     delete _functions;
+        // }
     }
 
     //...
