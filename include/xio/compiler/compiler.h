@@ -33,7 +33,6 @@ class XIO_PUBLIC compiler
     xiobloc* _bloc{ nullptr };
 
 
-
     //void push_context();
     //void pop_context();
     //void reset_context();
@@ -75,21 +74,50 @@ class XIO_PUBLIC compiler
     compiler::context ctx;
 
 public:
+    /*!
+     * \brief The Argc class
+     *
+     * -e "expr"
+     * -f path/filename.s++
+     *
+     * \author &copy;2023, Serge Lussier ( serge.lussier@oldlonecoder.club )
+     *
+     */
+    struct Argc
+    {
+
+        stracc::list args;
+        stracc::list::iterator arg;
+        compiler* acc{nullptr};
+    public:
+        Argc(compiler* ac, int argc, char** argv);
+        Argc();
+        ~Argc();
+
+
+        bool operator >> (std::string& str);
+        void reset() { arg = args.begin(); }
+
+        book::rem::code process();
+        std::string usage();
+
+    };
+
 
     //----------- Public access & callables: -------------------
 
-  compiler() = default;
-  compiler(const compiler&) = delete;
-  compiler(compiler&&) noexcept = delete;
+    compiler() = default;
+    compiler(const compiler&) = delete;
+    compiler(compiler&&) noexcept = delete;
 
-  compiler(xiobloc* bloc, const char* source_or_filename);
-  compiler(xiobloc* bloc, const char* source_or_filename, const std::string& use_this_rules_text);
+    compiler(xiobloc* bloc, const char* source_or_filename);
+    compiler(xiobloc* bloc, const char* source_or_filename, const std::string& use_this_rules_text);
 
 
 
-  compiler& operator = (compiler&&) noexcept = delete;
-  compiler& operator = (const compiler&) = delete;
-
+    compiler& operator = (compiler&&) noexcept = delete;
+    compiler& operator = (const compiler&) = delete;
+    xiobloc* bloc() { return _bloc; }
     // ------------------ parsers -Cannot be used yet-----------
     book::rem::code parse_expression();
     book::rem::code parse_expr(xiobloc* blk, const char* expr_text);
@@ -99,7 +127,7 @@ public:
     book::rem::code parse_rule(const std::string& rule_name);
     // ---------------------------------------------------------
     book::rem::code compile();
-  private:
+private:
     book::rem::code lexical_analyse();
     book::rem::code open_file();
     book::rem::code load_source();

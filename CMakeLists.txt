@@ -1,4 +1,4 @@
-compilercmake_minimum_required(VERSION 3.13..3.26 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 ## Project name
 
 project(xio VERSION 0.1.0 LANGUAGES CXX)

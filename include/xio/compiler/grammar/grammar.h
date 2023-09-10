@@ -29,7 +29,7 @@ class XIO_PUBLIC grammar
 public:
     struct XIO_PUBLIC rule;
 private:
-    friend class parser;
+    friend class compiler;
     friend class interpretr;
 public:
     /*!

@@ -1,11 +1,13 @@
 #include "xio/s++/spp.h"
-#include "xio/compiler/parser.h"
+#include "xio/compiler/compiler.h"
 #include <fstream>
 
 
 
 namespace xio::spp
 {
+
+
 
 interpretr::interpretr(const std::string& interp_name): xiobloc(),
     name(interp_name)
@@ -71,6 +73,23 @@ void interpretr::error(book::rem::type ertype, book::rem::code ercode, token_dat
 
 }
 
+
+/*!
+ * \brief interpretr::process Load sources from the file or expression given on the commandline
+ * \param argc
+ * \param argv
+ * \return
+ */
+alu interpretr::process(int argc, char** argv)
+{
+    compiler cc(this,"nan");
+    compiler::Argc A(&cc, argc,argv);
+    auto R = A.process();
+    if(R != book::rem::accepted) return R;
+    alu a = jsr();
+    return a;
+}
+
 /*!
  * \brief interpretr::warning
  * \param token
@@ -102,9 +121,6 @@ void interpretr::trace_line(token_data::iterator token, const token_data::collec
     }
 
     //...
-
-
-
 
 }
 

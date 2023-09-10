@@ -20,7 +20,7 @@
  */
 
 
-#include <xio/compiler/parser.h>
+#include <xio/compiler/compiler.h>
 #include "xio/s++/spp.h"
 #include <errno.h>
 #include <fstream>
@@ -450,6 +450,78 @@ bool compiler::context::operator++()
 }
 
 
+/*!
+ * \brief Argc::Argc Copy command--line arguments into the stracc::list container.
+ * \param argc
+ * \param argv
+ */
+compiler::Argc::Argc(compiler* ac, int argc, char** argv): acc(ac)
+{
+    for(int a=1; a<argc ; a++) args.push_back(argv[a]);
+    arg = args.begin();
+    book::rem::push_debug(HERE) << "count: " << color::Yellow << args.size() << book::rem::commit;
+}
+
+compiler::Argc::Argc()
+{
+
+}
+
+compiler::Argc::~Argc()
+{
+    args.clear();
+}
+
+bool compiler::Argc::operator >>(std::string& str)
+{
+    if(arg >= args.end())
+    {
+        str = "eof";
+        return false;
+    }
+    str = *arg;
+    ++arg;
+
+    return arg <= args.end();
+}
+
+
+book::rem::code compiler::Argc::process()
+{
+    if(args.empty()) return book::rem::empty;
+    reset();
+    std::string a;
+    // Switch:
+
+    if(*arg == "-e")
+    {
+        ++arg;
+        if(arg < args.end())
+        {
+            return acc->parse_expr(acc->bloc(), (*arg).c_str());
+
+        }
+        book::rem::push_error() << "expected expression text" << book::rem::endl << usage() << book::rem::commit;
+        return book::rem::rejected;
+    }
+    if(*arg == "-f")
+    {
+        return book::rem::notimplemented;
+    }
+
+    book::rem::push_error() << "expected expression text of filename." << book::rem::endl << usage() << book::rem::commit;
+    return book::rem::rejected;
+}
+
+std::string compiler::Argc::usage()
+{
+    stracc str;
+    str << "Usage:\n";
+    str << "-e \"arithmetic expression \"\n";
+    str << "-f \\path\\source_file.s++ \n";
+
+    return str();
+}
 }
 
 

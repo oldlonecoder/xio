@@ -33,6 +33,7 @@ public:
     interpretr() = default;
     interpretr(const interpretr&) = delete;
     interpretr(const std::string& interp_name);
+
     ~interpretr() override;
 
     interpretr& operator=(interpretr&&) noexcept = delete;
@@ -40,6 +41,7 @@ public:
 
     // Quick arithmetic expression evaluator ( small source text ):
     alu operator[](const std::string& expr);
+    alu process(int argc, char** argv);
 
     static void error(book::rem::type ertype, book::rem::code ercode, token_data::iterator token, const token_data::collection& line_seq);
     static void warning(book::rem::type wtype, book::rem::code wcode, token_data::iterator token, const token_data::collection& line_seq);
