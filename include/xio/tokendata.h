@@ -25,26 +25,25 @@
 namespace xio
 {
 
-    class XIO_PUBLIC token_data
+    struct XIO_PUBLIC token_data
     {
-    public:
-        xio::mnemonic       c = mnemonic::Noop;
-        xio::type::T  t = xio::type::Null;    ///< Primitive xio::type bit.
-        xio::type::T  s = xio::type::Null;    ///< Semantic xio::type bits field
-        xio::distance::T d = xio::distance::noop_;
-        void* vdata = nullptr;
+        xio::mnemonic    m{mnemonic::Noop};
+        xio::type::T     t{xio::type::Null};    ///< Primitive xio::type bit.
+        xio::type::T     s{xio::type::Null};    ///< Semantic xio::type bits field
+        xio::distance::T d{xio::distance::noop_};
+        void* vdata{nullptr};
 
 //        // --------------------- Add link pointers to previous and forward tokens because there situations where giving the std container is so overload and overbloated!
 //        token_data* __prev{nullptr};
 //        token_data* __next{nullptr};
 //        // --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-        using collection = std::vector<token_data>;
+        using list     = std::vector<token_data>;
         // ----------------------------------------
-        using cache = std::vector<token_data*>;
-        using pointer = cache::iterator;
+        using cache    = std::vector<token_data*>;
+        using pointer  = cache::iterator;
         // ----------------------------------------
-        using iterator = collection::iterator;
+        using iterator = list::iterator;
 
 
         struct XIO_PUBLIC location_data
@@ -58,9 +57,9 @@ namespace xio
             std::string operator()() const;
             std::string text() const;
             std::string position() const;
-        }  mLoc;
+        }loc;
 
-        struct XIO_PUBLIC Flag
+        struct XIO_PUBLIC flags
         {
             uint8_t V : 1; ///< Pre-parsed as a value Token;
             uint8_t S : 1; ///< Post parsed as assignable
@@ -73,19 +72,19 @@ namespace xio
         ~token_data() = default;
 
         token_data(mnemonic Code_, xio::type::T Type_, xio::type::T Sem_, xio::distance::T Delta_, lexem::T aLexem, uint8_t V);
-        token_data(mnemonic Code_, xio::type::T Type_, xio::type::T Sem_, xio::distance::T Delta_, token_data::location_data LocationData_, token_data::Flag Flags_, void* Ptr_ = nullptr);
+        token_data(mnemonic Code_, xio::type::T Type_, xio::type::T Sem_, xio::distance::T Delta_, token_data::location_data LocationData_, token_data::flags Flags_, void* Ptr_ = nullptr);
         token_data(const token_data& Token_);
         token_data(token_data&& Token_) noexcept;
         token_data& operator=(token_data&& Token_) noexcept;
         token_data& operator=(const token_data& Token_);
         token_data operator[](mnemonic CC);
         std::string mark(int nspc = 0) const;
-        std::string text_line();
+        std::string text_line() const;
         //token_data* back_to_startof_line();
 
         explicit operator bool() const
         {
-            return mLoc.begin != nullptr;
+            return loc.begin != nullptr;
         }
         bool operator||(xio::type::T Sem_) const
         {
@@ -94,20 +93,20 @@ namespace xio
 
         [[nodiscard]] std::string text() const
         {
-            if ((_flags.M) && (c == mnemonic::Mul)) return lexem::Multiply; // Overwrite source location.
-            return mLoc.text();
+            if ((_flags.M) && (m == mnemonic::Mul)) return lexem::Multiply; // Overwrite source location.
+            return loc.text();
         }
-        [[nodiscard]] std::string location() const;
-        [[nodiscard]] std::string semantic_types() const;
+        [[nodiscard]] std::string location_text() const;
+        [[nodiscard]] std::string semantic_text() const;
         [[nodiscard]] std::string type_name() const;
-        [[nodiscard]] std::string details(bool Mark_ = false) const;
+        [[nodiscard]] std::string details(bool mark_it = false) const;
 
         static token_data scan(const char* C_);
         static std::string dump_token_table();
 
         [[nodiscard]] bool is_text() const
         {
-            return t == type::Text;
+            return s & xio::type::Text;
         }
         [[nodiscard]] bool is_binary() const
         {
@@ -162,7 +161,7 @@ namespace xio
             return _flags.V;
         }
 
-        static xio::type::T ktype(mnemonic m);
+        static xio::type::T type_of(mnemonic m);
     };
 }
 

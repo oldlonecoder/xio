@@ -180,8 +180,8 @@ xio::xio(object* parent_bloc, token_data* atoken, alu* a_alu): object(parent_blo
 
         break;
     }
-
-    auto i = xio::xio_operators_table.find(atoken->c);
+    
+    auto i = xio::xio_operators_table.find(atoken->m);
     xio_fn = i != xio::xio_operators_table.end() ? i->second : nullptr;
     //book::rem::push_debug(HERE) << " acc: '" << color::Yellow << (*acc)() << color::White << "'"<< book::rem::commit;
 }
@@ -742,7 +742,7 @@ xio::input_table_t xio::input_tbl =
 
 void xio::syntax_error(xio* e)
 {
-    throw book::rem::push_syntax() << "at " << e->t0->location() << book::rem::endl << e->t0->mark() << book::rem::endl << book::rem::commit;
+    throw book::rem::push_syntax() << "at " << e->t0->location_text() << book::rem::endl << e->t0->mark() << book::rem::endl << book::rem::commit;
 }
 
 xio *xio::warning(xio *)
@@ -817,7 +817,7 @@ xio* xio::input(xio* parent_bloc, token_data* token, xio::maker mk)
                     a->detach();
                     delete a;
                 }
-                book::rem::push_syntax() << " invalid relational operands at " << token->location() << " - unexpected token:" << book::rem::endl << token->mark() << book::rem::endl << book::rem::commit;
+                book::rem::push_syntax() << " invalid relational operands at " << token->location_text() << " - unexpected token:" << book::rem::endl << token->mark() << book::rem::endl << book::rem::commit;
                 return nullptr;
             }
             book::rem::push_debug() << t0->text() << "::input(" << token->text() << "):" << book::rem::endl << token->mark()<< book::rem::endl << book::rem::commit;
@@ -828,7 +828,7 @@ xio* xio::input(xio* parent_bloc, token_data* token, xio::maker mk)
 
     book::rem::push_info(HERE) << color::White << "'" << color::Yellow << t0->text() << color::White << "'" << color::Reset
                                << "::input(" << color::Yellow <<  token->text() << color::Reset << ") => invalid relational operands at "
-        << token->location() << " - unexpected token."
+                               << token->location_text() << " - unexpected token."
         << book::rem::endl << token->mark()<< book::rem::endl << book::rem::commit;
     book::rem::out() << t0->details() << " || " << token->details() << book::rem::endl << "Returning nullptr" << book::rem::commit;
 
@@ -841,11 +841,11 @@ xio* xio::_binary(xio* a)
 
     if (t0->is_leaf())
     {
-        if (a->t0->c == mnemonic::OpenPar)
+        if (a->t0->m == mnemonic::OpenPar)
             syntax_error(a);
     }
-
-    if (t0->c == mnemonic::OpenPar)
+    
+    if (t0->m == mnemonic::OpenPar)
         return to_left(a);
 
     if (t0->is_binary())
@@ -1038,8 +1038,8 @@ xio* xio::begin(xio* parent_, token_data* token, xio::maker xmk)
 
     if(!a)
         return nullptr;
-
-    if (a->t0->c == mnemonic::OpenPar) push_par(a);
+    
+    if (a->t0->m == mnemonic::OpenPar) push_par(a);
     return a;
 }
 
@@ -1047,8 +1047,8 @@ xio* xio::begin(xio* parent_, token_data* token, xio::maker xmk)
 xio* xio::tree_close()
 {
     header(this, HERE);
-
-    if (t0->c == mnemonic::OpenPar)
+    
+    if (t0->m == mnemonic::OpenPar)
     {
         book::rem::push_error() << " unexpected end of file." << book::rem::commit;
         return nullptr;
@@ -1061,9 +1061,9 @@ xio* xio::tree_close()
         book::rem::push_error() << " umatched closing parenthese from:" << book::rem::endl << x->t0->mark()<< book::rem::endl << book::rem::commit;
         return nullptr;
     }
-
-
-    if (t0->c == mnemonic::ClosePar) {
+    
+    
+    if (t0->m == mnemonic::ClosePar) {
         book::rem::push_debug() << "Closing the tree on close parenthese:"<< book::rem::commit;
         if (lhs)
         {
@@ -1135,7 +1135,7 @@ xio* xio::to_right(xio* in_rhs)
     header(in_rhs, HERE);
 
     // Temporary hack....
-    if (in_rhs->t0->c == mnemonic::OpenPar)
+    if (in_rhs->t0->m == mnemonic::OpenPar)
         xio::push_par(in_rhs);
 
     if (rhs) {

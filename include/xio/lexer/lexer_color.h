@@ -12,8 +12,9 @@
 */
 class  XIO_PUBLIC lexer_color
 {
-    xio::token_data::collection tokens;
+    xio::token_data::list tokens;
     chattr::format _formatormat = chattr::format::ansi256; ///< Not used yet
+    stracc::list text;
 
     // Color::Type or Color::Set ...
     //static std::map<type::T, Color::Type> SemanticTypes; // Addresing token_data::s
@@ -32,9 +33,8 @@ public:
 
     rem::code operator << (const std::string& aSource);
     rem::code operator << (const lexer::config_data& cfg);
-
-    rem::code process (xio::token_data::iterator token, xio::token_data::collection const& tokens);
-    rem::code process (const std::string& code, xio::token_data::collection const& tokens);
+    
+    rem::code process (xio::token_data::list const& tokens);
 
     std::string Product() {
         return _product_data;

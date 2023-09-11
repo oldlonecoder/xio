@@ -91,7 +91,7 @@ alu interpretr::operator[](const std::string& expr)
  * \param line_seq tokens collection sequence part of the line of text/code.
  * \author &copy;2023, oldlonecoder serge.lussier@oldlonecoder.club
  */
-void interpretr::error(book::rem::type ertype, book::rem::code ercode, token_data::iterator token, const token_data::collection& line_seq)
+void interpretr::error(book::rem::type ertype, book::rem::code ercode, token_data::iterator token, const token_data::list& line_seq)
 {
 
 }
@@ -103,34 +103,11 @@ void interpretr::error(book::rem::type ertype, book::rem::code ercode, token_dat
  * \param token
  * \param line_seq
  */
-void interpretr::warning(rem::type, rem::code, token_data::iterator token, const token_data::collection& line_seq)
+void interpretr::warning(rem::type, rem::code, token_data::iterator token, const token_data::list& line_seq)
 {
 
 }
 
-/*!
- * \brief interpretr::trace_line
- * \param token token target
- * \param tokens tokens collection sequence that are part of the line of text/code.
- * \param colour set to true if colourize tokens.
- * \param mark set to true if the token is to be "marked"
- */
-void interpretr::trace_line(token_data::iterator token, const token_data::collection& tokens, bool colour, bool mark)
-{
-    if(colour)
-    {
-
-      lexer_color lc;
-      lc.process(token, tokens);
-      if(mark)
-          book::rem::out() << lc.mark(*token);
-      //...
-      return;
-    }
-
-    //...
-
-}
 
 
 }

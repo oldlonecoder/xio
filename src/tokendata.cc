@@ -75,22 +75,22 @@ token_data token_data::mNull = token_data();
 
 token_data::token_data(mnemonic aCode, xio::type::T aType, xio::type::T aSem, distance::T aDelta, lexem::T aLexem, uint8_t V_Flag)
 {
-    c = aCode;
+    m = aCode;
     t = aType;
     s = aSem;
     d = aDelta;
-    mLoc = { aLexem, 0, 0, 0, -1 };
+    loc = { aLexem, 0, 0, 0, -1 };
     _flags = { V_Flag, 0, 0 };
 
 }
 
-token_data::token_data(mnemonic aCode, xio::type::T aType, xio::type::T aSem, xio::distance::T aDelta, token_data::location_data aLoc, token_data::Flag aFlag, void* aPtr)
+token_data::token_data(mnemonic aCode, xio::type::T aType, xio::type::T aSem, xio::distance::T aDelta, token_data::location_data aLoc, token_data::flags aFlag, void* aPtr)
 {
-    c = aCode;
+    m = aCode;
     t = aType;
     s = aSem;
     d = aDelta;
-    mLoc = aLoc;
+    loc = aLoc;
     _flags = aFlag;
     vdata = aPtr;
 }
@@ -98,22 +98,22 @@ token_data::token_data(mnemonic aCode, xio::type::T aType, xio::type::T aSem, xi
 
 token_data::token_data(const token_data& aToken) // Consider using "default" ...
 {
-    c = aToken.c;
+    m = aToken.m;
     t = aToken.t;
     s = aToken.s;
     d = aToken.d;
-    mLoc = aToken.mLoc;
+    loc = aToken.loc;
     _flags = aToken._flags;
     vdata = aToken.vdata;
 }
 
 token_data::token_data(token_data&& aToken) noexcept
 {
-    std::swap(c, aToken.c);
+    std::swap(m, aToken.m);
     std::swap(t, aToken.t);
     std::swap(s, aToken.s);
     std::swap(d, aToken.d);
-    std::swap(mLoc, aToken.mLoc);
+    std::swap(loc, aToken.loc);
     std::swap(_flags, aToken._flags);
     std::swap(vdata, aToken.vdata);
 
@@ -121,11 +121,11 @@ token_data::token_data(token_data&& aToken) noexcept
 
 token_data& token_data::operator=(token_data&& aToken) noexcept
 {
-    std::swap(c, aToken.c);
+    std::swap(m, aToken.m);
     std::swap(t, aToken.t);
     std::swap(s, aToken.s);
     std::swap(d, aToken.d);
-    std::swap(mLoc, aToken.mLoc);
+    std::swap(loc, aToken.loc);
     std::swap(_flags, aToken._flags);
     std::swap(vdata, aToken.vdata);
     return *this;
@@ -133,11 +133,11 @@ token_data& token_data::operator=(token_data&& aToken) noexcept
 
 token_data& token_data::operator=(const token_data& aToken)
 {
-    c = aToken.c;
+    m = aToken.m;
     t = aToken.t;
     s = aToken.s;
     d = aToken.d;
-    mLoc = aToken.mLoc;
+    loc = aToken.loc;
     _flags = aToken._flags;
     vdata = aToken.vdata;
     return *this;
@@ -148,8 +148,8 @@ std::string token_data::mark(int nspc) const
     stracc str;
     if(nspc)
         str.fill(0x20, nspc);
-    const char* B = mLoc.begin - mLoc.offset;
-    const char* cc = mLoc.begin;
+    const char* B = loc.begin - loc.offset;
+    const char* cc = loc.begin;
     // localiser le debut de la ligne;
     while (*cc && (cc > B) && (*cc != '\n') && (*cc != '\r'))
         --cc;
@@ -166,8 +166,8 @@ std::string token_data::mark(int nspc) const
     tstr << str() << '\n';
     if(nspc)
         tstr.fill(0x20, nspc);
-
-    for (int x = 1; x < mLoc.colnum; x++)
+    
+    for (int x = 1; x < loc.colnum; x++)
         tstr << ' ';
     tstr << Icon::CArrowUp;
 
@@ -181,11 +181,11 @@ std::string token_data::mark(int nspc) const
  * \brief token_data::text_line
  * \return std::string the string content of the line
  */
-std::string token_data::text_line()
+std::string token_data::text_line() const
 {
     stracc str;
-    const char* B = mLoc.begin - mLoc.offset;
-    const char* cc = mLoc.begin;
+    const char* B = loc.begin - loc.offset;
+    const char* cc = loc.begin;
     // localiser le debut de la ligne;
     while (*cc && (cc > B) && (*cc != '\n') && (*cc != '\r'))
         --cc;
@@ -197,20 +197,21 @@ std::string token_data::text_line()
         while (*cc && (*cc != '\n') && (*cc != '\r'))
             str += *cc++;
     }
+    book::rem::push_debug(HERE) << str() << book::rem::commit;
     return str();
 }
 
 
-std::string token_data::location() const
+std::string token_data::location_text() const
 {
-    if(mLoc.linenum <= 0) return "[]";
+    if(loc.linenum <= 0) return "[]";
     stracc Str = "Line :%d, Col:%d";
-    Str << mLoc.linenum << mLoc.colnum;
+    Str << loc.linenum << loc.colnum;
     return Str();
 }
 
 
-std::string token_data::semantic_types() const
+std::string token_data::semantic_text() const
 {
     std::string Str;
     return xio::type::name(s);
@@ -223,7 +224,7 @@ std::string token_data::type_name() const
 }
 
 
-static token_data::collection tokens_table =
+static token_data::list tokens_table =
 {
     {mnemonic::Null,                type::Keyword,   type::Keyword                                              ,distance::identifier, lexem::Null,        1},
     {mnemonic::LeftShift,           type::Binary,    type::Operator|type::Binary                                ,distance::shift,      lexem::LeftShift,  1},
@@ -256,7 +257,7 @@ static token_data::collection tokens_table =
     {mnemonic::Add,                 type::Binary,    type::Operator|type::Binary                                ,distance::addition,   lexem::Addition,     1},
     {mnemonic::Sub,                 type::Binary,    type::Operator|type::Binary                                ,distance::addition,   lexem::Sub,          1},
     {mnemonic::Mul,                 type::Binary,    type::Operator|type::Binary                                ,distance::product,    lexem::Multiply,     1},
-    {mnemonic::CommentCpp,          type::Punc,      type::Operator                                             ,distance::noop_,      lexem::CommentCpp,  0},
+    {mnemonic::CommentCpp,          type::Punc,      type::Operator|type::Punc                                  ,distance::noop_,      lexem::CommentCpp,  0},
     {mnemonic::Modulo,              type::Binary,    type::Operator|type::Binary                                ,distance::product,    lexem::Modulo,       1},
     {mnemonic::LessThan,            type::Binary,    type::Operator|type::Binary|type::Bool                     ,distance::equality,   lexem::LessThan,    1},
     {mnemonic::GreaterThan,         type::Binary,    type::Operator|type::Binary|type::Bool                     ,distance::equality,   lexem::GreaterThan, 1},
@@ -274,8 +275,8 @@ static token_data::collection tokens_table =
     {mnemonic::Closeindex,          type::ClosePair, type::Operator|type::Punc|type::Binary|type::ClosePair     ,distance::paranthese, lexem::CloseIndex,   1},
     {mnemonic::Openbrace,           type::Binary,    type::Operator|type::Binary|type::Punc|type::OpenPair      ,distance::paranthese, lexem::BraceBegin,  1},
     {mnemonic::Closebrace,          type::ClosePair, type::Operator|type::Binary|type::Punc|type::ClosePair     ,distance::paranthese, lexem::BraceEnd,     1},
-    {mnemonic::BeginComment,        type::Punc,      type::Null                                                 ,distance::noop_,      lexem::CommentBegin, 0},
-    {mnemonic::EndComment,          type::Punc,      type::Null                                                 ,distance::noop_,      lexem::CommentEnd, 0},
+    {mnemonic::BeginComment,        type::Punc,      type::Operator|type::Punc                                  ,distance::noop_,      lexem::CommentBegin, 0},
+    {mnemonic::EndComment,          type::Punc,      type::Operator|type::Punc                                  ,distance::noop_,      lexem::CommentEnd, 0},
     {mnemonic::Div,                 type::Binary,    type::Operator|type::Binary                                ,distance::product,    lexem::Division,  1},
     {mnemonic::Comma,               type::Punc,      type::Operator|type::Binary|type::Punc                     ,distance::comma,      lexem::Comma,     1},
     {mnemonic::Scope,               type::Punc,      type::Operator|type::Binary|type::Punc                     ,distance::scope,      lexem::Scope,     1},
@@ -343,11 +344,11 @@ token_data token_data::scan(const char* C_)
     for (auto token : tokens_table)
     {
         const char* crs = C_;
-        const char* rtxt = token.mLoc.begin;
+        const char* rtxt = token.loc.begin;
         unicode = 0; // oops...
         //std::size_t sz = std::strlen(rtxt);
-
-        if(*crs != *token.mLoc.begin) continue;
+        
+        if(*crs != *token.loc.begin) continue;
 
         while ((*crs && *rtxt) && (*crs == *rtxt))
         {
@@ -363,9 +364,9 @@ token_data token_data::scan(const char* C_)
                 if ((isalnum(*crs) || (*crs == '_')) && !token.is_operator())
                     continue;
             }
-
-            token.mLoc.begin = C_;
-            token.mLoc.end = crs - 1;
+            
+            token.loc.begin = C_;
+            token.loc.end = crs - 1;
             return token;
         }
     }
@@ -380,13 +381,13 @@ std::string token_data::dump_token_table()
     for(auto token: tokens_table)
     {
         acc = "[%-16s] %s\n";
-        acc << mnemonic_name(token.c) << token.semantic_types();
+        acc << mnemonic_name(token.m) << token.semantic_text();
         std::cout << acc();
     }
     return acc();
 }
 
-xio::type::T token_data::ktype(mnemonic m)
+xio::type::T token_data::type_of(mnemonic m)
 {
     return key_to_type[m];
 }
@@ -395,7 +396,7 @@ token_data token_data::operator[](mnemonic CC)
 {
     for (token_data T : tokens_table)
     {
-        if (CC == T.c)
+        if (CC == T.m)
             return T;
     }
     return token_data::mNull;
@@ -406,7 +407,7 @@ std::string token_data::details(bool Mark_) const
     stracc Str;
     Str << '\'' << text() << '\'';
     Str += "[%s]: offset: %d line:%d, col:%d, %s/{%s}";
-    Str << mnemonic_name(c) << mLoc.offset << mLoc.linenum << mLoc.colnum << type_name() << semantic_types();
+    Str << mnemonic_name(m) << loc.offset << loc.linenum << loc.colnum << type_name() << semantic_text();
     if (Mark_)
         Str << '\n' << mark();
     return Str();

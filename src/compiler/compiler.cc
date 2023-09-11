@@ -92,9 +92,9 @@ book::rem::code compiler::parse_expr(xiobloc *blk, const char *expr_text)
 
     lexer_color lc;
     std::string code = expr_text;
-    lc.process(code, _tokens_stream);
+    lc.process(_tokens_stream);
     book::rem::push_info() <<  color::BlueViolet << "xio" << color::White << "::" <<
-      color::BlueViolet << "parser" << color::White << "::" <<
+      color::BlueViolet << "compiler" << color::White << "::" <<
       color::BlueViolet << "parse_expr" << color::White << "(" <<
       lc.Product() << color::White << ") : dumping tokens: " << book::rem::commit;
 
@@ -114,8 +114,6 @@ book::rem::code compiler::parse_expr(xiobloc *blk, const char *expr_text)
             book::rem::out(HERE) << color::Yellow << " arithmetic expression inputs stopped by non-value token - returning." << book::rem::commit;
             goto end_of_expr;
         }
-        auto tokens = tokens_line_from(ctx.token());
-        spp::interpretr::trace_line(ctx.cur, tokens);
         book::rem::push_message() << "parse arithmetic expression failed." << book::rem::commit;
         ctx.reject();
 
@@ -123,7 +121,7 @@ book::rem::code compiler::parse_expr(xiobloc *blk, const char *expr_text)
     }
 
     ctx++;
-    while((ctx.cur < _tokens_stream.end()) && (ctx.cur->c != ::xio::mnemonic::Semicolon)){
+    while((ctx.cur < _tokens_stream.end()) && (ctx.cur->m != ::xio::mnemonic::Semicolon)){
         x = x->input(ctx.bloc, ctx.token(), [this](token_data* token)-> xio*{
             return make_xio_node(token);
         });
@@ -217,9 +215,17 @@ rem::code compiler::compile()
     R = lexical_analyse();
     if(R != book::rem::accepted)
         return R;
+    book::rem::push_debug(HERE) << " lexer terminate successfully : prepare (coloured) tokens with details [lexer_color]:" << book::rem::endl << book::rem::commit;
 
+    lexer_color lc;
+    lc.process(_tokens_stream);
+    book::rem::push_info() <<  color::BlueViolet << "xio" << color::White << "::" <<
+                    color::BlueViolet << "compiler" << color::White << "::" << color::BlueViolet << "compile" << color::White << rem::endl <<
+                    lc.Product() << rem::endl << color::White << " : dumping tokens: " << book::rem::commit;
 
-    ctx = context(_bloc, _tokens_stream.begin(), _tokens_stream.end(), _tokens_stream.end());
+    for(auto & token: _tokens_stream) book::rem::out() << lc.mark(token) << book::rem::commit;
+    rem::push_debug(HEREF) << " returning because this request is not implemented yet..."  << book::rem::commit;
+    //ctx = context(_bloc, _tokens_stream.begin(), _tokens_stream.end(), _tokens_stream.end());
 
     return book::rem::notimplemented;
 }
@@ -241,21 +247,7 @@ rem::code compiler::lexical_analyse()
         return book::rem::rejected;
     }
 
-
-    book::rem::push_debug(HERE) << " parser::context initialized : dumping tokens (coloured) details" << book::rem::endl << book::rem::commit;
-
-    lexer_color lc;
-    std::string code = source_content().c_str();
-    lc.process(code, _tokens_stream);
-    book::rem::push_info() <<  color::BlueViolet << "xio" << color::White << "::" <<
-      color::BlueViolet << "parser" << color::White << "::" <<
-      color::BlueViolet << "parse_expr" << color::White << "(" <<
-      lc.Product() << color::White << ") :" << book::rem::endl  << book::rem::commit;
-
-    for(auto & token: _tokens_stream) book::rem::out() << lc.mark(token) << book::rem::commit;
-    rem::push_debug() << " returning dummy float alu"  << book::rem::commit;
-
-    return book::rem::notimplemented;
+    return book::rem::accepted;
 }
 
 rem::code compiler::open_file()
@@ -293,12 +285,12 @@ xio* compiler::parse_rvalue_keyword()
 }
 
 
-token_data::collection compiler::tokens_line_from(token_data* token)
+token_data::list compiler::tokens_line_from(token_data* token)
 {
-    token_data::collection tokens;
+    token_data::list tokens;
     for(auto it = _tokens_stream.begin(); it != _tokens_stream.end(); it++)
     {
-        if(it->mLoc.linenum == token->mLoc.linenum) tokens.push_back(*it);
+        if(it->loc.linenum == token->loc.linenum) tokens.push_back(*it);
     }
 
     return tokens;
@@ -529,13 +521,6 @@ book::rem::code compiler::Argc::process()
             book::rem::push_debug(HERE) << color::Reset << "compiling file '" << color::Aquamarine3 << *arg << color::Reset << "':" << book::rem::commit;
             acc->set_source_file(*arg);
             return acc->compile();
-//            auto R = acc->open_file();
-//            if(R != book::rem::ok) return book::rem::rejected;
-//            book::rem::out() << " compiler now has source content: " <<  book::rem::endl << color::White <<
-//              "---------------------------------------------------------------------------------------" << color::Reset << book::rem::endl <<
-//              acc->source_code() << color::White <<
-//                "---------------------------------------------------------------------------------------" << book::rem::commit;
-//            return book::rem::notimplemented;
         }
         book::rem::push_error() << "-f requires [path]/filename as the source code." << book::rem::endl << usage() << book::rem::commit;
 

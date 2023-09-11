@@ -379,7 +379,7 @@ book::rem::code grammar::enter_litteral(strbrk::token_t::iterator &crs)
     if(token)
     {
         _rule->a = a;
-        (*_rule) | token.c;
+        (*_rule) | token.m;
         a.Reset();
     }
     else
@@ -525,7 +525,7 @@ bool grammar::term::operator==(const token_data &t) const
 {
     switch(_type)
     {
-        case type::m:return object.m == t.c;
+        case type::m:return object.m == t.m;
         case type::s:return (object.sem & t.s) != 0;
         case type::nil:
         default:return false;
@@ -537,7 +537,7 @@ bool grammar::term::operator!=(const token_data &t) const
 {
     switch(_type)
     {
-        case type::m:return object.m != t.c;
+        case type::m:return object.m != t.m;
         case type::s:return (object.sem & t.s) == 0;
         case type::nil:
         default:return true;

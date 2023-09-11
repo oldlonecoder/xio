@@ -163,6 +163,7 @@ lexer_color::~lexer_color()
     //...
     _product_data.clear();
     tokens.clear();
+    text.clear();
     //...
 }
 
@@ -174,69 +175,41 @@ rem::code lexer_color::init()
 rem::code lexer_color::operator<<(const std::string& aSource)
 {
     lexer lex;
-    _product_data = aSource;
-    std::string _color;
-    size_t Spacing = 0, // Current color String::Length();
-           Offset = 0; // Cummulative ( Offset += Spacing )
-
-
     lex.config() = { aSource.c_str(),  & tokens}; // oop!!!
     rem::code E = lex();
     if (E != rem::accepted) return E;
-    return process(aSource, tokens);
+    return process(tokens);
 
 }
 
-rem::code lexer_color::process(xio::token_data::iterator token_it, const xio::token_data::collection& tokens)
-{
-    _product_data = token_it->text_line();
 
+
+rem::code lexer_color::process(xio::token_data::list const &tokens)
+{
     std::string _color;
+    std::string line;
     size_t Spacing = 0, // Current color String::Length();
-    Offset = 0; // Cummulative ( Offset += Spacing )
+           Offset  = 0; // Cummulative ( Offset += Spacing )
+    int cur_line   = 0;
 
     for (auto const& Token : tokens)
     {
-        _color.clear();
-        _color = Token.c == xio::mnemonic::Noop ? attr<chattr::format::ansi256>::fg(lexer_color::Types[Token.t]) :
-                   _color = attr<chattr::format::ansi256>::fg(lexer_color::affine_db[Token.c]);
 
-        Spacing = _color.length();
-        if (!_color.empty())
+        if(cur_line != Token.loc.linenum)
         {
-            _product_data.insert(Token.mLoc.offset + Offset, _color);
-            Offset += Spacing;
+            if(!line.empty()) text.push_back(line);
+            line = Token.text_line();
+            cur_line = Token.loc.linenum;
+            Offset = 0;
         }
-    }
-    return rem::ok;
-}
-
-
-
-
-rem::code lexer_color::operator<<(const lexer::config_data &cfg)
-{
-    return process(cfg.Source, *cfg.Tokens);
-}
-
-
-rem::code lexer_color::process(const std::string &src, xio::token_data::collection const &tokens)
-{
-    std::string _color;
-    _product_data = src;
-    size_t Spacing = 0, // Current color String::Length();
-           Offset = 0; // Cummulative ( Offset += Spacing )
-
-    for (auto const& Token : tokens)
-    {
         _color.clear();
-        _color = Token.c == xio::mnemonic::Noop ? attr<chattr::format::ansi256>::fg(lexer_color::Types[Token.t]) :
-            _color = attr<chattr::format::ansi256>::fg(lexer_color::affine_db[Token.c]);
+        _color = Token.m == xio::mnemonic::Noop ? attr<chattr::format::ansi256>::fg(lexer_color::Types[Token.t]) :
+                   _color = attr<chattr::format::ansi256>::fg(lexer_color::affine_db[Token.m]);
 
         Spacing = _color.length();
         if (!_color.empty())
         {
-            _product_data.insert(Token.mLoc.offset + Offset, _color);
+            line.insert(Token.loc.offset + Offset, _color);
             Offset += Spacing;
         }
     }
@@ -248,14 +221,14 @@ std::string lexer_color::mark(xio::token_data& token)
 
     //Str.fill(0x20, token.mLoc.colnum-1 + indentation);
     stracc Str;
-    Str << Product()<< " "
+    Str << text[token.loc.linenum] << " "
         << color::Reset
-        << xio::mnemonic_name(token.c) << "; "
-        << token.location() << " ; "
+        << xio::mnemonic_name(token.m) << "; "
+        << token.location_text() << " ; "
         << token.type_name() << " ; "
-        << token.semantic_types();
+        << token.semantic_text();
     Str << '\n';
-    Str.fill(0x20, token.mLoc.colnum-1 + rem::indentation());
+    Str.fill(0x20, token.loc.colnum-1 + rem::indentation());
     Str << Icon::ArrowUp;
     return Str();
 }

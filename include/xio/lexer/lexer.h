@@ -28,20 +28,19 @@ using book::rem;
  */
 class XIO_PUBLIC lexer
 {
-    struct internal_cursor
-    {
+    struct lex_cursor {
         const char *B  = nullptr; ///> Absolute Beginning of the source text.
         const char *E  = nullptr; ///> Absolute end of the soure text.
-        const char *C  = nullptr;
-
+        const char *C = nullptr; ///> Absolute of the index/position of the
+                                 /// cursor int the source text.
 
         bool operator++();
         bool operator++(int);
         [[maybe_unused]] bool skip_ws();
         bool end_of_file(const char *P = nullptr) const;
-        [[nodiscard]] std::ptrdiff_t Index() const;
-        int        L   = -1;
-        int        Col = -1;
+        [[nodiscard]] std::ptrdiff_t index() const;
+        int line = -1;
+        int col = -1;
         void sync();
         std::string scan_to_eol();
         [[nodiscard]]std::string line_num() const;
@@ -49,11 +48,12 @@ class XIO_PUBLIC lexer
         [[nodiscard]]std::string location() const;
         bool       _F  = false; ///< Used as "state machine" for math factor notation syntax style
         rem::code scan_to(const char *SubStr_);
+        rem::code bloc_comment();
         std::string scan_string();
-
-        internal_cursor() = default;
-        explicit internal_cursor(const char *Source_);
-    } src_cursor;
+        std::string print_location();
+        lex_cursor() = default;
+        explicit lex_cursor(const char *Source_);
+    } cursor;
 
     struct num_scanner
     {
@@ -91,7 +91,7 @@ public:
     struct XIO_PUBLIC config_data
     {
         const char *Source  = nullptr;
-        xio::token_data::collection *Tokens = nullptr;
+        xio::token_data::list *Tokens = nullptr;
         operator bool() const { return Source && Tokens; }
     };
 
@@ -100,14 +100,17 @@ public:
     lexer(const lexer&) = default;
     lexer(lexer&&)      = default;
 
-    ~lexer()            = default;
+    ~lexer() = default;
 
-    lexer::config_data& config() { return mConfig;}
+    lexer::config_data &config() { return _config; }
 
-    rem::code  Exec();
-    rem::code  operator()();
+    rem::code process();
+    rem::code operator()();
 
-    [[maybe_unused]] [[nodiscard]] bool Empty() const { return mConfig.Tokens == nullptr || mConfig.Tokens->empty(); }
+    [[maybe_unused]] [[nodiscard]] bool Empty() const
+    {
+        return _config.Tokens == nullptr || _config.Tokens->empty();
+    }
     void dump_tokens(std::function<void(const xio::token_data&)> callback_);
 
 
@@ -115,21 +118,19 @@ public:
     xio::token_data* step();
 
 private:
+    config_data _config;
 
-    config_data mConfig;
+    rem::code accept(xio::token_data &Token_);
 
-    rem::code Push(xio::token_data& Token_) ;
-
-
-    #pragma region Scanners
+#pragma region Scanners
 public:
-    using ScannerFn = rem::code(lexer::*)(xio::token_data&);
-    using Input = std::pair<xio::type::T, lexer::ScannerFn>;
-    using ScanTable = std::vector<lexer::Input>;
-    using Scanner = lexer::ScannerFn;
-    
+    using scanner_ptr = rem::code (lexer::*)(xio::token_data &);
+    using input_assoc = std::pair<xio::type::T, lexer::scanner_ptr>;
+    using scan_tbl = std::vector<lexer::input_assoc>;
+    using scanner_fn = lexer::scanner_ptr;
 
-    static Scanner get_scanner(xio::token_data& token);
+    static scanner_fn get_scanner(xio::token_data &token);
+
 private:
     rem::code input_binary_operator(xio::token_data&);
     rem::code input_default(xio::token_data&);
@@ -145,7 +146,7 @@ private:
     rem::code scan_prefix(xio::token_data&);
     rem::code scan_postfix(xio::token_data&);
     rem::code skip_cpp_comment();
-
+    rem::code skip_comment_bloc();
     #pragma endregion Scanners
 
     void insert_multiply(xio::token_data&);

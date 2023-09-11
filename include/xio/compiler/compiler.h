@@ -25,7 +25,7 @@ namespace xio
 class XIO_PUBLIC compiler
 {
 
-    token_data::collection _tokens_stream;
+    token_data::list _tokens_stream;
     std::string _filename;
     stracc source_content;
 
@@ -136,7 +136,7 @@ private:
     book::rem::code close_file();
 
     xio* parse_rvalue_keyword();
-    token_data::collection tokens_line_from(token_data* token);
+    token_data::list tokens_line_from(token_data* token);
 
 };
 
