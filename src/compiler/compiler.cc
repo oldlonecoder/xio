@@ -91,35 +91,21 @@ book::rem::code compiler::parse_expr(xiobloc *blk, const char *expr_text)
     book::rem::push_info() <<  color::BlueViolet << "xio" << color::White << "::" <<
       color::BlueViolet << "compiler" << color::White << "::" <<
       color::BlueViolet << "parse_expr" << color::White << "(" <<
-      text << color::White << ") : dumping tokens: " << book::rem::commit;
+      text << color::White << ") :" << book::rem::commit;
 
-    //for(auto & token: _tokens_stream) book::rem::out() << lex.mark(token,true) << book::rem::commit;
-
-    book::rem::push_info(HERE) << "init context data;" << book::rem::commit;
     ctx = context(_bloc, _tokens_stream.begin(), _tokens_stream.end(), _tokens_stream.end());
 
     book::rem::push_info() << "begin parse and build expr binary tree ( of xio nodes ): " << book::rem::commit;
     xio* x{nullptr};
-    x = xio::begin(ctx.bloc, ctx.token(), [this](token_data* t)->xio*{ return make_xio_node(t); });
-
-    if(!x)
+    if(!(x = xio::begin(ctx.bloc, ctx.token(), [this](token_data* t)->xio*{ return make_xio_node(t); }))
     {
-        if(!ctx.cur->_flags.V)
-        {
-            book::rem::out(HERE) << color::Yellow << " arithmetic expression inputs stopped by non-value token - returning." << book::rem::commit;
-            goto end_of_expr;
-        }
-        book::rem::push_message() << "parse arithmetic expression failed." << book::rem::commit;
-        ctx.reject();
-
-        return book::rem::accepted;
+        book::rem::push_error() << color::Yellow << " arithmetic expression: source code seems not be an expression at all..." << book::rem::commit;
+        return book::rem::rejected;
     }
 
     ctx++;
     while((ctx.cur < _tokens_stream.end()) && (ctx.cur->m != ::xio::mnemonic::Semicolon)){
-        x = x->input(ctx.bloc, ctx.token(), [this](token_data* token)-> xio*{
-            return make_xio_node(token);
-        });
+        x = x->input(ctx.bloc, ctx.token(), [this](token_data* token)-> xio*{ return make_xio_node(token); });
         if(!x)
         {
             book::rem::out(HERE) << color::Yellow << " arithmetic expression inputs stopped  by unexpected token - returning." << book::rem::commit;
@@ -128,7 +114,7 @@ book::rem::code compiler::parse_expr(xiobloc *blk, const char *expr_text)
         ctx.instructions.push_back(x);
         ctx++;
     }
-end_of_expr:
+
     xio* root = ctx.instructions.back()->tree_close();
     if(!root)
         ctx.reject();
