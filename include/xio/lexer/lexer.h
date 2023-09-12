@@ -87,6 +87,22 @@ class XIO_PUBLIC lexer
         xio::type::T operator()() const;
     };
 
+    struct LexicalColours
+    {
+        std::string text;
+
+        chattr::format format; // = chattr::format::ansi256; ///< Not used yet
+
+        LexicalColours(){}
+        ~LexicalColours();
+
+        //rem::code operator << (const std::string& aSource);
+        //rem::code operator << (const lexer::config_data& cfg);
+
+        rem::code Process (xio::token_data::list const& tokens);
+        stracc colorize(xio::token_data::list* tokens);
+    };
+
 public:
     struct XIO_PUBLIC config_data
     {
@@ -112,11 +128,7 @@ public:
         return _config.Tokens == nullptr || _config.Tokens->empty();
     }
     void dump_tokens(std::function<void(const xio::token_data&)> callback_);
-
-
-    rem::code step_begin();
-    xio::token_data* step();
-
+    stracc colorize();
 private:
     config_data _config;
 
@@ -130,7 +142,7 @@ public:
     using scanner_fn = lexer::scanner_ptr;
 
     static scanner_fn get_scanner(xio::token_data &token);
-
+    std::string mark(const xio::token_data& token, bool c);
 private:
     rem::code input_binary_operator(xio::token_data&);
     rem::code input_default(xio::token_data&);
@@ -145,11 +157,13 @@ private:
     rem::code scan_sign_prefix(xio::token_data&);
     rem::code scan_prefix(xio::token_data&);
     rem::code scan_postfix(xio::token_data&);
-    rem::code skip_cpp_comment();
-    rem::code skip_comment_bloc();
+    rem::code scan_cpp_comment(xio::token_data& atoken);
+    rem::code scan_comment_bloc(xio::token_data& atoken);
     #pragma endregion Scanners
 
     void insert_multiply(xio::token_data&);
+
+
 };
 
 

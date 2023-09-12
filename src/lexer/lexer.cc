@@ -1,35 +1,177 @@
-/***************************************************************************
- *   Copyright (C) 1965/1987/2023 by Serge Lussier                         *
- *   serge.lussier@oldlonecoder.club                                       *
- *                                                                         *
- *                                                                         *
- *   Unless otherwise specified, all code in this project is written       *
- *   by the author (Serge Lussier)                                         *
- *   and no one else then not even {copilot, chatgpt, or any other AI}     *
- *   --------------------------------------------------------------------- *
- *   Copyrights from authors other than Serge Lussier also apply here      *
- ***************************************************************************/
+/****************************************************************************
+ *   Copyright (C) 1965/1987/2023 by Serge Lussier                          *
+ *   serge.lussier@oldlonecoder.club                                        *
+ *                                                                          *
+ *   This is a (self-)learning and exploration code. Pro or advanced        *
+ *   academic stadards are not to be expexted.                              *
+ *   Unless otherwise specified, all code in this project is written        *
+ *   by the author (Serge Lussier)                                          *
+ *   and no one else then not even {copilot, chatgpt, or any other AI}      *
+ *   ---------------------------------------------------------------------  *
+ *   Copyrights from authors other than the author also apply here          *
+ *   This project is under the GPL (general public license_                 *
+ *   The GPL is available everywhere open source gpl projects are published *
+ ****************************************************************************/
 
 #include "xio/lexer/lexer.h"
 #include <array>
 #include <chrtools/Icons.h>
 
+
+/** temporary copy-paste'd here **/
 /*!
  * @brief  Scans for std maths factor notation, RESTRICTED (limited) syntax style:
- *         4ac => 4 x a x m
- *         4(ac...) != 4 x ( a x m ...)
- *         4pi/sin/cos/atan/asin/acos ... != 4 x p x i / 4 x s x i x n ... And NOT 4 x pi or 4 x sin ...
- * *
  *
- * @note   Required that the Left hand side token is a ConstNumber and that the Input token is Constiguous and of unknown type (xio::type::null_t) to be scanned as an identifier.
- *         Input atoken is either scanned in the ref_t Table or not.
- * @return Execp<>
+ * @note   Required that the Left hand side token is a Const|Number and that the Input token is contiguous and of unknown type (xio::type::Null) to be scanned as an identifier.
+ *         4ac => 4 * a * c
+ *         4(ac...) => 4 * ( a * c...)
+ * *******************************************************************************
  */
 
 
 using namespace xio;
 
 lexer::scan_tbl scan_table;
+
+std::map<xio::type::T, color::type> PrimitiveTypesColors =
+    {
+        {xio::type::Assign,    color::CadetBlue},
+        {xio::type::Number,    color::Cyan2},
+        {xio::type::Keyword,   color::CornflowerBlue},
+        {xio::type::Operator,  color::LightCoral},
+        {xio::type::Binary,    color::Cornsilk1},
+        {xio::type::Text,      color::DarkSlateGray3},
+        {xio::type::Id,        color::White},
+        {xio::type::Punc,      color::Yellow},
+        {xio::type::Prefix,    color::CadetBlue},
+        {xio::type::LineComment,color::Grey66 },
+        {xio::type::BlocComment,color::Grey63 }
+        //...
+};
+
+
+////Affined particular Lexem:
+//std::map<mnemonic, color::Type> LexerColor::Mnemonics =
+//{
+
+//};
+
+std::map<xio::mnemonic, color::type>  MnemonicColors =
+    {
+        {xio::mnemonic::Null,                     color::White},
+        {xio::mnemonic::LeftShift,               color::SkyBlue1},
+        {xio::mnemonic::Radical,                  color::DeepSkyBlue7},
+        {xio::mnemonic::Exponent,                 color::DeepSkyBlue7},
+        {xio::mnemonic::RightShift,              color::SkyBlue1},
+        {xio::mnemonic::Decr,                     color::DodgerBlue1},
+        {xio::mnemonic::Incr,                     color::DodgerBlue1},
+        {xio::mnemonic::AssignAdd,               color::Salmon1},
+        {xio::mnemonic::AssignSub,               color::Salmon1},
+        {xio::mnemonic::AssignMul,               color::Salmon1},
+        {xio::mnemonic::AssignDiv,               color::Salmon1},
+        {xio::mnemonic::AssignMod,               color::Salmon1},
+        {xio::mnemonic::AssignAnd,               color::Salmon1},
+        {xio::mnemonic::AssignOr,                color::Salmon1},
+        {xio::mnemonic::AssignXor,               color::Salmon1},
+        {xio::mnemonic::AssignC1,                color::Salmon1},
+        {xio::mnemonic::AssignLeftShift,        color::Salmon1},
+        {xio::mnemonic::AssignRightShift,       color::Salmon1},
+        {xio::mnemonic::Deref,                    color::White},
+        {xio::mnemonic::LessEq,                  color::LighcoreateBlue},
+        {xio::mnemonic::GreaterEq,               color::LighcoreateBlue},
+        {xio::mnemonic::Equal,                    color::LighcoreateBlue},
+        {xio::mnemonic::NotEqual,                color::LighcoreateBlue},
+        {xio::mnemonic::Add,                      color::DarkOrange3},
+        {xio::mnemonic::Sub,                      color::DarkOrange3},
+        {xio::mnemonic::Mul,                      color::LighcoreateBlue},
+        {xio::mnemonic::Indirection,              color::White},
+        {xio::mnemonic::CommentCpp,              color::White},
+        {xio::mnemonic::Modulo,                   color::LighcoreateBlue},
+        {xio::mnemonic::LessThan,                color::LighcoreateBlue},
+        {xio::mnemonic::GreaterThan,             color::LighcoreateBlue},
+        {xio::mnemonic::Assign,                   color::Salmon1},
+        {xio::mnemonic::BinaryAnd,               color::SkyBlue1},
+        {xio::mnemonic::BinaryOr,                color::SkyBlue1},
+        {xio::mnemonic::BinaryXor,               color::SkyBlue1},
+        {xio::mnemonic::C1,                       color::SkyBlue1},
+        {xio::mnemonic::C2,                       color::SkyBlue1},
+        {xio::mnemonic::BinaryNot,               color::SkyBlue1},
+        {xio::mnemonic::LogicalAnd,              color::LighcoreateBlue},
+        {xio::mnemonic::LogicalOr,               color::LighcoreateBlue},
+        {xio::mnemonic::OpenAbsOp,              color::LightSteelBlue},
+        {xio::mnemonic::CloseAbsOp,             color::LightSteelBlue},
+        {xio::mnemonic::OpenPar,                 color::Gold4},
+        {xio::mnemonic::ClosePar,                color::Gold4},
+        {xio::mnemonic::Openindex,                  color::DarkOliveGreen2},
+        {xio::mnemonic::Closeindex,                 color::DarkOliveGreen2},
+        {xio::mnemonic::Openbrace,                  color::Grey69},
+        {xio::mnemonic::Closebrace,                 color::Grey69},
+        {xio::mnemonic::BeginComment,            color::Grey53},
+        {xio::mnemonic::EndComment,              color::Grey54},
+        {xio::mnemonic::Div,                      color::DeepSkyBlue7},
+        {xio::mnemonic::Comma,                    color::Violet},
+        {xio::mnemonic::Scope,                    color::Violet},
+        {xio::mnemonic::Semicolon,                color::Violet},
+        {xio::mnemonic::Colon,                    color::Violet},
+        {xio::mnemonic::Range,                    color::Violet},
+        {xio::mnemonic::Factorial,                color::DeepSkyBlue4},
+        {xio::mnemonic::Positive,                 color::White},
+        {xio::mnemonic::Negative,                 color::White},
+        {xio::mnemonic::Squote,                   color::White},
+        {xio::mnemonic::Dquote,                   color::White},
+        {xio::mnemonic::Ternary,                  color::White},
+        {xio::mnemonic::Hash,                     color::White},
+        {xio::mnemonic::Eos,                      color::White},
+        {xio::mnemonic::Dot,                      color::Violet},
+        {xio::mnemonic::Return,                   color::DodgerBlue2},
+        {xio::mnemonic::If,                       color::DodgerBlue2},
+        {xio::mnemonic::Pi,                       color::Gold1},
+        {xio::mnemonic::Number,                   color::Aquamarine2},
+        {xio::mnemonic::U8,                       color::Aquamarine2},
+        {xio::mnemonic::U16,                      color::Aquamarine2},
+        {xio::mnemonic::U32,                      color::Aquamarine2},
+        {xio::mnemonic::U64,                      color::Aquamarine2},
+        {xio::mnemonic::I8,                       color::Aquamarine2},
+        {xio::mnemonic::I16,                      color::Aquamarine2},
+        {xio::mnemonic::I32,                      color::Aquamarine2},
+        {xio::mnemonic::I64,                      color::Aquamarine2},
+        {xio::mnemonic::Float,                    color::Aquamarine2},
+        {xio::mnemonic::String,                   color::Aquamarine2},
+        {xio::mnemonic::Then,                     color::DodgerBlue2},
+        {xio::mnemonic::Else,                     color::DodgerBlue2},
+        {xio::mnemonic::Const,                    color::White},
+        {xio::mnemonic::Include,                  color::White},
+        {xio::mnemonic::Module,                   color::White},
+        {xio::mnemonic::At,                       color::White},
+        {xio::mnemonic::Prime,                    color::White},
+        {xio::mnemonic::Do,                       color::DodgerBlue2},
+        {xio::mnemonic::While,                    color::DodgerBlue2},
+        {xio::mnemonic::For,                      color::DodgerBlue2},
+        {xio::mnemonic::Until,                    color::DodgerBlue2},
+        {xio::mnemonic::Repeat,                   color::DodgerBlue2},
+        {xio::mnemonic::Switch,                   color::DodgerBlue2},
+        {xio::mnemonic::Case,                     color::DodgerBlue2},
+        {xio::mnemonic::Type,                     color::White},
+        {xio::mnemonic::LowHex,                  color::White},
+        {xio::mnemonic::UpHex,                   color::White},
+        {xio::mnemonic::Cosinus,                  color::SpringGreen4},
+        {xio::mnemonic::ArcCosinus,              color::SpringGreen4},
+        {xio::mnemonic::Tangent,                  color::SpringGreen4},
+        {xio::mnemonic::ArcTangent,              color::SpringGreen4},
+        {xio::mnemonic::Sinus,                    color::SpringGreen4},
+        {xio::mnemonic::ArcSinus,                color::SpringGreen4},
+        {xio::mnemonic::Object,                   color::SpringGreen4},
+        {xio::mnemonic::Static,                   color::Grey70},
+        {xio::mnemonic::This,                     color::SpringGreen4},
+        {xio::mnemonic::Unshadow,                 color::White},
+        {xio::mnemonic::Catch,                    color::Yellow5},
+        {xio::mnemonic::Throw,                    color::Yellow5},
+        {xio::mnemonic::Noop,                      color::Grey66},
+        {xio::mnemonic::LineComment,              color::Grey66 },
+        {xio::mnemonic::BlocComment,              color::Grey63 }
+};
+
+
 
 #pragma region InternalCursor
 
@@ -141,6 +283,7 @@ std::ptrdiff_t lexer::lex_cursor::index() const
     std::string Str;
     while((C <= E) && (*C != '\n') && (*C != '\r'))
         Str += *C++;
+    --C;
     return Str;
 }
 
@@ -153,6 +296,7 @@ std::ptrdiff_t lexer::lex_cursor::index() const
 {
     return book::rem::notimplemented;
 }
+
 
 rem::code lexer::lex_cursor::bloc_comment()
 {
@@ -173,17 +317,17 @@ rem::code lexer::lex_cursor::bloc_comment()
             ++C;
             bloc << *C;
             if (*C == '/') {
-                rem::push_debug() << rem::endl
-                                  << color::Yellow << '[' << rem::endl
-                                  << color::Reset << bloc << rem::endl
-                                  << color::Yellow << ']' << rem::commit;
+//                rem::push_debug() << rem::endl
+//                                  << color::Yellow << '[' << rem::endl
+//                                  << color::Reset << bloc << rem::endl
+//                                  << color::Yellow << ']' << rem::commit;
                 sync();
-                rem::push_debug() << "Leaving lex_cursor::bloc_comment():" << rem::endl
-                                  << rem::commit;
-                rem::out() << "where *C = '" << color::Yellow << *C
-                           << color::Reset << "', column " << color::Yellow
-                           << col << color::Reset << ", Line " << color::Yellow
-                           << line << rem::commit;
+//                rem::push_debug() << "Leaving lex_cursor::bloc_comment():" << rem::endl
+//                                  << rem::commit;
+//                rem::out() << "where *C = '" << color::Yellow << *C
+//                           << color::Reset << "', column " << color::Yellow
+//                           << col << color::Reset << ", Line " << color::Yellow
+//                           << line << rem::commit;
                 return rem::accepted;
             }
             continue;
@@ -452,7 +596,7 @@ rem::code lexer::input_unary_operator(token_data& atoken)
 
 rem::code lexer::input_punctuation(token_data &atoken)
 {
-    rem::push_debug(HEREF) << atoken.mark() << rem::commit;
+    //rem::push_debug(HEREF) << atoken.mark() << " @ " << cursor.location() << rem::commit;
     if (atoken.m == mnemonic::OpenPar) {
         rem::push_debug(HERE) << atoken.text() << " - Openpar: check for mul insertion:";
         // Bug here: the flag can be set without proper previous condition...let's investigate! :)
@@ -482,11 +626,6 @@ rem::code lexer::input_punctuation(token_data &atoken)
         if(rem::code r; (r = scan_number(atoken)) == rem::accepted)
             return r;
     }
-
-    if (atoken.m == mnemonic::CommentCpp)
-        return skip_cpp_comment();
-    if (atoken.m == mnemonic::BeginComment)
-        return skip_comment_bloc();
 
     return accept(atoken);
 }
@@ -624,8 +763,7 @@ rem::code lexer::scan_identifier(token_data &atoken)
     atoken._flags.V = 1;// src_cursor._F ? 1 : 0; //Subject to be modified
     accept(atoken);
     if (cursor._F && !_config.Tokens->back().is_operator())
-        if ((atoken.loc.colnum - _config.Tokens->back().loc.colnum) <
-            2) // no spaces between multiply two adjacent letters!!! (
+        if ((atoken.loc.colnum - _config.Tokens->back().loc.colnum) < 2) // no spaces between multiply two adjacent letters!!! (
                // 2023-07-sept oldlonecoder).
                 insert_multiply(atoken);
 
@@ -659,6 +797,7 @@ void lexer::insert_multiply(token_data &atoken)
     _config.Tokens->insert(i, Mul);
     //logger::debug() << __PRETTY_FUNCTION__ << ":\n Details:" << Mul.details() << "\n" << Mul.mark();
 }
+
 
 rem::code lexer::scan_sign_prefix(token_data &atoken)
 {
@@ -798,7 +937,9 @@ rem::code lexer::process()
             {xio::type::Punc, &lexer::input_punctuation},
             {xio::type::Prefix, &lexer::scan_prefix},
             {xio::type::Keyword, &lexer::input_keyword},
-            {xio::type::Text, &lexer::input_text}
+            {xio::type::Text, &lexer::input_text},
+            {xio::type::LineComment, &lexer::scan_cpp_comment},
+            {xio::type::BlocComment, &lexer::scan_comment_bloc}
             //...
         };
     }
@@ -834,96 +975,138 @@ rem::code lexer::process()
                 return rem::rejected;
             }
         }
-// ----------------------- Below bloc clode is not not needed -----------------------------------
-//        else
-//        {
-//            if(atoken.c == mnemonic::CommentCpp)
-//            {
-//                skip_cpp_comment();
-//                continue;
-//            }
-//            rem::push_aborted() << "lexer loop: there is no scanner for token:" << src_cursor.mark()  << book::rem::commit;
-//            return rem::rejected;
-//        }
-//------------------------------------------------------------------------------------------------
     }
     return rem::accepted;//rem::codeInt::Ok;
 }
 
-rem::code lexer::step_begin()
+
+rem::code lexer::scan_cpp_comment(token_data& atoken)
 {
+    //book::rem::push_debug(HEREF) << mnemonic_name(atoken.m) << " :@ " << cursor.location() << book::rem::commit;
+    atoken.loc.begin = cursor.C;
+    atoken.loc.linenum = cursor.line;
+    atoken.loc.colnum = cursor.col;
+    atoken.loc.offset = cursor.C-cursor.B;
+    atoken.s |= xio::type::LineComment;
+    std::string line = cursor.scan_to_eol();
 
-    if (!_config)
-        return rem::rejected;//rem::codeFatal() << "lexer::Exec(): Config Data is missing crucial informations...";
-
-    if(scan_table.empty())
-    {
-        scan_table = {
-            {xio::type::Null, &lexer::input_default},
-            {xio::type::Binary,  &lexer::input_binary_operator},
-            {xio::type::Hex, &lexer::input_hex},
-            {xio::type::Punc, &lexer::input_punctuation},
-            {xio::type::Prefix, &lexer::scan_prefix},
-            {xio::type::Keyword, &lexer::input_keyword},
-            {xio::type::Text, &lexer::input_text}
-        };
-    }
-    cursor = lexer::lex_cursor(_config.Source);
-    cursor.skip_ws();
-    return rem::accepted;
-}
-
-static const char *C = nullptr;
-
-token_data *lexer::step()
-{
-    if (cursor.end_of_file())
-        return nullptr; // rem::codereturn_status() << rem::codeeof;
-
-    if (C == cursor.C) {
-
-        return nullptr;
-    }
-
-    C = cursor.C;
-
-    token_data token;
-    token = token_data::scan(cursor.C);
-    //rem::codeDebug(__PRETTY_FUNCTION__) << " Details: " << atoken.details();
-    scanner_fn S = get_scanner(token);
-    if(S)
-    {
-        if((this->*S)(token) != rem::accepted)
-            return nullptr;// status() << rem::coderejected << " -> Aborted: Unexpected token:\n" << src_cursor.mark();
-    }
-    else
-        return nullptr; // status() << rem::rejected << " No scanner for
-                        // token:\n" << src_cursor.mark();
-
-    return &_config.Tokens->back(); // Ouch...
-}
-
-
-rem::code lexer::skip_cpp_comment()
-{
-    cursor.scan_to_eol();
-    cursor.skip_ws();
-    return rem::accepted;
-}
-
-rem::code lexer::skip_comment_bloc()
-{
-    rem::push_debug(HEREF) << ":" << rem::commit;
-    cursor.bloc_comment();
-    // src_cursor.C must point the the last '/'.
+    atoken.loc.end = cursor.C;
+    atoken.loc.ln = atoken.loc.end - atoken.loc.begin;
     cursor++;
-    cursor.skip_ws();
-    rem::push_debug(HERE) << cursor.location() << rem::commit;
+    _config.Tokens->push_back(atoken);
+    sync();
+
+    return rem::accepted;
+}
+
+rem::code lexer::scan_comment_bloc(xio::token_data& atoken)
+{
+    atoken.loc.begin = cursor.C;
+    atoken.loc.linenum = cursor.line;
+    atoken.loc.colnum = cursor.col;
+    atoken.loc.offset = cursor.C-cursor.B;
+    atoken.s |= xio::type::BlocComment;
+    cursor.bloc_comment();
+    atoken.loc.end = cursor.C;
+    atoken.loc.ln = atoken.loc.end - atoken.loc.begin;
+    cursor++;
+    //book::rem::push_debug(HERE) << "cursor: " << cursor.location() << rem::commit;
+    sync();
+    _config.Tokens->push_back(atoken);
+    //rem::push_debug(HERE) << book::rem::endl << atoken.details() << book::rem::endl << book::rem::endl << rem::commit;
     if (cursor.end_of_file())
         throw rem::push_except() << rem::unexpected << rem::eof << " unterminated bloc comment." << rem::commit;
-    sync(); // re-calculate line and col.
-    cursor.skip_ws();
+
     return rem::accepted;
 }
 
 
+
+lexer::LexicalColours::~LexicalColours()
+{
+    text.clear();
+}
+
+
+stracc lexer::LexicalColours::colorize(xio::token_data::list* tokens)
+{
+    int offset  = 0;
+    std::string _color;
+    for (auto const& Token : *tokens)
+    {
+
+        _color = Token.m == xio::mnemonic::Noop ? attr<chattr::format::ansi256>::fg(PrimitiveTypesColors[Token.t]) :
+        _color = attr<chattr::format::ansi256>::fg(MnemonicColors[Token.m]);
+
+        if (!_color.empty())
+        {
+            text.insert(Token.loc.offset + offset, _color);
+            offset += _color.length();
+        }
+        //book::rem::out() << line << book::rem::commit;
+    }
+    return text;
+}
+
+std::string lexer::mark(const xio::token_data &token, bool c)
+{
+    //book::rem::push_debug() << " Marking token: " << token.details() << book::rem::commit;
+    std::string line = token.text_line();
+
+    token_data::list::iterator start_token = _config.Tokens->begin();
+    token_data::iterator end_token = start_token;
+    for(; start_token != _config.Tokens->end(); start_token++)
+    {
+//        book::rem::push_debug() << "this token:" << start_token->text()  << book::rem::endl
+//                           << " == " <<  book::rem::endl
+//                           << token.text() << " ?" << book::rem::endl << book::rem::commit;
+
+        if(start_token->loc.linenum == token.loc.linenum) break;
+    }
+    end_token = start_token;
+
+
+    //book::rem::push_debug(HERE) << "start_token: '" << start_token->details() << book::rem::commit;
+
+    for(;end_token != _config.Tokens->end() && (end_token->loc.linenum == token.loc.linenum); end_token++)
+        ;
+
+    if(end_token == _config.Tokens->end()) --end_token;
+
+    //book::rem::push_debug(HERE) << "end_token: '" << end_token->details() << book::rem::commit;
+
+    int offset = 0;
+    std::string _color;
+
+    for(; start_token != end_token; start_token++)
+    {
+        _color = start_token->m == xio::mnemonic::Noop ? attr<chattr::format::ansi256>::fg(PrimitiveTypesColors[start_token->t]) :
+                     _color = attr<chattr::format::ansi256>::fg(MnemonicColors[start_token->m]);
+
+        if (!_color.empty())
+        {
+            line.insert(start_token->loc.colnum-1 + offset, _color);
+            offset += _color.length();
+        }
+    }
+    stracc txt = line;
+
+    line.clear();
+    txt << color::Reset << " ["
+        << xio::mnemonic_name(token.m) << "; "
+        << token.location_text() << " ; "
+        << token.type_name() << " ; "
+        << token.semantic_text() << "]";
+    txt << '\n';
+    txt.fill(0x20, token.loc.colnum-1 + rem::indentation());
+    txt << Icon::ArrowUp;
+    return txt();
+}
+
+
+stracc lexer::colorize()
+{
+    LexicalColours lc;
+    lc.text = _config.Source;
+    return lc.colorize(_config.Tokens);
+}

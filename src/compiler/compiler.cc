@@ -62,7 +62,7 @@ compiler::~compiler()
 
 
 /*!
- * \brief parser::parse_expr  - Directly invokable independently. Cannot be called from within the normal complete rules parsing...
+ * \brief parser::parse_expr  - Directly invokable independently. Cannot be called from within the normal rules parsing...
  *
  *
  * \param blk
@@ -215,15 +215,6 @@ rem::code compiler::compile()
     R = lexical_analyse();
     if(R != book::rem::accepted)
         return R;
-    book::rem::push_debug(HERE) << " lexer terminate successfully : prepare (coloured) tokens with details [lexer_color]:" << book::rem::endl << book::rem::commit;
-
-    lexer_color lc;
-    lc.process(_tokens_stream);
-    book::rem::push_info() <<  color::BlueViolet << "xio" << color::White << "::" <<
-                    color::BlueViolet << "compiler" << color::White << "::" << color::BlueViolet << "compile" << color::White << rem::endl <<
-                    lc.Product() << rem::endl << color::White << " : dumping tokens: " << book::rem::commit;
-
-    for(auto & token: _tokens_stream) book::rem::out() << lc.mark(token) << book::rem::commit;
     rem::push_debug(HEREF) << " returning because this request is not implemented yet..."  << book::rem::commit;
     //ctx = context(_bloc, _tokens_stream.begin(), _tokens_stream.end(), _tokens_stream.end());
 
@@ -246,6 +237,11 @@ rem::code compiler::lexical_analyse()
         book::rem::push_error() << R << book::rem::commit;
         return book::rem::rejected;
     }
+    book::rem::push_test(HERE) << " lexer terminate successfully : prepare (lexical highlight) text of the source code:" << book::rem::endl << book::rem::commit;
+    book::rem::out() << lex.colorize() << book::rem::commit;
+    book::rem::push_message() << " will test lexer::mark(...):" << book::rem::endl << book::rem::commit;
+    book::rem::push_test(HERE) << lex.mark(_tokens_stream[5], true) << book::rem::commit;
+    //book::rem::test(HERE) << "";
 
     return book::rem::accepted;
 }
@@ -299,7 +295,7 @@ token_data::list compiler::tokens_line_from(token_data* token)
 
 
 /**
- * \brief make_instruction callback function invoked from xio::input.
+ * \brief make_xio_node callback function is normally invoked from xio::input.
  *
  * Will create the proper instance of the instruction from the token_data infos.
  * \param token  pointer to the current token.

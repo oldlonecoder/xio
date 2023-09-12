@@ -213,7 +213,6 @@ std::string token_data::location_text() const
 
 std::string token_data::semantic_text() const
 {
-    std::string Str;
     return xio::type::name(s);
 }
 
@@ -247,17 +246,17 @@ static token_data::list tokens_table =
     {mnemonic::AssignXor,           type::Assign,    type::Keyword|type::Operator|type::Binary|type::Assign     ,distance::assign,     lexem::AssignXor,  1},
     {mnemonic::AssignC1,            type::Assign,    type::Keyword|type::Operator|type::Binary|type::Assign     ,distance::assign,     lexem::AssignC1,     1},
     {mnemonic::AssignLeftShift,     type::Assign,    type::Keyword|type::Operator|type::Binary|type::Assign     ,distance::assign,     lexem::AssignLshift, 1},
-    {mnemonic::AssignRightShift,    type::Assign,    type::Keyword|type::Operator|type::Binary|type::Assign    ,distance::assign,     lexem::AssignRshift, 1},
+    {mnemonic::AssignRightShift,    type::Assign,    type::Keyword|type::Operator|type::Binary|type::Assign     ,distance::assign,     lexem::AssignRshift, 1},
     {mnemonic::Deref,               type::Prefix,    type::Unary|type::Prefix|type::Operator                    ,distance::deref,      lexem::Deref        , 1},
     {mnemonic::LessEq,              type::Binary,    type::Operator|type::Binary|type::Bool                     ,distance::equality,   lexem::LessEqual,    1},
     {mnemonic::GreaterEq,           type::Binary,    type::Operator|type::Binary|type::Bool                     ,distance::equality,   lexem::GreaterEqual, 1},
     {mnemonic::Equal,               type::Binary,    type::Operator|type::Binary|type::Bool                     ,distance::equality,   lexem::Equal,        1},
     {mnemonic::NotEqual,            type::Binary,    type::Operator|type::Binary|type::Bool                     ,distance::equality,   lexem::NotEqual,    1},
-    {mnemonic::NotEqual,            type::Binary,    type::Operator|type::Binary|type::Bool                     ,distance::equality,   "<>",                    1},
+    {mnemonic::NotEqual,            type::Binary,    type::Operator|type::Binary|type::Bool                     ,distance::equality,   "<>",                1},
     {mnemonic::Add,                 type::Binary,    type::Operator|type::Binary                                ,distance::addition,   lexem::Addition,     1},
     {mnemonic::Sub,                 type::Binary,    type::Operator|type::Binary                                ,distance::addition,   lexem::Sub,          1},
     {mnemonic::Mul,                 type::Binary,    type::Operator|type::Binary                                ,distance::product,    lexem::Multiply,     1},
-    {mnemonic::CommentCpp,          type::Punc,      type::Operator|type::Punc                                  ,distance::noop_,      lexem::CommentCpp,  0},
+    {mnemonic::CommentCpp,          type::LineComment, type::LineComment                                        ,distance::noop_,      lexem::CommentCpp,  0},
     {mnemonic::Modulo,              type::Binary,    type::Operator|type::Binary                                ,distance::product,    lexem::Modulo,       1},
     {mnemonic::LessThan,            type::Binary,    type::Operator|type::Binary|type::Bool                     ,distance::equality,   lexem::LessThan,    1},
     {mnemonic::GreaterThan,         type::Binary,    type::Operator|type::Binary|type::Bool                     ,distance::equality,   lexem::GreaterThan, 1},
@@ -275,8 +274,8 @@ static token_data::list tokens_table =
     {mnemonic::Closeindex,          type::ClosePair, type::Operator|type::Punc|type::Binary|type::ClosePair     ,distance::paranthese, lexem::CloseIndex,   1},
     {mnemonic::Openbrace,           type::Binary,    type::Operator|type::Binary|type::Punc|type::OpenPair      ,distance::paranthese, lexem::BraceBegin,  1},
     {mnemonic::Closebrace,          type::ClosePair, type::Operator|type::Binary|type::Punc|type::ClosePair     ,distance::paranthese, lexem::BraceEnd,     1},
-    {mnemonic::BeginComment,        type::Punc,      type::Operator|type::Punc                                  ,distance::noop_,      lexem::CommentBegin, 0},
-    {mnemonic::EndComment,          type::Punc,      type::Operator|type::Punc                                  ,distance::noop_,      lexem::CommentEnd, 0},
+    {mnemonic::BeginComment,        type::BlocComment, type::BlocComment                                        ,distance::noop_,      lexem::CommentBegin, 0},
+    {mnemonic::EndComment,          type::BlocComment, type::BlocComment                                        ,distance::noop_,      lexem::CommentEnd, 0},
     {mnemonic::Div,                 type::Binary,    type::Operator|type::Binary                                ,distance::product,    lexem::Division,  1},
     {mnemonic::Comma,               type::Punc,      type::Operator|type::Binary|type::Punc                     ,distance::comma,      lexem::Comma,     1},
     {mnemonic::Scope,               type::Punc,      type::Operator|type::Binary|type::Punc                     ,distance::scope,      lexem::Scope,     1},

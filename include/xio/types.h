@@ -71,6 +71,8 @@ constexpr T        F64          = 0x020000000000;
 constexpr T        F128         = 0x040000000000;
 constexpr T        OctalFormat  = 0x080000000000;
 constexpr T        BinFormat    = 0x100000000000;
+constexpr T        LineComment  = 0x200000000000;
+constexpr T        BlocComment  = 0x400000000000;
 constexpr T        Integer      = xio::type::I8|xio::type::I16|xio::type::I32|xio::type::I64|xio::type::U8|xio::type::U16|xio::type::U32|xio::type::U64;
 constexpr T        Unsigned     = xio::type::U8|xio::type::U16|xio::type::U32|xio::type::U64;
 
@@ -191,7 +193,9 @@ enum class mnemonic : uint16_t
     Unshadow,
     Catch,
     Throw,
-    Noop
+    Noop,
+    LineComment,
+    BlocComment
 };
 
 std::string XIO_PUBLIC mnemonic_name(mnemonic);
@@ -229,55 +233,55 @@ namespace lexem
 
 using T = const char *;
 constexpr T Null          = "null";
-constexpr T LeftShift    = "<<";
+constexpr T LeftShift     = "<<";
 constexpr T Radical       = "^/";
 constexpr T Exponent      = "^";
-constexpr T RightShift   = ">>";
+constexpr T RightShift    = ">>";
 constexpr T Decr          = "--";
 constexpr T Incr          = "++";
-constexpr T AssignAdd    = "+=";
-constexpr T AssignSub    = "-=";
-constexpr T AssignMul    = "*=";
-constexpr T AssignDiv    = "/=";
-constexpr T AssignMod    = "%=";
-constexpr T AssignAnd    = "&=";
-constexpr T AssignOr     = "|=";
-constexpr T AssignXor    = "><=";
-constexpr T AssignC1     = "`=";
-constexpr T AssignLshift = "<<=";
-constexpr T AssignRshift = ">>=";
+constexpr T AssignAdd     = "+=";
+constexpr T AssignSub     = "-=";
+constexpr T AssignMul     = "*=";
+constexpr T AssignDiv     = "/=";
+constexpr T AssignMod     = "%=";
+constexpr T AssignAnd     = "&=";
+constexpr T AssignOr      = "|=";
+constexpr T AssignXor     = "><=";
+constexpr T AssignC1      = "`=";
+constexpr T AssignLshift  = "<<=";
+constexpr T AssignRshift  = ">>=";
 constexpr T Deref         = "->";
-constexpr T LessEqual    = "<=";
-constexpr T GreaterEqual = ">=";
+constexpr T LessEqual     = "<=";
+constexpr T GreaterEqual  = ">=";
 constexpr T Equal         = "==";
-constexpr T NotEqual     = "!=";  // != <>
+constexpr T NotEqual      = "!=";  // != <>
 constexpr T Addition      = "+";
 constexpr T Sub           = "-";
 constexpr T Multiply      = "*";
 constexpr T Indirection   = "*";
-constexpr T CommentCpp   = "//";
+constexpr T CommentCpp    = "//";
 constexpr T Modulo        = "%";
 constexpr T Xor           = "><";
-constexpr T LessThan     = "<";
-constexpr T GreaterThan  = ">";
+constexpr T LessThan      = "<";
+constexpr T GreaterThan   = ">";
 constexpr T Assign        = "=";
-constexpr T BinaryAnd    = "&";
-constexpr T BinaryOr     = "|";
+constexpr T BinaryAnd     = "&";
+constexpr T BinaryOr      = "|";
 constexpr T C1            = "`"; ///< compl&eacute;ment &agrave; 1
 constexpr T C2            = "``";///< compl&eacute;ment &agrave; 2
 constexpr T Not           = "!";
-constexpr T BoolAnd      = "&&";
-constexpr T BoolOr       = "||";
-constexpr T AbsBegin     = "|<";// |< expr >|
-constexpr T AbsEnd       = ">|";
-constexpr T OpenPar      = "(";
-constexpr T ClosePar     = ")";
-constexpr T OpenIndex    = "[";
-constexpr T CloseIndex   = "]";
-constexpr T BraceBegin   = "{";
-constexpr T BraceEnd     = "}";
-constexpr T CommentBegin = "/*";
-constexpr T CommentEnd   = "*/";
+constexpr T BoolAnd       = "&&";
+constexpr T BoolOr        = "||";
+constexpr T AbsBegin      = "|<";// |< expr >|
+constexpr T AbsEnd        = ">|";
+constexpr T OpenPar       = "(";
+constexpr T ClosePar      = ")";
+constexpr T OpenIndex     = "[";
+constexpr T CloseIndex    = "]";
+constexpr T BraceBegin    = "{";
+constexpr T BraceEnd      = "}";
+constexpr T CommentBegin  = "/*";
+constexpr T CommentEnd    = "*/";
 constexpr T Division      = "/";
 constexpr T Comma         = ",";
 constexpr T Scope         = "::";
@@ -322,20 +326,22 @@ constexpr T Repeat        = "repeat";
 constexpr T Switch        = "switch";
 constexpr T Case          = "case";
 constexpr T Type          = "type";
-constexpr T LowHex       = "0x";
-constexpr T UpHex        = "0X";
+constexpr T LowHex        = "0x";
+constexpr T UpHex         = "0X";
 constexpr T Cosinus       = "cos";
-constexpr T ArcCosinus   = "acos";
+constexpr T ArcCosinus    = "acos";
 constexpr T Tangent       = "tan";// tan(4*a*m)  - sin(4ac) sina
-constexpr T ArcTangent   = "atan";
+constexpr T ArcTangent    = "atan";
 constexpr T Sinus         = "sin";
-constexpr T ArcSinus     = "asin";
+constexpr T ArcSinus      = "asin";
 constexpr T Object        = "object";
 constexpr T Static        = "static";
 constexpr T This          = "me";
 constexpr T Unshadow      = ".::";
 constexpr T Catch         = "catch";
 constexpr T Throw         = "throw";
+constexpr T LineComment   = "//";
+constexpr T BlocComment   = "/*";
 
 mnemonic XIO_PUBLIC  from_str(const std::string &M_);
 

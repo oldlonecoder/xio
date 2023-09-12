@@ -190,29 +190,54 @@ rem::code lexer_color::process(xio::token_data::list const &tokens)
     std::string line;
     size_t Spacing = 0, // Current color String::Length();
            Offset  = 0; // Cummulative ( Offset += Spacing )
-    int cur_line   = 0;
+    int cur_line   = 1;
+
+
+    auto tok = tokens.front();
+    if(tok.loc.linenum > 1)
+    {
+        for(int l = 1; l < tok.loc.linenum;l++) text.push_back("\n");
+    }
 
     for (auto const& Token : tokens)
     {
-
         if(cur_line != Token.loc.linenum)
         {
-            if(!line.empty()) text.push_back(line);
+            if(!line.empty())
+            {
+                book::rem::out() << "push '" << line << "'" << book::rem::commit;
+                if(Token.loc.linenum > cur_line)
+                {
+                    for(int l  = cur_line; l < Token.loc.linenum-1; l++)
+                    {
+                        text.push_back("\n");
+                    }
+                }
+                text.push_back(line);
+            }
+
             line = Token.text_line();
+            book::rem::push_debug() << "lexer_color::process - new line '" << line << "'" << book::rem::commit;
             cur_line = Token.loc.linenum;
             Offset = 0;
         }
-        _color.clear();
+
         _color = Token.m == xio::mnemonic::Noop ? attr<chattr::format::ansi256>::fg(lexer_color::Types[Token.t]) :
                    _color = attr<chattr::format::ansi256>::fg(lexer_color::affine_db[Token.m]);
 
-        Spacing = _color.length();
         if (!_color.empty())
         {
-            line.insert(Token.loc.offset + Offset, _color);
-            Offset += Spacing;
+
+            line.insert(Token.loc.colnum - 1 + Offset, _color);
+            Offset += _color.length();
         }
+        book::rem::out() << line << book::rem::commit;
     }
+
+    if(!line.empty()) text.push_back(line);
+
+    book::rem::push_debug(HERE) << " Text has " << color::Yellow << text.size() << color::Reset << " lines." << book::rem::commit;
+
     return rem::ok;
 }
 
@@ -221,7 +246,7 @@ std::string lexer_color::mark(xio::token_data& token)
 
     //Str.fill(0x20, token.mLoc.colnum-1 + indentation);
     stracc Str;
-    Str << text[token.loc.linenum] << " "
+    Str << text[token.loc.linenum-1] << " "
         << color::Reset
         << xio::mnemonic_name(token.m) << "; "
         << token.location_text() << " ; "
