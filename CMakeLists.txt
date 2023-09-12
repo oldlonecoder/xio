@@ -23,9 +23,8 @@ add_library(
         include/${TargetName}/xio.h                     src/xio.cc  # La pièce maîtresse ;)
         include/${TargetName}/xiobloc.h                 src/xiobloc.cc
         include/${TargetName}/xiovar.h                  src/xiovar.cc
-        include/${TargetName}/lexer/lexer.h             src/lexer/lexer.cc
-        include/${TargetName}/lexer/lexer_color.h       src/lexer/lexer_color.cc
-        include/${TargetName}/compiler/grammar/grammar.h src/compiler/grammar/grammar.cc
+        include/${TargetName}/compiler/lexer.h          src/compiler/lexer.cc
+        include/${TargetName}/compiler/grammar.h        src/compiler/grammar.cc
         include/${TargetName}/compiler/compiler.h       src/compiler/compiler.cc
         include/${TargetName}/s++/spp.h                 src/s++/spp.cc
         # ...Will grow...

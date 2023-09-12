@@ -2,7 +2,7 @@
 // Created by oldlonecoder on 21-12-12.
 //
 
-#include <xio/compiler/grammar/grammar.h>
+#include <xio/compiler/grammar.h>
 
 
 

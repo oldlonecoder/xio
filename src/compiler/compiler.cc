@@ -74,11 +74,7 @@ book::rem::code compiler::parse_expr(xiobloc *blk, const char *expr_text)
 {
     _bloc = blk; ///< Interpreter's bloc address likelly...
     lexer lex;
-    lex.config() =
-    {
-        expr_text,
-        &_tokens_stream
-    };
+    lex.config() = {expr_text,&_tokens_stream};
 
     auto R = lex();
     if(R!=book::rem::accepted)
@@ -88,17 +84,16 @@ book::rem::code compiler::parse_expr(xiobloc *blk, const char *expr_text)
     }
 
 
-    book::rem::push_debug(HERE) << " lexer terminate successfully : prepare (coloured) tokens with details [lexer_color]:" << book::rem::endl << book::rem::commit;
+    book::rem::push_debug(HERE) << " lexer terminated successfully : prepare (coloured) tokens with details [lexer_color]:" << book::rem::endl << book::rem::commit;
 
-    lexer_color lc;
     std::string code = expr_text;
-    lc.process(_tokens_stream);
+    stracc text = lex.colorize();
     book::rem::push_info() <<  color::BlueViolet << "xio" << color::White << "::" <<
       color::BlueViolet << "compiler" << color::White << "::" <<
       color::BlueViolet << "parse_expr" << color::White << "(" <<
-      lc.Product() << color::White << ") : dumping tokens: " << book::rem::commit;
+      text << color::White << ") : dumping tokens: " << book::rem::commit;
 
-    for(auto & token: _tokens_stream) book::rem::out() << lc.mark(token) << book::rem::commit;
+    //for(auto & token: _tokens_stream) book::rem::out() << lex.mark(token,true) << book::rem::commit;
 
     book::rem::push_info(HERE) << "init context data;" << book::rem::commit;
     ctx = context(_bloc, _tokens_stream.begin(), _tokens_stream.end(), _tokens_stream.end());

@@ -12,8 +12,8 @@
 
 
 #pragma once
-#include <xio/lexer/lexer_color.h>
-#include <xio/compiler/grammar/grammar.h>
+#include <xio/compiler/lexer.h>
+#include <xio/compiler/grammar.h>
 #include <xio/xiobloc.h>
 #include <stack>
 

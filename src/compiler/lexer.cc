@@ -13,7 +13,7 @@
  *   The GPL is available everywhere open source gpl projects are published *
  ****************************************************************************/
 
-#include "xio/lexer/lexer.h"
+#include "xio/compiler/lexer.h"
 #include <array>
 #include <chrtools/Icons.h>
 
