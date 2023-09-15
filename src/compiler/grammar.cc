@@ -94,14 +94,13 @@ book::rem::code grammar::build()
         << color::White << ":Building rules :\n----------------------------\n"
         << color::Yellow << _text
         << color::White << "\n----------------------------------\n" << book::rem::commit;
+    _words = strbrk();
+    strbrk::config_data data = {_text(), ":.+*?#", strbrk::keep};
 
-    _words = _text();
     book::rem::push_debug() << "Tokenizing rules source text:" << book::rem::commit;
-    std::size_t   count = _words(tokens, ":.+*?#", true);
+    std::size_t count = _words(data);
 
-    auto crs=tokens.begin();
-    // for(; crs != tokens.end(); crs++)
-    //     words.push_back(s());
+    auto crs=data.words.begin();
 
     if(!count)
     {
@@ -109,7 +108,7 @@ book::rem::code grammar::build()
         return book::rem::empty;
     }
 
-    book::rem::push_debug() << tokens.size() << " tokens." << book::rem::commit;
+    book::rem::push_debug() << data.words.size() << " data.words." << book::rem::commit;
     _state = st_begin;
     book::rem::push_debug(HERE) << " state machine set to '" << color::Yellow << "st_begin" << color::Reset << "'" << book::rem::commit;
     do
@@ -128,7 +127,7 @@ book::rem::code grammar::build()
         if(r != book::rem::accepted)
             return r;
     }
-    while(crs != tokens.end());
+    while(crs != data.words.end());
 
     book::rem::push_message() << " finalizing rules:" << book::rem::commit;
 
@@ -169,7 +168,7 @@ void grammar::dump()
     for(const auto &rule: rules)
     {
         Out << color::Red4 << "%-15s" << rule.second->_id;
-        for(auto seq: rule.second->sequences)
+        for(auto const& seq: rule.second->sequences)
         {
             stracc SeqStr;
             SeqStr <<  dump_sequence(seq);
@@ -185,12 +184,13 @@ void grammar::init_rules()
 
 }
 
-book::rem::code grammar::parse_identifier(strbrk::token_t::iterator  &crs)
+book::rem::code grammar::parse_identifier(strbrk::word::iterator  &crs)
 {
     rule *r = query_rule((*crs)());
     switch(_state)
     {
         case st_begin:
+        book::rem::push_debug(HERE) << " st_begin:" << (*crs)() << book::rem::commit;
             if(r)
             {
                 if(!r->empty())
@@ -225,7 +225,8 @@ book::rem::code grammar::parse_identifier(strbrk::token_t::iterator  &crs)
             }*/
             //book::rem::out() << " `in sequence state`: Checking type (token text) '" << color::LightGoldenrod3 << (*crs)() << color::Reset << "':" << book::rem::commit;
             type::T t = type::from_str((*crs)());
-            if(t)// & teacc::type::bloc_t) // Quick and dirty hack about bypassing the lexer::teacc::type::bloc type:
+            book::rem::push_debug(HERE) << " xio:type(" << color::Yellow <<  (*crs)() << color::Reset << "):'" << xio::type::name(t) << book::rem::commit;
+            if(t)// & teacc::type::bloc_t) // Quick and d_words.config() = data;irty hack about bypassing the lexer::teacc::type::bloc type:
             {
                // book::rem::out() << " type name:'" << type::name(t) << "' <==> token:'" << (*crs)() << " properties: [" << a() << "]" << book::rem::commit;
                 _rule->a = a;
@@ -259,7 +260,7 @@ book::rem::code grammar::parse_identifier(strbrk::token_t::iterator  &crs)
     return book::rem::accepted;
 }
 
-book::rem::code grammar::enter_rule_def(strbrk::token_t::iterator &crs)
+book::rem::code grammar::enter_rule_def(strbrk::word::iterator &crs)
 {
     // ':' :
     if(_state == st_init_rule)
@@ -273,7 +274,7 @@ book::rem::code grammar::enter_rule_def(strbrk::token_t::iterator &crs)
     return book::rem::rejected;
 }
 
-book::rem::code grammar::new_sequence(strbrk::token_t::iterator &crs)
+book::rem::code grammar::new_sequence(strbrk::word::iterator &crs)
 {
     // logdebug
     //     << color::HCyan << __FUNCTION__
@@ -295,7 +296,7 @@ book::rem::code grammar::new_sequence(strbrk::token_t::iterator &crs)
     return book::rem::accepted;
 }
 
-book::rem::code grammar::end_rule(strbrk::token_t::iterator &crs)
+book::rem::code grammar::end_rule(strbrk::word::iterator &crs)
 {
     // logdebug
     //     << color::HCyan << __FUNCTION__
@@ -308,7 +309,7 @@ book::rem::code grammar::end_rule(strbrk::token_t::iterator &crs)
     return book::rem::accepted;
 }
 
-book::rem::code grammar::set_repeat(strbrk::token_t::iterator &crs)
+book::rem::code grammar::set_repeat(strbrk::word::iterator &crs)
 {
     //logdebug
     //    << color::HCyan << __FUNCTION__
@@ -322,7 +323,7 @@ book::rem::code grammar::set_repeat(strbrk::token_t::iterator &crs)
     return book::rem::accepted;
 }
 
-book::rem::code grammar::set_parserctrl(strbrk::token_t::iterator &crs)
+book::rem::code grammar::set_parserctrl(strbrk::word::iterator &crs)
 {
     !a;
     _state = st_option;
@@ -338,7 +339,7 @@ book::rem::code grammar::set_parserctrl(strbrk::token_t::iterator &crs)
     return book::rem::accepted;
 }
 
-book::rem::code grammar::set_optional(strbrk::token_t::iterator &crs)
+book::rem::code grammar::set_optional(strbrk::word::iterator &crs)
 {
     //logdebug
     //    << color::HCyan << __FUNCTION__
@@ -352,7 +353,7 @@ book::rem::code grammar::set_optional(strbrk::token_t::iterator &crs)
     return book::rem::accepted;
 }
 
-book::rem::code grammar::enter_litteral(strbrk::token_t::iterator &crs)
+book::rem::code grammar::enter_litteral(strbrk::word::iterator &crs)
 {
 
     //    book::rem::push_debug()
@@ -366,7 +367,7 @@ book::rem::code grammar::enter_litteral(strbrk::token_t::iterator &crs)
         return book::rem::rejected;
     }
 
-    strbrk::token_t::iterator i, quote;
+    strbrk::word::iterator i, quote;
     i = quote = crs;
     ++i;
     if((*i)() == (*quote)())
@@ -396,7 +397,7 @@ book::rem::code grammar::enter_litteral(strbrk::token_t::iterator &crs)
     return book::rem::accepted;
 }
 
-book::rem::code grammar::set_oneof(strbrk::token_t::iterator &crs)
+book::rem::code grammar::set_oneof(strbrk::word::iterator &crs)
 {
     //     logdebug
     //         << color::HCyan << __FUNCTION__
@@ -437,7 +438,7 @@ const grammar::rule *grammar::operator[](const std::string &r_id) const
 }
 void grammar::destroy_rules()
 {
-     for(auto rit: grammar::rules)
+     for(auto const& rit: grammar::rules)
      {
          rule *r = rit.second;
          delete r;

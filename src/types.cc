@@ -166,11 +166,11 @@ std::string name(T T_)
 T from_str(const std::string& Str )
 {
     T types = 0;
-    strbrk words = Str.c_str();
-    strbrk::token_t::list W;
-    (void) words(W, "/", false);
+    strbrk words;
+    strbrk::config_data data = {Str, "/", strbrk::discard};
+    auto count = words(data);
 
-    for(auto I: W)
+    for(auto I: data.words)
         types |= STR_T[I()];
     return types;
 }

@@ -32,6 +32,9 @@ interpretr::~interpretr()
  */
 book::rem::code interpretr::process(int argc, char** argv)
 {
+    grammar g;
+    g.build();
+    g.dump();
     compiler cc(this,"nan");
     compiler::Argc A(&cc, argc,argv);
     auto R = A.process();

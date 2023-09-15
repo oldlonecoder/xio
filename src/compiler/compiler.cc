@@ -97,7 +97,7 @@ book::rem::code compiler::parse_expr(xiobloc *blk, const char *expr_text)
 
     book::rem::push_info() << "begin parse and build expr binary tree ( of xio nodes ): " << book::rem::commit;
     xio* x{nullptr};
-    if(!(x = xio::begin(ctx.bloc, ctx.token(), [this](token_data* t)->xio*{ return make_xio_node(t); }))
+    if(!(x = xio::begin(ctx.bloc, ctx.token(), [this](token_data* t)->xio*{ return make_xio_node(t); })))
     {
         book::rem::push_error() << color::Yellow << " arithmetic expression: source code seems not be an expression at all..." << book::rem::commit;
         return book::rem::rejected;

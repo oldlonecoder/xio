@@ -349,10 +349,10 @@ public:
         rule* _rule = nullptr;
         static rule* query_rule(const std::string& a_id);
 
-        using RuleScanner = book::rem::code(grammar::*)(strbrk::token_t::iterator&);
-        strbrk::token_t::list tokens;
+        using RuleScanner = book::rem::code(grammar::*)(strbrk::word::iterator&);
+
         stracc               _text;
-        strbrk              _words;
+        strbrk               _words;
 
         using Dictionary = std::map<char, grammar::RuleScanner>;
         static Dictionary grammar_dictionnary;
@@ -372,15 +372,15 @@ public:
 
         //--------------- Rules builders -------------------
 
-        book::rem::code parse_identifier(strbrk::token_t::iterator& crs);
-        book::rem::code enter_rule_def(strbrk::token_t::iterator& crs);
-        book::rem::code new_sequence(strbrk::token_t::iterator& crs);
-        book::rem::code end_rule(strbrk::token_t::iterator& crs);
-        book::rem::code set_repeat(strbrk::token_t::iterator& crs);
-        book::rem::code set_optional(strbrk::token_t::iterator& crs);
-        book::rem::code enter_litteral(strbrk::token_t::iterator& crs);
-        book::rem::code set_oneof(strbrk::token_t::iterator& crs);
-        book::rem::code set_parserctrl(strbrk::token_t::iterator& crs);
+        book::rem::code parse_identifier(strbrk::word::iterator& crs);
+        book::rem::code enter_rule_def(strbrk::word::iterator& crs);
+        book::rem::code new_sequence(strbrk::word::iterator& crs);
+        book::rem::code end_rule(strbrk::word::iterator& crs);
+        book::rem::code set_repeat(strbrk::word::iterator& crs);
+        book::rem::code set_optional(strbrk::word::iterator& crs);
+        book::rem::code enter_litteral(strbrk::word::iterator& crs);
+        book::rem::code set_oneof(strbrk::word::iterator& crs);
+        book::rem::code set_parserctrl(strbrk::word::iterator& crs);
 };
 
 }

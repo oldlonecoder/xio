@@ -176,10 +176,10 @@ std::map<xio::mnemonic, color::type>  MnemonicColors =
 #pragma region InternalCursor
 
 /*!
- * @brief Skips white spaces character, advancing(/consuming) m pointer
+ * @brief Skips white spaces character, advancing(/consuming) source pointer
  *
  * prefix inc//Rement operator
- * @return true if m is not on EOF, false otherwise.
+ * @return true if source pointer is not on EOF, false otherwise.
  */
 bool lexer::lex_cursor::operator++()
 {
@@ -192,10 +192,10 @@ bool lexer::lex_cursor::operator++()
 }
 
 /*!
- * @brief Skips white spaces character, advancing(/consuming) m pointer
+ * @brief Skips white spaces character, advancing(/consuming) source pointer
  *
  * Postfix inc//Rement operator, just calls the prefix inc//Rement operator.
- * @return true if m is not on EOF, false otherwise.
+ * @return true if source pointer is not on EOF, false otherwise.
  */
 bool lexer::lex_cursor::operator++(int)
 {
@@ -206,10 +206,10 @@ bool lexer::lex_cursor::operator++(int)
 }
 
 /*!
-* @brief Skips white spaces character, advancing(/consuming) m pointer
+* @brief Skips white spaces character, advancing(/consuming) source pointer
 *
 * Named method, just calls the prefix increment operator.
-* @return true if m is not on EOF, false otherwise.
+* @return true if source pointer is not on EOF, false otherwise.
 */
 [[maybe_unused]] bool lexer::lex_cursor::skip_ws()
 {
@@ -228,9 +228,9 @@ bool lexer::lex_cursor::operator++(int)
 }
 
 /*!
- * @brief Tests if P is on or past EOF.
- * @param P
- * @return true if P is EOF, false otherwise.
+ * @brief Tests if P or source pointer is on or past EOF.
+ * @param P nullptr if the source pointer is to be used.
+ * @return true if P or source pointer is EOF, false otherwise.
  */
 bool lexer::lex_cursor::end_of_file(const char *P) const
 {
@@ -266,7 +266,7 @@ void lexer::lex_cursor::sync()
 }
 
 /*!
- * @brief Get the ptrdiff between the m pointer and the beginning of the source text (B pointer).
+ * @brief Get the ptrdiff between the source pointer and the beginning of the source text (B pointer).
  * @return int.
  */
 std::ptrdiff_t lexer::lex_cursor::index() const
@@ -275,7 +275,7 @@ std::ptrdiff_t lexer::lex_cursor::index() const
 }
 
 /*!
- * @brief Advances/Consume the m pointer till the next NewLine{'\r'; '\n'}  code in the source text
+ * @brief Advances/Consume the source pointer till the next NewLine{'\r'; '\n'}  code in the source text
  * @return distinct std::string of the sequence.
  */
 [[maybe_unused]] std::string lexer::lex_cursor::scan_to_eol()
@@ -288,7 +288,7 @@ std::ptrdiff_t lexer::lex_cursor::index() const
 }
 
 /*!
- * @brief Advances/Consumes the m pointer to Skip till SubStr_ match.
+ * @brief Advances/Consumes the source pointer to Skip till SubStr_ match.
  * @param SubStr_
  * @return Expect code.
  */
@@ -340,7 +340,7 @@ rem::code lexer::lex_cursor::bloc_comment()
 }
 
 /*!
- * @brief Get a std::string copy of the current line from the m pointer
+ * @brief Get a std::string copy of the current line from the source pointer
  * @return string.
  */
 std::string lexer::lex_cursor::line_num() const
@@ -456,7 +456,7 @@ std::string lexer::lex_cursor::scan_string()
 
 /*!
  * @brief For now a bare minimum digit with some rough floating point scan.
- * @return true if the m pointer is consumed and advanced
+ * @return true if the source pointer is consumed and advanced
  */
 bool lexer::num_scanner::operator++(int)
 {
