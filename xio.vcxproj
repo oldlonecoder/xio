@@ -138,10 +138,9 @@ xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\xio\alu.h" />
-    <ClInclude Include="include\xio\compiler\grammar\grammar.h" />
-    <ClInclude Include="include\xio\compiler\parser.h" />
-    <ClInclude Include="include\xio\lexer\lexer.h" />
-    <ClInclude Include="include\xio\lexer\lexer_color.h" />
+    <ClInclude Include="include\xio\compiler\compiler.h" />
+    <ClInclude Include="include\xio\compiler\grammar.h" />
+    <ClInclude Include="include\xio\compiler\lexer.h" />
     <ClInclude Include="include\xio\public.h" />
     <ClInclude Include="include\xio\s++\spp.h" />
     <ClInclude Include="include\xio\tokendata.h" />
@@ -152,10 +151,9 @@ xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\alu.cc" />
-    <ClCompile Include="src\compiler\grammar\grammar.cc" />
-    <ClCompile Include="src\compiler\parser.cc" />
-    <ClCompile Include="src\lexer\lexer.cc" />
-    <ClCompile Include="src\lexer\lexer_color.cc" />
+    <ClCompile Include="src\compiler\compiler.cc" />
+    <ClCompile Include="src\compiler\grammar.cc" />
+    <ClCompile Include="src\compiler\lexer.cc" />
     <ClCompile Include="src\s++\spp.cc" />
     <ClCompile Include="src\tokendata.cc" />
     <ClCompile Include="src\types.cc" />

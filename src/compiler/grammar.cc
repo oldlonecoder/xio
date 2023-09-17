@@ -190,7 +190,7 @@ book::rem::code grammar::parse_identifier(strbrk::word::iterator  &crs)
     switch(_state)
     {
         case st_begin:
-        book::rem::push_debug(HERE) << " st_begin:" << (*crs)() << book::rem::commit;
+        //book::rem::push_debug(HERE) << " st_begin:" << (*crs)() << book::rem::commit;
             if(r)
             {
                 if(!r->empty())
@@ -225,7 +225,7 @@ book::rem::code grammar::parse_identifier(strbrk::word::iterator  &crs)
             }*/
             //book::rem::out() << " `in sequence state`: Checking type (token text) '" << color::LightGoldenrod3 << (*crs)() << color::Reset << "':" << book::rem::commit;
             type::T t = type::from_str((*crs)());
-            book::rem::push_debug(HERE) << " xio:type(" << color::Yellow <<  (*crs)() << color::Reset << "):'" << xio::type::name(t) << book::rem::commit;
+            //book::rem::push_debug(HERE) << " xio:type(" << color::Yellow <<  (*crs)() << color::Reset << "):'" << xio::type::name(t) << book::rem::commit;
             if(t)// & teacc::type::bloc_t) // Quick and d_words.config() = data;irty hack about bypassing the lexer::teacc::type::bloc type:
             {
                // book::rem::out() << " type name:'" << type::name(t) << "' <==> token:'" << (*crs)() << " properties: [" << a() << "]" << book::rem::commit;

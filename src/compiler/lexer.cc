@@ -994,7 +994,7 @@ rem::code lexer::scan_cpp_comment(token_data& atoken)
     atoken.loc.ln = atoken.loc.end - atoken.loc.begin;
     cursor++;
     _config.Tokens->push_back(atoken);
-    sync();
+    cursor.sync();
 
     return rem::accepted;
 }
@@ -1011,7 +1011,7 @@ rem::code lexer::scan_comment_bloc(xio::token_data& atoken)
     atoken.loc.ln = atoken.loc.end - atoken.loc.begin;
     cursor++;
     //book::rem::push_debug(HERE) << "cursor: " << cursor.location() << rem::commit;
-    sync();
+    cursor.sync();
     _config.Tokens->push_back(atoken);
     //rem::push_debug(HERE) << book::rem::endl << atoken.details() << book::rem::endl << book::rem::endl << rem::commit;
     if (cursor.end_of_file())

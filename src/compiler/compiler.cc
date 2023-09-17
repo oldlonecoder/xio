@@ -230,12 +230,12 @@ rem::code compiler::lexical_analyse()
 rem::code compiler::open_file()
 {
 
-    int a = access(_filename.c_str(), F_OK|R_OK);
-    if(a)
-    {
-        book::rem::push_error(HEREF) << strerror(errno) << book::rem::commit;
-        return book::rem::notexist;
-    }
+    //int a = access(_filename.c_str(), F_OK|R_OK);
+    //if(a)
+    //{
+    //    book::rem::push_error(HEREF) << strerror(errno) << book::rem::commit;
+    //    return book::rem::notexist;
+    //}
 
     std::ifstream in; // std::iobase::in
     in.open(_filename);
