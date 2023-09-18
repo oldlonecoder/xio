@@ -30,7 +30,7 @@
 namespace xio
 {
 
-
+std::string_view str_code_none = ";";
 
 std::map<std::string, book::rem::code(compiler::*)()> extern_parsers =
 {
@@ -70,7 +70,7 @@ compiler::~compiler()
  * \return rem::code::accepted or rejected;
  * \author &copy; 2023, oldlonecoder (serge.lussier@goldlonecoder.club) ;)
  */
-book::rem::code compiler::parse_expr(xiobloc *blk, const char *expr_text)
+book::rem::code compiler::compile_expr(xiobloc *blk, const char *expr_text)
 {
     _bloc = blk; ///< Interpreter's bloc address likelly...
     lexer lex;
@@ -208,7 +208,7 @@ rem::code compiler::lexical_analyse()
     lexer lex;
     lex.config() =
       {
-          source_content().c_str(),
+          source_content.data(),
           &_tokens_stream
       };
 
@@ -451,11 +451,11 @@ compiler::Argc::~Argc()
     args.clear();
 }
 
-bool compiler::Argc::operator >>(std::string& str)
+bool compiler::Argc::operator >>(std::string_view& str)
 {
     if(arg >= args.end())
     {
-        str = "eof";
+        str = str_code_none;
         return false;
     }
     str = *arg;
@@ -484,9 +484,10 @@ book::rem::code compiler::Argc::process()
         ++arg;
         if(arg < args.end())
         {
-            return acc->parse_expr(acc->bloc(), (*arg).c_str());
-
+            acc->set_source(*arg);
+            return acc->compile_expr(acc->bloc(), (*arg).c_str());
         }
+        
         book::rem::push_error() << "expected expression text" << book::rem::endl << usage() << book::rem::commit;
         return book::rem::rejected;
     }

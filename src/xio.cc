@@ -407,7 +407,7 @@ alu xio::Neq()
 
 alu xio::Add()
 {
-    book::rem::push_debug(HERE) << color::Yellow << lhs->acu()() << " " << color::CornflowerBlue << attribute() << " " << color::Yellow << rhs->acu()() << ":"<< book::rem::commit;
+    book::rem::push_debug(HERE) << color::Yellow << lhs->value()() << " " << color::CornflowerBlue << attribute() << " " << color::Yellow << rhs->value()() << ":"<< book::rem::commit;
     *acc = *lhs->acc + *rhs->acc;
     book::rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
@@ -418,7 +418,7 @@ alu xio::Sub()
     if (t0->s & type::Sign)
         return Negative();
     book::rem::push_debug(HERE) << color::Lime
-        << color::Yellow << lhs->acu()() << " " << color::CornflowerBlue << attribute() << " " << color::Yellow << rhs->acu()() << ":"<< book::rem::commit;
+        << color::Yellow << lhs->value()() << " " << color::CornflowerBlue << attribute() << " " << color::Yellow << rhs->value()() << ":"<< book::rem::commit;
     *acc = *lhs->acc - *rhs->acc;
     book::rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
 
@@ -456,7 +456,7 @@ alu xio::Assign()
         << color::Aquamarine3 << lhs->attribute() << color::Reset << " "
         << " " << color::CornflowerBlue << attribute() << " "
         << color::Yellow
-        << rhs->acu()() << ":"<< book::rem::commit;
+        << rhs->value()() << ":"<< book::rem::commit;
 
     *lhs->acc = *rhs->acc;
     *acc = *rhs->acc;
@@ -521,10 +521,10 @@ alu xio::BoolOr()
 alu xio::Division()
 {
     book::rem::push_debug(HERE) << color::Lime
-        << color::Yellow << lhs->acu()()
+        << color::Yellow << lhs->value()()
         << " " << color::CornflowerBlue << attribute() << " "
         << color::Yellow
-        << rhs->acu()() << ":"<< book::rem::commit;
+        << rhs->value()() << ":"<< book::rem::commit;
 
     *acc = *lhs->acc / *rhs->acc;
     book::rem::out(HEREF) << color::CornflowerBlue << " => " << color::Lime << (*acc)()<< book::rem::commit;
@@ -1191,7 +1191,8 @@ void xio::dot_tree_start(stracc& a_out, const stracc& Title)
 {
     a_out << "digraph arithmetic_expressionree {\n";
     a_out << "ratio=compress; ranksep=.55; size = \"6.5,6.5\";\n";
-    a_out << "    node [fontname=\"Source Code Pro\", fontsize=12];\n";
+    //a_out << "    node [fontname=\"Source Code Pro\", fontsize=12];\n";
+    a_out << "    node [fontname=\"JetBrainsMono NF\", fontsize=12];\n";
     a_out << "    label=\"Arithmetic Expr Tree:[" << Title() << "]\"; fontsize = 10;\n";
 }
 

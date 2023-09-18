@@ -35,11 +35,12 @@ book::rem::code interpretr::process(int argc, char** argv)
     grammar g;
     g.build();
     g.dump();
-    compiler cc(this,"nan");
+    compiler cc(this,";");
     compiler::Argc A(&cc, argc,argv);
     auto R = A.process();
     if(R != book::rem::accepted) return R;
     alu a = jsr();
+    export_expr_ast(cc.source_code());
     return book::rem::accepted;
 }
 
@@ -58,7 +59,7 @@ alu interpretr::operator[](const std::string& expr)
     g.build();
     g.dump();
     compiler expr_parser(this, expr.c_str());
-    auto R = expr_parser.parse_expr(this, expr.c_str());
+    auto R = expr_parser.compile_expr(this, expr.c_str());
     //auto R = expr_parser.parse_rule("expression");
     if(R != book::rem::accepted)
       return alu(1.42f);
@@ -79,12 +80,32 @@ alu interpretr::operator[](const std::string& expr)
     if(_xiovars)
     {
       for(auto* v : *_xiovars)
-          book::rem::out() << color::White << "'" << v->t0->text() << color::White << "' :" <<color::Yellow << v->acu()();
+          book::rem::out() << color::White << "'" << v->t0->text() << color::White << "' :" <<color::Yellow << v->value()();
     }
     return r;
 }
 
 
+
+stracc interpretr::export_expr_ast(const std::string& expr)
+{
+    stracc str = "";
+    book::rem::push_debug(HERE) << "expr: '" << expr << "':" << book::rem::commit;
+    xio::dot_tree_start(str, expr);
+    xio::dot_tree(_instructions->front(), str);
+    str << "}";
+    //book::rem::push_debug(HERE) << " tree output: ";
+    //book::rem::out() << str;
+    std::ofstream of("./xio.dot");
+    of << str();
+    of.close();
+#if defined(_MSC_VER) || !defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+    (void)system("dot -O xio.dot -Tpng && start xio.dot.png");
+#else // !
+    (void)system("dot -O xio.dot -Tpng && xdg-open xio.dot.png");
+#endif
+    return str;
+}
 
 /*!
  * \brief interpretr::error

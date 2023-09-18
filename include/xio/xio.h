@@ -82,7 +82,7 @@ public:
 
 
     using maker = std::function<::xio::xio* (token_data*)>;
-    alu acu() { return (acc ? *acc : alu(0.0f)); }
+    alu value() { return (acc ? *acc : alu(0.0f)); }
     alu* aluptr() { return acc; }
     virtual alu jsr(); // "Jump Subroutine" :)
 

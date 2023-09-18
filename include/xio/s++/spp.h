@@ -43,6 +43,7 @@ public:
     alu operator[](const std::string& expr);
     book::rem::code process(int argc, char** argv);
     
+    stracc export_expr_ast(const std::string& expr);
     static void error(book::rem::type ertype, book::rem::code ercode, token_data::iterator token, const token_data::list& line_seq);
     static void warning(book::rem::type wtype, book::rem::code wcode, token_data::iterator token, const token_data::list& line_seq);
     

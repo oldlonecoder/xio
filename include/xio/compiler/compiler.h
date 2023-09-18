@@ -25,11 +25,11 @@ namespace xio
 class XIO_PUBLIC compiler
 {
 
-    token_data::list _tokens_stream;
-    std::string _filename;
-    stracc source_content;
+    token_data::list* _tokens_stream{ nullptr };
+    std::string_view _filename;
+    std::string_view source_content;
 
-    std::string _rules_src;
+    std::string_view _rules_src;
     xiobloc* _bloc{ nullptr };
 
 
@@ -83,25 +83,7 @@ public:
      * \author &copy;2023, Serge Lussier ( serge.lussier@oldlonecoder.club )
      *
      */
-    struct Argc
-    {
-
-        stracc::list args;
-        stracc::list::iterator arg;
-        compiler* acc{nullptr};
-    public:
-        Argc(compiler* ac, int argc, char** argv);
-        Argc();
-        ~Argc();
-
-
-        bool operator >> (std::string& str);
-        void reset() { arg = args.begin(); }
-
-        book::rem::code process();
-        std::string usage();
-
-    };
+    
 
 
     //----------- Public access & callables: -------------------
@@ -120,21 +102,19 @@ public:
     xiobloc* bloc() { return _bloc; }
     // ------------------ parsers -Cannot be used yet-----------
     book::rem::code parse_expression();
-    book::rem::code parse_expr(xiobloc* blk, const char* expr_text);
+    book::rem::code compile_expr(xiobloc* blk, const char* expr_text);
 
     // -------------------Cannot be used yet--------------------
     ::xio::xio* make_xio_node(token_data* token);
     book::rem::code parse_rule(const std::string& rule_name);
     // ---------------------------------------------------------
     book::rem::code compile();
+    void set_source(const char* c) { source_content = c; }
     void set_source_file(const std::string& sf) { _filename = sf; }
-    const char* source_code() { return source_content().c_str(); }
+    const char* source_code() { return source_content.data(); }
 private:
     book::rem::code lexical_analyse();
     book::rem::code open_file();
-    book::rem::code load_source();
-    book::rem::code close_file();
-
     xio* parse_rvalue_keyword();
     token_data::list tokens_line_from(token_data* token);
 

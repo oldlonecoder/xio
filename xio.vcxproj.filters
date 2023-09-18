@@ -36,15 +36,6 @@
     <ClInclude Include="include\xio\xiovar.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="include\xio\lexer\lexer.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="include\xio\lexer\lexer_color.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="include\xio\compiler\grammar\grammar.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="include\xio\s++\spp.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -55,6 +46,9 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="include\xio\compiler\compiler.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="include\xio\s++\modunit.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
@@ -77,15 +71,6 @@
     <ClCompile Include="src\xiovar.cc">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\compiler\grammar\grammar.cc">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\lexer\lexer.cc">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\lexer\lexer_color.cc">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\s++\spp.cc">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -96,6 +81,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="src\compiler\compiler.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\s++\modunit.cc">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
