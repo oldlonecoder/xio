@@ -22,16 +22,14 @@
 
 #include <xio/compiler/compiler.h>
 #include "xio/s++/spp.h"
-#include <errno.h>
-#include <fstream>
-#include "modunit.h"
+
 
 
 
 namespace xio
 {
 
-std::string_view str_code_none = ";";
+
 
 std::map<std::string, book::rem::code(compiler::*)()> extern_parsers =
 {
@@ -45,18 +43,12 @@ std::map<std::string, book::rem::code(compiler::*)()> extern_parsers =
 
 
 
-compiler::compiler(xiobloc* bloc, const char* source_or_filename): _filename(source_or_filename),_bloc(bloc)
+compiler::compiler(xiobloc* bloc):_bloc(bloc)
 {}
 
-compiler::compiler(xiobloc* bloc, const char* source_or_filename, const std::string& use_this_rules_text):
-    _filename(source_or_filename),
-    _rules_src(use_this_rules_text),
-  _bloc(bloc)
-{}
 
 compiler::~compiler()
 {
-    _tokens_stream.clear();
 }
 
 
@@ -74,8 +66,13 @@ compiler::~compiler()
 book::rem::code compiler::compile_expr(xiobloc *blk, const char *expr_text)
 {
     _bloc = blk; ///< Interpreter's bloc address likelly...
+    
+    // create local config data for this particular context
+    token_data::list tl;
+    cnf = { expr_text, &tl };
+
     lexer lex;
-    lex.config() = {expr_text,&_tokens_stream};
+    lex.config() = {expr_text, cnf.tokens_stream};
 
     auto R = lex();
     if(R!=book::rem::accepted)
@@ -94,7 +91,7 @@ book::rem::code compiler::compile_expr(xiobloc *blk, const char *expr_text)
       color::BlueViolet << "parse_expr" << color::White << "(" <<
       text << color::White << ") :" << book::rem::commit;
 
-    ctx = context(_bloc, _tokens_stream.begin(), _tokens_stream.end(), _tokens_stream.end());
+    ctx = context(_bloc, cnf.tokens_stream->begin(), cnf.tokens_stream->end(), cnf.tokens_stream->end());
 
     book::rem::push_info() << "begin parse and build expr binary tree ( of xio nodes ): " << book::rem::commit;
     xio* x{nullptr};
@@ -105,7 +102,7 @@ book::rem::code compiler::compile_expr(xiobloc *blk, const char *expr_text)
     }
 
     ctx++;
-    while((ctx.cur < _tokens_stream.end()) && (ctx.cur->m != ::xio::mnemonic::Semicolon)){
+    while((ctx.cur < cnf.tokens_stream->end()) && (ctx.cur->m != ::xio::mnemonic::Semicolon)){
         x = x->input(ctx.bloc, ctx.token(), [this](token_data* token)-> xio*{ return make_xio_node(token); });
         if(!x)
         {
@@ -191,14 +188,11 @@ book::rem::code compiler::parse_rule(const std::string& rule_name)
 
 rem::code compiler::compile()
 {
-    book::rem::code  R = open_file();
-    if(R != book::rem::ok)
-        return R;
-    R = lexical_analyse();
+    auto R = lexical_analyse();
     if(R != book::rem::accepted)
         return R;
     rem::push_debug(HEREF) << " returning because this request is not implemented yet..."  << book::rem::commit;
-    //ctx = context(_bloc, _tokens_stream.begin(), _tokens_stream.end(), _tokens_stream.end());
+    //ctx = context(_bloc, cnf.tokens_stream->begin(), cnf.tokens_stream->end(), cnf.tokens_stream->end());
 
     return book::rem::notimplemented;
 }
@@ -209,8 +203,8 @@ rem::code compiler::lexical_analyse()
     lexer lex;
     lex.config() =
       {
-          source_content.data(),
-          &_tokens_stream
+          cnf.source_content.data(),
+          cnf.tokens_stream
       };
 
     auto R = lex();
@@ -222,38 +216,10 @@ rem::code compiler::lexical_analyse()
     book::rem::push_test(HERE) << " lexer terminate successfully : prepare (lexical highlight) text of the source code:" << book::rem::endl << book::rem::commit;
     book::rem::out() << lex.colorize() << book::rem::commit;
     book::rem::push_message() << " will test lexer::mark(...):" << book::rem::endl << book::rem::commit;
-    book::rem::push_test(HERE) << lex.mark(_tokens_stream[5], true) << book::rem::commit;
+    book::rem::push_test(HERE) << lex.mark((*cnf.tokens_stream)[5], true) << book::rem::commit;
     //book::rem::test(HERE) << "";
 
     return book::rem::accepted;
-}
-
-rem::code compiler::open_file()
-{
-
-    //int a = access(_filename.c_str(), F_OK|R_OK);
-    //if(a)
-    //{
-    //    book::rem::push_error(HEREF) << strerror(errno) << book::rem::commit;
-    //    return book::rem::notexist;
-    //}
-
-    std::ifstream in; // std::iobase::in
-    in.open(_filename);
-    if(in.is_open())
-    {
-        char  line[256];
-        while(!in.eof())
-        {
-            in.getline(line,255);
-            source_content << line << '\n';
-        }
-        in.close();
-    }
-    else
-        return book::rem::failed;
-
-    return book::rem::ok;
 }
 
 xio* compiler::parse_rvalue_keyword()
@@ -266,7 +232,7 @@ xio* compiler::parse_rvalue_keyword()
 token_data::list compiler::tokens_line_from(token_data* token)
 {
     token_data::list tokens;
-    for(auto it = _tokens_stream.begin(); it != _tokens_stream.end(); it++)
+    for(auto it = cnf.tokens_stream->begin(); it != cnf.tokens_stream->end(); it++)
     {
         if(it->loc.linenum == token->loc.linenum) tokens.push_back(*it);
     }

@@ -13,7 +13,7 @@
  ******************************************************************************************/
 
 #pragma once
-#include "xio/xiobloc.h"
+#include "xio/s++/amu.h"
 
 
 
@@ -23,7 +23,18 @@ namespace xio::cc { class parser; }
 namespace xio::spp
 {
 
-class XIO_PUBLIC interpretr : public xiobloc
+
+
+/**
+ * \brief Augmented amu but it is the interpreter class.
+ * 
+ * So its scope is The Global scope. Yes, just like any other scripting language, we can compile single intructions at this
+ * scope level ... 
+ * Or we can explicitly prevent such coding-style and force to create kind of a "main" function as the entry of the program.
+ * 
+ * \author &copy; 2023, #USERNAME; oldlonecoder (serge.lussier@oldlonecoder.club)
+ */
+class XIO_PUBLIC interpretr : public amu
 {
 
     std::string name;
@@ -32,7 +43,7 @@ public:
 
     interpretr() = default;
     interpretr(const interpretr&) = delete;
-    interpretr(const std::string& interp_name);
+    interpretr(const std::string& interp_name, int argc, char** argv);
 
     ~interpretr() override;
 

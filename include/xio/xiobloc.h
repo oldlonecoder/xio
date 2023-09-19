@@ -104,7 +104,7 @@ public:
     xiobloc();
     xiobloc(xiobloc* parent_, token_data* info_ = nullptr, alu* a_ = nullptr);
     xiobloc(xio* parent_, token_data* info_ = nullptr, alu* a_ = nullptr);
-
+    xiobloc(xiobloc* parent_, const std::string& bname);
     /**
      * Copy constructor
      *
@@ -137,7 +137,7 @@ public:
     xiovar* query_var(const std::string& id_);
     xiovar* query_local_var(const std::string& id_);
 
-    xiovar* new_var(xio* var_); ///< ?? When parsing (compiling) the xio node is created (...or not?)
+    //xiovar* ref_var(xio* var_); ///< ?? When parsing (compiling) the xio node is created (...or not?)
     xiovar* new_var(token_data* info_); ///< ?? When parsing (compiling) the xio node is created (...or not?)
 
     rem::code detach(xio* x) override;

@@ -48,7 +48,7 @@
     <ClInclude Include="include\xio\compiler\compiler.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="include\xio\s++\modunit.h">
+    <ClInclude Include="include\xio\s++\amu.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
@@ -83,7 +83,7 @@
     <ClCompile Include="src\compiler\compiler.cc">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\s++\modunit.cc">
+    <ClCompile Include="src\s++\amu.cc">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

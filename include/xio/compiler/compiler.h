@@ -24,12 +24,6 @@ namespace xio
 
 class XIO_PUBLIC compiler
 {
-
-    token_data::list* _tokens_stream{ nullptr };
-    std::string_view _filename;
-    std::string_view source_content;
-
-    std::string_view _rules_src;
     xiobloc* _bloc{ nullptr };
 
 
@@ -74,16 +68,16 @@ class XIO_PUBLIC compiler
     compiler::context ctx;
 
 public:
-    /*!
-     * \brief The Argc class
-     *
-     * -e "expr"
-     * -f path/filename.s++
-     *
-     * \author &copy;2023, Serge Lussier ( serge.lussier@oldlonecoder.club )
-     *
-     */
     
+    struct XIO_PUBLIC config_data
+    {
+        std::string_view source_content;
+        token_data::list* tokens_stream;
+        std::string_view grammar_text;
+        bool operator !() { return source_content.empty() || (!tokens_stream || tokens_stream->empty()); }
+    };
+    
+    compiler::config_data& config() { return cnf;  }
 
 
     //----------- Public access & callables: -------------------
@@ -92,8 +86,8 @@ public:
     compiler(const compiler&) = delete;
     compiler(compiler&&) noexcept = delete;
 
-    compiler(xiobloc* bloc, const char* source_or_filename);
-    compiler(xiobloc* bloc, const char* source_or_filename, const std::string& use_this_rules_text);
+    compiler(xiobloc* bloc);
+    
 
     ~compiler();
 
@@ -109,15 +103,14 @@ public:
     book::rem::code parse_rule(const std::string& rule_name);
     // ---------------------------------------------------------
     book::rem::code compile();
-    void set_source(const char* c) { source_content = c; }
-    void set_source_file(const std::string& sf) { _filename = sf; }
-    const char* source_code() { return source_content.data(); }
+
 private:
     book::rem::code lexical_analyse();
-    book::rem::code open_file();
+    
     xio* parse_rvalue_keyword();
     token_data::list tokens_line_from(token_data* token);
 
+    compiler::config_data cnf;
 };
 
 }

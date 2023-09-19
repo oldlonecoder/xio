@@ -9,7 +9,7 @@ namespace xio::spp
 
 
 
-interpretr::interpretr(const std::string& interp_name): xiobloc(),
+interpretr::interpretr(const std::string& interp_name, int argc, char** argv): amu(nullptr, interp_name, argc,argv),
     name(interp_name)
 {
 }
@@ -35,12 +35,17 @@ book::rem::code interpretr::process(int argc, char** argv)
     grammar g;
     g.build();
     g.dump();
-    compiler cc(this,";");
-    compiler::Argc A(&cc, argc,argv);
-    auto R = A.process();
-    if(R != book::rem::accepted) return R;
-    alu a = jsr();
-    export_expr_ast(cc.source_code());
+    compiler cc(this);
+
+
+  //  if(R != book::rem::accepted) return R;
+    // this amu's scope instructions set ( init stuff such as local variables... )
+    alu a = jsr(); 
+
+    // At this global level, find and execute the 'main' function:
+    //...
+
+    export_expr_ast(source_content);
     return book::rem::accepted;
 }
 
@@ -58,7 +63,10 @@ alu interpretr::operator[](const std::string& expr)
     grammar g;
     g.build();
     g.dump();
-    compiler expr_parser(this, expr.c_str());
+    compiler expr_parser(this);
+    token_data::list tokens;
+    //expr_parser.config() = {expr.c_str(), &tokens};
+    
     auto R = expr_parser.compile_expr(this, expr.c_str());
     //auto R = expr_parser.parse_rule("expression");
     if(R != book::rem::accepted)

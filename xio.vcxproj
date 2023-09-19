@@ -142,7 +142,7 @@ xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  
     <ClInclude Include="include\xio\compiler\grammar.h" />
     <ClInclude Include="include\xio\compiler\lexer.h" />
     <ClInclude Include="include\xio\public.h" />
-    <ClInclude Include="include\xio\s++\modunit.h" />
+    <ClInclude Include="include\xio\s++\amu.h" />
     <ClInclude Include="include\xio\s++\spp.h" />
     <ClInclude Include="include\xio\tokendata.h" />
     <ClInclude Include="include\xio\types.h" />
@@ -155,7 +155,7 @@ xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  
     <ClCompile Include="src\compiler\compiler.cc" />
     <ClCompile Include="src\compiler\grammar.cc" />
     <ClCompile Include="src\compiler\lexer.cc" />
-    <ClCompile Include="src\s++\modunit.cc" />
+    <ClCompile Include="src\s++\amu.cc" />
     <ClCompile Include="src\s++\spp.cc" />
     <ClCompile Include="src\tokendata.cc" />
     <ClCompile Include="src\types.cc" />

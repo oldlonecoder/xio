@@ -36,6 +36,11 @@ xiobloc::xiobloc(xio* parent_, token_data* info_, alu* a_) :xio(parent_,info_,a_
 {
 }
 
+xiobloc::xiobloc(xiobloc* parent_, const std::string& bname):xio(parent_, nullptr,nullptr)
+{
+    set_id(bname);
+}
+
 
 
 
