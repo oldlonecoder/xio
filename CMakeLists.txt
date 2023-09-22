@@ -16,17 +16,18 @@ SET(FRAMEWORK_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 add_library(
         ${TargetName}
         SHARED
-        include/${TargetName}/public.h                 #global framework-wide macros definitions and dll export and import macros for MSVC.
-        include/${TargetName}/types.h                   src/types.cc
-        include/${TargetName}/alu.h                     src/alu.cc
-        include/${TargetName}/tokendata.h               src/tokendata.cc
-        include/${TargetName}/xio.h                     src/xio.cc  # La pièce maîtresse ;)
-        include/${TargetName}/xiobloc.h                 src/xiobloc.cc
-        include/${TargetName}/xiovar.h                  src/xiovar.cc
-        include/${TargetName}/compiler/lexer.h          src/compiler/lexer.cc
-        include/${TargetName}/compiler/grammar.h        src/compiler/grammar.cc
-        include/${TargetName}/compiler/compiler.h       src/compiler/compiler.cc
-        include/${TargetName}/s++/spp.h                 src/s++/spp.cc
+       include/${TargetName}/public.h                 #global framework-wide macros definitions and dll export and import macros for MSVC.
+       include/${TargetName}/types.h                   src/types.cc
+       include/${TargetName}/alu.h                     src/alu.cc
+       include/${TargetName}/tokendata.h               src/tokendata.cc
+       include/${TargetName}/xio.h                     src/xio.cc  # La pièce maîtresse ;)
+       include/${TargetName}/xiobloc.h                 src/xiobloc.cc
+       include/${TargetName}/xiovar.h                  src/xiovar.cc
+       include/${TargetName}/compiler/lexer.h          src/compiler/lexer.cc
+       include/${TargetName}/compiler/grammar.h        src/compiler/grammar.cc
+       include/${TargetName}/compiler/compiler.h       src/compiler/compiler.cc
+       include/${TargetName}/s++/amu.h                 src/s++/amu.cc
+       include/${TargetName}/s++/spp.h                 src/s++/spp.cc
         # ...Will grow...
 )
 

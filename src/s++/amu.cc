@@ -56,66 +56,42 @@ book::rem::code amu::compile()
     return book::rem::notimplemented;
 }
 
-
-
-
-
-
-
-
-
-/*!
- * \brief Argc::Argc Copy command-line arguments into the stracc::list container.
- * \param argc
- * \param argv
- */
-amu::Argc::Argc(int argc, char** argv)
+book::rem::code amu::process_cmdline(int arc, char** argv)
 {
+    auto& fexpr = cmdargs << book::cmd::argdata{ "Expression", "-e", "--expression", "Evaluate arithmetic expression from the command-line", 1};
+    auto& farg  = cmdargs << book::cmd::argdata{ "Source File", "-f", "--file", "Loads and compile source file", 1 };
+    auto& jarg  = cmdargs << book::cmd::argdata{ "Journal", "-j", "--journal", "Set the logger journal file", 1 };
 
-    for (int a = 1; a < argc; a++) args.push_back(argv[a]);
-    arg = args.begin();
-    //   book::rem::push_debug(HERE) << "count: " << color::Yellow << args.size() << book::rem::commit;
+    fexpr.callback.connect(this, &amu::eval_expression);
+    farg.callback.connect(this, &amu::source_file);
+    cmdargs.set_default_callback([this](const book::cmd::argdata& a)-> book::expect<> { return cmdline_invalid_args(a); });
+
+
+    return book::rem::code();
 }
 
-
-
-bool amu::Argc::operator >>(std::string_view& str)
+book::expect<> amu::eval_expression(const book::cmd::argdata& arg)
 {
-    if (arg >= args.end())
-    {
-        str = str_code_none;
-        return false;
-    }
-    str = *arg;
-    ++arg;
-
-    return arg <= args.end();
+    book::rem::push_info(HERE) << " Evaluate: '" << color::Yellow << arg.arguments[0] << color::Reset << "' :" << book::rem::commit;
+    return book::rem::notimplemented;
 }
 
-
-std::string amu::Argc::usage()
+book::expect<> amu::source_file(const book::cmd::argdata& arg)
 {
-    stracc str;
-    str << "----------------------------------------\n";
-    str << "-e \"expression\"\n";
-    str << "-f [path]/source_file.s++ \n";
-    str << "----------------------------------------\n";
-
-    return str();
+    book::rem::push_info(HERE) << " compile file: '" << color::Yellow << arg.arguments[0] << color::Reset << "' :" << book::rem::commit;
+    return book::rem::notimplemented;
 }
 
-
-amu::Argc::~Argc()
+book::expect<> amu::cmdline_invalid_args(const book::cmd::argdata& a)
 {
-    args.clear();
+    book::rem::push_error() << book::rem::endl << cmdargs.usage() << book::rem::commit;
+
+    return book::rem::failed;
 }
 
-amu::amu(xiobloc* parent_bloc, const std::string& mname, int argc, char** argv): xiobloc(parent_bloc, mname)
+amu::amu(xiobloc* parent_bloc, const std::string& mname) : xiobloc(parent_bloc, mname)
 {
-    Arg = Argc(argc, argv);
 }
-
-
 
 amu::~amu()
 {

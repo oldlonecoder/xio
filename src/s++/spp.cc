@@ -9,7 +9,7 @@ namespace xio::spp
 
 
 
-interpretr::interpretr(const std::string& interp_name, int argc, char** argv): amu(nullptr, interp_name, argc,argv),
+interpretr::interpretr(const std::string& interp_name): amu(nullptr, interp_name),
     name(interp_name)
 {
 }
@@ -30,13 +30,11 @@ interpretr::~interpretr()
  * \param argv
  * \return
  */
-book::rem::code interpretr::process(int argc, char** argv)
+book::rem::code interpretr::process_cmdline(int argc, char** argv)
 {
-    grammar g;
-    g.build();
-    g.dump();
-    compiler cc(this);
 
+    auto result = amu::process_cmdline(argc, argv);
+  
 
   //  if(R != book::rem::accepted) return R;
     // this amu's scope instructions set ( init stuff such as local variables... )

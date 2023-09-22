@@ -43,7 +43,7 @@ public:
 
     interpretr() = default;
     interpretr(const interpretr&) = delete;
-    interpretr(const std::string& interp_name, int argc, char** argv);
+    interpretr(const std::string& interp_name);
 
     ~interpretr() override;
 
@@ -52,7 +52,7 @@ public:
 
     // Quick arithmetic expression evaluator ( small source text ):
     alu operator[](const std::string& expr);
-    book::rem::code process(int argc, char** argv);
+    book::rem::code process_cmdline(int argc, char** argv) override;
     
     stracc export_expr_ast(const std::string& expr);
     static void error(book::rem::type ertype, book::rem::code ercode, token_data::iterator token, const token_data::list& line_seq);
