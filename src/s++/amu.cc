@@ -72,9 +72,15 @@ book::rem::code amu::process_cmdline(int argc, char** argv)
     return book::rem::code();
 }
 
+
+
+
 book::expect<> amu::eval_expression(const book::cmd::argdata& arg)
 {
     book::rem::push_info(HERE) << " Evaluate: '" << color::Yellow << arg.arguments[0] << color::Reset << "' :" << book::rem::commit;
+    cc = new compiler(this);
+    auto R = cc->compile_expr(this, arg.arguments[0].data());
+    
     return book::rem::notimplemented;
 }
 
