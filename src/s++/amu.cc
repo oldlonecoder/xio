@@ -56,7 +56,7 @@ book::rem::code amu::compile()
     return book::rem::notimplemented;
 }
 
-book::rem::code amu::process_cmdline(int arc, char** argv)
+book::rem::code amu::process_cmdline(int argc, char** argv)
 {
     auto& fexpr = cmdargs << book::cmd::argdata{ "Expression", "-e", "--expression", "Evaluate arithmetic expression from the command-line", 1};
     auto& farg  = cmdargs << book::cmd::argdata{ "Source File", "-f", "--file", "Loads and compile source file", 1 };
@@ -66,6 +66,8 @@ book::rem::code amu::process_cmdline(int arc, char** argv)
     farg.callback.connect(this, &amu::source_file);
     cmdargs.set_default_callback([this](const book::cmd::argdata& a)-> book::expect<> { return cmdline_invalid_args(a); });
 
+    auto R = cmdargs.process(argc, argv);
+    // ...
 
     return book::rem::code();
 }
