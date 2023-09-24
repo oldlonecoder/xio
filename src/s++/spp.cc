@@ -33,15 +33,7 @@ interpretr::~interpretr()
 book::rem::code interpretr::process_cmdline(int argc, char** argv)
 {
 
-    auto result = amu::process_cmdline(argc, argv);
-  
-
-  //  if(R != book::rem::accepted) return R;
-    // this amu's scope instructions set ( init stuff such as local variables... )
-    alu a = jsr(); 
-
-    // At this global level, find and execute the 'main' function:
-    //...
+    if(rem::code result; (result = amu::process_cmdline(argc, argv)) != rem::accepted) return result;
 
     export_expr_ast(source_content);
     return book::rem::accepted;
@@ -65,7 +57,7 @@ alu interpretr::operator[](const std::string& expr)
     token_data::list tokens;
     //expr_parser.config() = {expr.c_str(), &tokens};
     
-    auto R = expr_parser.compile_expr(this, expr.c_str());
+    auto R = expr_parser.evaluate_expr(this, expr.c_str());
     //auto R = expr_parser.parse_rule("expression");
     if(R != book::rem::accepted)
       return alu(1.42f);
@@ -93,25 +85,6 @@ alu interpretr::operator[](const std::string& expr)
 
 
 
-stracc interpretr::export_expr_ast(const std::string& expr)
-{
-    stracc str = "";
-    book::rem::push_debug(HERE) << "expr: '" << expr << "':" << book::rem::commit;
-    xio::dot_tree_start(str, expr);
-    xio::dot_tree(_instructions->front(), str);
-    str << "}";
-    //book::rem::push_debug(HERE) << " tree output: ";
-    //book::rem::out() << str;
-    std::ofstream of("./xio.dot");
-    of << str();
-    of.close();
-#if defined(_MSC_VER) || !defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
-    (void)system("dot -O xio.dot -Tpng && start xio.dot.png");
-#else // !
-    (void)system("dot -O xio.dot -Tpng && xdg-open xio.dot.png");
-#endif
-    return str;
-}
 
 /*!
  * \brief interpretr::error

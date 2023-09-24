@@ -96,7 +96,7 @@ public:
     xiobloc* bloc() { return _bloc; }
     // ------------------ parsers -Cannot be used yet-----------
     book::rem::code parse_expression();
-    book::rem::code compile_expr(xiobloc* blk, const char* expr_text);
+    book::rem::code evaluate_expr(xiobloc* blk, const char* expr_text);
 
     // -------------------Cannot be used yet--------------------
     ::xio::xio* make_xio_node(token_data* token);

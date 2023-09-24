@@ -38,7 +38,7 @@ public:
     book::rem::code compile();
 
     virtual book::rem::code process_cmdline(int arc, char **argv);
-
+    stracc export_expr_ast(const std::string& expr);
 private:
 
     book::expect<> eval_expression(const book::cmd::argdata& arg);

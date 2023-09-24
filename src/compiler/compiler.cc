@@ -55,7 +55,7 @@ compiler::~compiler()
 
 
 /*!
- * \brief parser::parse_expr  - Directly invokable independently. Cannot be called from within the normal rules parsing...
+ * \brief compiler::evaluate_epr  - Directly invokable independently. Will not be called from within the normal source content compiling...
  *
  *
  * \param blk
@@ -63,9 +63,9 @@ compiler::~compiler()
  * \return rem::code::accepted or rejected;
  * \author &copy; 2023, oldlonecoder (serge.lussier@goldlonecoder.club) ;)
  */
-book::rem::code compiler::compile_expr(xiobloc *blk, const char *expr_text)
+book::rem::code compiler::evaluate_expr(xiobloc *blk, const char *expr_text)
 {
-    _bloc = blk; ///< Interpreter's bloc address likelly...
+    _bloc = blk; ///< amu's bloc address likelly...
     
     // create local config data for this particular context
     token_data::list tl;
@@ -88,8 +88,7 @@ book::rem::code compiler::compile_expr(xiobloc *blk, const char *expr_text)
     stracc text = lex.colorize();
     book::rem::push_info() <<  color::BlueViolet << "xio" << color::White << "::" <<
       color::BlueViolet << "compiler" << color::White << "::" <<
-      color::BlueViolet << "parse_expr" << color::White << "(" <<
-      text << color::White << ") :" << book::rem::commit;
+      color::BlueViolet << "evaluate_expr" << color::White << "(" << text << color::White << ") :" << book::rem::commit;
 
     ctx = context(_bloc, cnf.tokens_stream->begin(), cnf.tokens_stream->end(), cnf.tokens_stream->end());
 

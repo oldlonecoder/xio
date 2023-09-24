@@ -79,10 +79,13 @@ book::expect<> amu::eval_expression(const book::cmd::argdata& arg)
 {
     book::rem::push_info(HERE) << " Evaluate: '" << color::Yellow << arg.arguments[0] << color::Reset << "' :" << book::rem::commit;
     cc = new compiler(this);
-    auto R = cc->compile_expr(this, arg.arguments[0].data());
-    
-    return book::rem::notimplemented;
+    if(rem::code result; ( result = cc->evaluate_expr(this, arg.arguments[0].data())) != rem::accepted) return result;
+
+    export_expr_ast(std::string(arg.arguments[0]));
+
+    return rem::accepted;
 }
+
 
 book::expect<> amu::source_file(const book::cmd::argdata& arg)
 {
@@ -104,5 +107,40 @@ amu::amu(xiobloc* parent_bloc, const std::string& mname) : xiobloc(parent_bloc, 
 amu::~amu()
 {
 }
+
+
+
+
+
+
+stracc amu::export_expr_ast(const std::string& expr)
+{
+    stracc str = "";
+    book::rem::push_debug(HERE) << "expr: '" << expr << "':" << book::rem::commit;
+    xio::dot_tree_start(str, expr);
+    xio::dot_tree(_instructions->front(), str);
+    str << "}";
+    //book::rem::push_debug(HERE) << " tree output: ";
+    //book::rem::out() << str;
+    std::ofstream of("./xio.dot");
+    of << str();
+    of.close();
+//#if defined(_MSC_VER) || defined(WIN64) || defined(_WIN64) || defined(__WIN64__) || defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+    //(void)system("dot -O xio.dot -Tpng && start xio.dot.png");
+
+//#else // !
+    //(void)system("dot -O xio.dot -Tpng && xdg-open xio.dot.png");
+    (void)system("dot -O xio.dot -Tpng");
+//#endif
+    return str;
+}
+
+
+
+
+
+
+
+
 
 }
