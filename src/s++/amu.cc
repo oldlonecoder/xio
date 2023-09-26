@@ -58,13 +58,13 @@ book::rem::code amu::compile()
 
 book::rem::code amu::process_cmdline(int argc, char** argv)
 {
-    auto& fexpr = cmdargs << book::cmd::argdata{ "Expression", "-e", "--expression", "Evaluate arithmetic expression from the command-line", 1};
-    auto& farg  = cmdargs << book::cmd::argdata{ "Source File", "-f", "--file", "Loads and compile source file", 1 };
-    auto& jarg  = cmdargs << book::cmd::argdata{ "Journal", "-j", "--journal", "Set the logger journal file", 1 };
+    cmdargs << book::cmd::argdata<amu>{ this, &amu::eval_expression,"Evaluate Expression", "-e", "--expression", "Evaluate arithmetic expression from the command-line", 1};
+    cmdargs << book::cmd::argdata<amu>{ this, &amu::source_file, "Source File", "-f", "--file", "Loads and compile source file", 1 };
+    cmdargs << book::cmd::argdata<amu>{ this, 0,"Journal", "-j", "--journal", "Set the logger journal file", 1 };
+    cmdargs << book::cmd::argdata<amu>{ this, 0,"Expression AST", "-t", "--expression-ast", "Create the expression AST in the dot file", 1 };
 
-    fexpr.callback.connect(this, &amu::eval_expression);
-    farg.callback.connect(this, &amu::source_file);
-    cmdargs.set_default_callback([this](const book::cmd::argdata& a)-> book::expect<> { return cmdline_invalid_args(a); });
+    //targ.callback.conntect(this, &amu::gen_expr_ast);
+    cmdargs.set_default_callback(&amu::cmdline_invalid_args);
 
     auto R = cmdargs.process(argc, argv);
     // ...
@@ -75,25 +75,37 @@ book::rem::code amu::process_cmdline(int argc, char** argv)
 
 
 
-book::expect<> amu::eval_expression(const book::cmd::argdata& arg)
+rem::code amu::eval_expression(const book::cmd::argdata<amu>& arg)
 {
     book::rem::push_info(HERE) << " Evaluate: '" << color::Yellow << arg.arguments[0] << color::Reset << "' :" << book::rem::commit;
     cc = new compiler(this);
+    cc->config() = { arg.arguments[0].data(), &tokens_stream };
+
+    // - a little mis config here in that the compiler requires the expression source text here:
     if(rem::code result; ( result = cc->evaluate_expr(this, arg.arguments[0].data())) != rem::accepted) return result;
 
-    export_expr_ast(std::string(arg.arguments[0]));
 
+    export_expr_ast(std::string(arg.arguments[0]));
+    auto a=jsr();
+    lexer lex;
+    lex.config() = { arg.arguments[0].data(), &tokens_stream };
+    stracc text = lex.colorize();
+    book::rem::out() << "Evaluate expression: [" << text << color::Reset << "] - result : " << book::rem::commit;
+    for(auto* v : *_xiovars)
+    {
+        book::rem::out() << "%-10s" << v->attribute() << color::White << " = " << color::Yellow << value()() << book::rem::commit;
+    }
     return rem::accepted;
 }
 
 
-book::expect<> amu::source_file(const book::cmd::argdata& arg)
+rem::code amu::source_file(const book::cmd::argdata<amu>& arg)
 {
     book::rem::push_info(HERE) << " compile file: '" << color::Yellow << arg.arguments[0] << color::Reset << "' :" << book::rem::commit;
     return book::rem::notimplemented;
 }
 
-book::expect<> amu::cmdline_invalid_args(const book::cmd::argdata& a)
+rem::code amu::cmdline_invalid_args(const book::cmd::argdata<amu>& a)
 {
     book::rem::push_error() << book::rem::endl << cmdargs.usage() << book::rem::commit;
 

@@ -180,7 +180,7 @@ xio::xio(object* parent_bloc, token_data* atoken, alu* a_alu): object(parent_blo
 
         break;
     }
-    
+
     auto i = xio::xio_operators_table.find(atoken->m);
     xio_fn = i != xio::xio_operators_table.end() ? i->second : nullptr;
     //book::rem::push_debug(HERE) << " acc: '" << color::Yellow << (*acc)() << color::White << "'"<< book::rem::commit;
@@ -205,22 +205,19 @@ alu xio::jsr()
 {
     //...
 
-    book::rem::push_debug(HERE) << color::White << attribute() << " value:" << color::Yellow << acc->number<uint64_t>() << book::rem::endl << t0->mark();
-    if(t0->is_binary())
-        book::rem::out() << xio::trace_connect_binary_operands(this)<< book::rem::endl << book::rem::commit;
+    book::rem::push_debug(HERE) << color::White << attribute() << " value:" << color::Yellow << acc->number<uint64_t>() << book::rem::endl << t0->details(true) << book::rem::commit;
+    if(t0->is_operator())
+    {
+        if(t0->is_binary())
+            book::rem::out(HERE) << xio::trace_connect_binary_operands(this)<< book::rem::endl << book::rem::commit;
 
+        if (lhs) *acc = lhs->jsr(); // Always catch the lhs value so we return that one if there is no rhs operand.
+        if (rhs) *acc = rhs->jsr(); // Always catch the rhs value because it is the value to be returned after being applied to the lhs (if applicable).
 
-
-
-    if (lhs) *acc = lhs->jsr(); // Always catch the lhs value so we return that one if there is no rhs operand.
-    if (rhs) *acc = rhs->jsr(); // Always catch the rhs value because it is the value to be returned after being applied to the lhs (if applicable).
-
-    if (xio_fn)
-        return (this->*xio_fn)();// All operators assign acc.
-    else {
-        if (t0->is_operator()) {
-            book::rem::push_warning() << "operator xio [" << color::Yellow << t0->text() << color::Reset << "] has no implementation (yet?).:\n" << t0->mark()<< book::rem::endl << book::rem::commit;
-        }
+        if (xio_fn)
+            return (this->*xio_fn)();// All operators assign acc.
+        else
+            book::rem::push_warning(HERE) << "operator xio [" << color::Yellow << t0->text() << color::Reset << "] has no implementation (yet?).:\n" << t0->mark()<< book::rem::endl << book::rem::commit;
     }
     t0->s |= acc->T; ///< Why is that ?
     // It's because our actual token::type (xio::type::T) has been changed by the type of the resulting operation alu::T ( acc->T is put into t0->s )...
@@ -273,24 +270,28 @@ alu xio::LeftShift()
     }
 
     *acc = lhs->acc->number<uint64_t>() << rhs->acc->number<uint64_t>();
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
 alu xio::Radical()
 {
     *acc = std::pow(lhs->acc->number<double>(), 1 / rhs->acc->number<double>());
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
 alu xio::Exponent()
 {
     *acc = std::pow(lhs->acc->number<double>(), rhs->acc->number<double>());
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
 alu xio::RightShift()
 {
     *acc = lhs->acc->number<uint64_t>() >> rhs->acc->number<uint64_t>();
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -298,6 +299,7 @@ alu xio::RightShift()
 alu xio::Decr()
 {
     *acc = t0->is_prefix() ? --(*rhs->acc) : (*lhs->acc)--;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -305,6 +307,7 @@ alu xio::Decr()
 alu xio::Incr()
 {
     *acc = t0->is_prefix() ? ++(*rhs->acc) : (*lhs->acc)++;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -312,6 +315,7 @@ alu xio::Incr()
 alu xio::AssignAdd()
 {
     *acc = *(lhs->acc) += *(rhs->acc);
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return  *acc;
 }
 
@@ -319,6 +323,7 @@ alu xio::AssignAdd()
 alu xio::AssignSub()
 {
     *acc = *(lhs->acc) -= *(rhs->acc);
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return  *acc;
 }
 
@@ -326,6 +331,7 @@ alu xio::AssignSub()
 alu xio::AssignMul()
 {
     *acc = *(lhs->acc) *= *(rhs->acc);
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -333,40 +339,47 @@ alu xio::AssignMul()
 alu xio::AssignDiv()
 {
     *acc = *(lhs->acc) /= *(rhs->acc);
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 alu xio::AssignMod()
 {
     *acc = *(lhs->acc) %= *(rhs->acc);
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 
 }
 alu xio::AssignAnd()
 {
     *acc = *(lhs->acc) &= *(rhs->acc);
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 
 }
 alu xio::AssignOr()
 {
     *acc = *(lhs->acc) |= *(rhs->acc);
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 
 }
 alu xio::AssignXor()
 {
     *acc = *(lhs->acc) ^= *(rhs->acc);
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 
 }
 alu xio::AssignX1()
 {
     *acc = ~(*rhs->acc);
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 alu xio::AssignLShift()
 {
     *acc = *lhs->acc <<= *rhs->acc;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -374,6 +387,7 @@ alu xio::AssignLShift()
 alu xio::AssignRShift()
 {
     *acc = *lhs->acc >>= *rhs->acc;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -381,6 +395,7 @@ alu xio::AssignRShift()
 alu xio::Leq()
 {
     *acc = *lhs->acc <= *rhs->acc;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -388,6 +403,7 @@ alu xio::Leq()
 alu xio::Geq()
 {
     *acc = *lhs->acc >= *rhs->acc;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -395,6 +411,7 @@ alu xio::Geq()
 alu xio::Eq()
 {
     *acc = (*lhs->acc) == (*rhs->acc);
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -402,6 +419,7 @@ alu xio::Eq()
 alu xio::Neq()
 {
     *acc = *lhs->acc != *rhs->acc;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -409,7 +427,7 @@ alu xio::Add()
 {
     book::rem::push_debug(HERE) << color::Yellow << lhs->value()() << " " << color::CornflowerBlue << attribute() << " " << color::Yellow << rhs->value()() << ":"<< book::rem::commit;
     *acc = *lhs->acc + *rhs->acc;
-    book::rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 alu xio::Sub()
@@ -420,7 +438,7 @@ alu xio::Sub()
     book::rem::push_debug(HERE) << color::Lime
         << color::Yellow << lhs->value()() << " " << color::CornflowerBlue << attribute() << " " << color::Yellow << rhs->value()() << ":"<< book::rem::commit;
     *acc = *lhs->acc - *rhs->acc;
-    book::rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
 
     return *acc;
 }
@@ -438,16 +456,19 @@ alu xio::Mul()
 alu xio::Modulo()
 {
     *acc = *lhs->acc % *rhs->acc;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 alu xio::LessThan()
 {
     *acc = *lhs->acc < *rhs->acc;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 alu xio::GreaterThan()
 {
     *acc = *lhs->acc > *rhs->acc;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 alu xio::Assign()
@@ -469,6 +490,7 @@ alu xio::Assign()
 alu xio::BinAnd()
 {
     *acc = *lhs->acc & *rhs->acc;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -476,6 +498,7 @@ alu xio::BinAnd()
 alu xio::BinOr()
 {
     *acc = *lhs->acc | *rhs->acc;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -483,18 +506,21 @@ alu xio::BinOr()
 alu xio::BitXor()
 {
     *acc = *lhs->acc ^ *rhs->acc;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
 alu xio::X1()
 {
     *acc = ~(*lhs->acc);
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
 alu xio::X2()
 {
     *acc = ~(*lhs->acc) + alu(1);
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -502,6 +528,7 @@ alu xio::X2()
 alu xio::BitNot()
 {
     *acc = !rhs->acc->number<double>();
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -509,11 +536,13 @@ alu xio::BitNot()
 alu xio::BoolAnd()
 {
     *acc = *lhs->acc && *rhs->acc;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 alu xio::BoolOr()
 {
     *acc = *lhs->acc || *rhs->acc;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 
 }
@@ -529,7 +558,7 @@ alu xio::Division()
     *acc = *lhs->acc / *rhs->acc;
     book::rem::out(HEREF) << color::CornflowerBlue << " => " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
-    //book::rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)();
+    //book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)();
 }
 
 
@@ -540,11 +569,11 @@ alu xio::Factorial()
                                 << color::Yellow << " " << (*lhs->acc)() << " "
                                 << color::CornflowerBlue << attribute() << color::White << ":" << book::rem::commit;
 
-    book::rem::out() << xio::trace_connect_postfix_operands(this) << book::rem::commit;
+    book::rem::out(HERE) << xio::trace_connect_postfix_operands(this) << book::rem::commit;
 
     *acc = lhs->acc->factorial();
 
-    book::rem::out() << color::CornflowerBlue << " => " << color::Yellow << (*acc)()<< book::rem::commit;
+    book::rem::out(HERE) << color::CornflowerBlue << " => " << color::Yellow << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -556,6 +585,7 @@ alu xio::Positive()
         *rhs->acc *= -1;
 
     *acc = *rhs->acc;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -571,7 +601,7 @@ alu xio::Negative()
         *rhs->acc *= -1;
 
     *acc = *rhs->acc;
-    book::rem::out() << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -579,6 +609,7 @@ alu xio::Negative()
 alu xio::KPi()
 {
     *acc = alu(_PI_);
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -586,6 +617,7 @@ alu xio::KPi()
 alu xio::KCos()
 {
     *acc = std::cos(deg2rad(rhs));
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -593,11 +625,13 @@ alu xio::KCos()
 alu xio::KAcos()
 {
     *acc = std::acos(deg2rad(rhs));
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 alu xio::KTan()
 {
     *acc = std::tan(deg2rad(rhs));
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -605,6 +639,7 @@ alu xio::KTan()
 alu xio::KAtan()
 {
     *acc = std::atan(deg2rad(rhs));
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
 
     return *acc;
 }
@@ -612,12 +647,14 @@ alu xio::KAtan()
 alu xio::KSin()
 {
     *acc = std::sin(deg2rad(rhs));
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
 alu xio::KAsin()
 {
     *acc = std::asin(deg2rad(rhs));
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -630,12 +667,14 @@ alu xio::KNumber()
 alu xio::KU8()
 {
     *acc = rhs->acc->number<uint64_t>() & 0xFF;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return alu();
 }
 
 alu xio::KU16()
 {
     *acc = rhs->acc->number<uint64_t>() & 0xFFFF;
+    book::rem::out(HERE) << color::CornflowerBlue << " = " << color::Lime << (*acc)()<< book::rem::commit;
     return *acc;
 }
 
@@ -844,7 +883,7 @@ xio* xio::_binary(xio* a)
         if (a->t0->m == mnemonic::OpenPar)
             syntax_error(a);
     }
-    
+
     if (t0->m == mnemonic::OpenPar)
         return to_left(a);
 
@@ -1038,7 +1077,7 @@ xio* xio::begin(xio* parent_, token_data* token, xio::maker xmk)
 
     if(!a)
         return nullptr;
-    
+
     if (a->t0->m == mnemonic::OpenPar) push_par(a);
     return a;
 }
@@ -1047,7 +1086,7 @@ xio* xio::begin(xio* parent_, token_data* token, xio::maker xmk)
 xio* xio::tree_close()
 {
     header(this, HERE);
-    
+
     if (t0->m == mnemonic::OpenPar)
     {
         book::rem::push_error() << " unexpected end of file." << book::rem::commit;
@@ -1061,8 +1100,8 @@ xio* xio::tree_close()
         book::rem::push_error() << " umatched closing parenthese from:" << book::rem::endl << x->t0->mark()<< book::rem::endl << book::rem::commit;
         return nullptr;
     }
-    
-    
+
+
     if (t0->m == mnemonic::ClosePar) {
         book::rem::push_debug() << "Closing the tree on close parenthese:"<< book::rem::commit;
         if (lhs)
@@ -1167,14 +1206,14 @@ xio* xio::to_left(xio* in_lhs)
     header(in_lhs, HERE);
     /*
     (; [; {   // Appliqué sur aucun autre type de token car l'appel de tree_set_left ne se fait qu'� partir de tree_input qui r�soud l'associativit�.
-        /
-            x < -nextoken
+              /
+             x < -nextoken
             /
             lhs
     */
 
     if (lhs) {
-        // here we are supposed to be the openning par/index/bracket. so the interior will become right hand side of the parent op of this.
+        // here we are supposed to be the openning par/index/bracket/bloc. So the interior will become right hand side of the parent op of this.
         lhs->op = in_lhs;
         in_lhs->lhs = lhs;
     }
@@ -1185,15 +1224,22 @@ xio* xio::to_left(xio* in_lhs)
 }
 
 
-#pragma region TRIGRAPH
+#pragma region ast-digraph
 
+
+/*!
+ * \brief xio::dot_tree_start
+ * \param a_out
+ * \param Title
+ * \note For now the colours are the halloween theme ;)
+ */
 void xio::dot_tree_start(stracc& a_out, const stracc& Title)
 {
     a_out << "digraph arithmetic_expressionree {\n";
-    a_out << "ratio=compress; ranksep=.55; size = \"6.5,6.5\";\n";
+    a_out << "ratio=compress; ranksep=.55; size = \"6.5,6.5\"; bgcolor=\"#606060\"; \n";
     //a_out << "    node [fontname=\"Source Code Pro\", fontsize=12];\n";
-    a_out << "    node [fontname=\"JetBrainsMono NF\", fontsize=12];\n";
-    a_out << "    label=\"Arithmetic Expr Tree:[" << Title() << "]\"; fontsize = 10;\n";
+    a_out << "    node [fontname=\"JetBrainsMono NF\", fontsize=18, fontcolor=\"#ff500f\"];\n";
+    a_out << "    label = < <u> arithmetic expresion ast : </u> <br/> <br/>" << Title() << ">; fontsize = 16; fontcolor=\"#00d787\"\n"; // #0FAEFF
 }
 
 void xio::dot_node(xio* A, stracc& a_out)
@@ -1203,18 +1249,15 @@ void xio::dot_node(xio* A, stracc& a_out)
     if ((!A->lhs) && (!A->rhs)) return;
 
     if (A->lhs) {
-        a_out << "    xioNode" << A << " -> xioNode" << A->lhs << ";\n";
+        a_out << "    xioNode" << A << " -> xioNode" << A->lhs << " [dir = none, color=\"#A07060\", penwidth=5];\n";
         xio::dot_node(A->lhs, a_out);
     }
-    //     else
-    //         t_node::trace_null_node(A, nullcount++, a_stream);
 
     if (A->rhs) {
-        a_out << "    xioNode" << A << " -> xioNode" << A->rhs << ";\n";
+        a_out << "    xioNode" << A << " -> xioNode" << A->rhs << " [dir = none, color=\"#A07060\", penwidth=5];\n";
         xio::dot_node(A->rhs, a_out);
     }
-    //     else
-    //         trace_null_node(A, nullcount++, a_stream);
+
 }
 
 void xio::dot_null_node(xio*, int, stracc&)
@@ -1318,7 +1361,7 @@ std::string xio::trace_connect_postfix_operands(xio* x)
     //area << x->rhs->attribute();
     return area;
 }
-#pragma endregion TRIGRAPH
+#pragma endregion ast-digraph
 
 
 

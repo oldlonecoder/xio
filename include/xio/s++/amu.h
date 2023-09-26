@@ -20,7 +20,7 @@ protected:
     std::string      source_content;
     std::string      filename;
 
-    book::cmd::cargs cmdargs;
+    book::cmd::cargs<amu> cmdargs;
 
     token_data::list tokens_stream;
     compiler*        cc   { nullptr };
@@ -41,10 +41,10 @@ public:
     stracc export_expr_ast(const std::string& expr);
 private:
 
-    book::expect<> eval_expression(const book::cmd::argdata& arg);
-    book::expect<> source_file(const book::cmd::argdata& arg);
+    rem::code eval_expression(const book::cmd::argdata<amu>& arg);
+    rem::code source_file(const book::cmd::argdata<amu>& arg);
 
-    book::expect<> cmdline_invalid_args(const book::cmd::argdata& a);
+    rem::code cmdline_invalid_args(const book::cmd::argdata<amu>& a);
 
 };
 

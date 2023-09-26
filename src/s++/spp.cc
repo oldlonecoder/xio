@@ -35,7 +35,7 @@ book::rem::code interpretr::process_cmdline(int argc, char** argv)
 
     if(rem::code result; (result = amu::process_cmdline(argc, argv)) != rem::accepted) return result;
 
-    export_expr_ast(source_content);
+    //export_expr_ast(source_content);
     return book::rem::accepted;
 }
 

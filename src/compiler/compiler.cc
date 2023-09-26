@@ -67,17 +67,13 @@ book::rem::code compiler::evaluate_expr(xiobloc *blk, const char *expr_text)
 {
     _bloc = blk; ///< amu's bloc address likelly...
     
-    // create local config data for this particular context
-    token_data::list tl;
-    cnf = { expr_text, &tl };
-
     lexer lex;
     lex.config() = {expr_text, cnf.tokens_stream};
 
     auto R = lex();
     if(R!=book::rem::accepted)
     {
-        book::rem::push_error() << R;
+        book::rem::push_error() << R << rem::commit;
         return book::rem::rejected;
     }
 
@@ -118,6 +114,7 @@ book::rem::code compiler::evaluate_expr(xiobloc *blk, const char *expr_text)
 
     book::rem::push_info() << " Returning accepted." << book::rem::commit;
     ctx.accept(root);
+    book::rem::push_debug(HERE) << " root instruction :" << root->token()->details(true) << rem::commit;
     // jnl.info() << ....
     // jnl.error() << ....
     // jnl.warning() << ....
