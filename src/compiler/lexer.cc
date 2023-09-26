@@ -775,11 +775,11 @@ void lexer::insert_multiply(token_data &atoken)
 
     auto i = --_config.Tokens->end();
     --i;
-    book::rem::push_debug(HERE)
-        << atoken.text() << "::colnum :" << color::Yellow << atoken.loc.colnum
-        << book::rem::commit;
-    book::rem::push_debug(HERE) << i->text() << "::colnum :" << color::Yellow
-                                << i->loc.colnum << book::rem::commit;
+//    book::rem::push_debug(HERE)
+//        << atoken.text() << "::colnum :" << color::Yellow << atoken.loc.colnum
+//        << book::rem::commit;
+//    book::rem::push_debug(HERE) << i->text() << "::colnum :" << color::Yellow
+//                                << i->loc.colnum << book::rem::commit;
 
     if ((atoken.loc.colnum - i->loc.colnum) >= 2) {
         book::rem::push_debug(HERE) << " rejected because there must be no spaces between the involved tokens..." << book::rem::commit;

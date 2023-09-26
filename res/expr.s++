@@ -1,9 +1,12 @@
 /*******************************************************************
 *   Testing arithmetic expression.                                 *
-*   BloComment                                                     *
+*   Bloc Comment                                                   *
 ********************************************************************/
 
 
-// Another line-comment test
-
+// C++ style line comment;
+// At global scope it is ok to evaluate an expression; Therfore no instruction 
+// and control flow are allowed at the global scope/context.
+/*----------------Bloc  comment ... --------------------------------*/
 x = 42/4 + 5(3+4*3/5+34) - 42 d = 12;
+//-------------------------------------------------------------------

@@ -44,7 +44,7 @@ rem::code amu::open_file()
         return book::rem::failed;
     }
 
-    return book::rem::ok;
+    return book::rem::accepted;
 }
 
 book::rem::code amu::compile()
@@ -66,10 +66,8 @@ book::rem::code amu::process_cmdline(int argc, char** argv)
     //targ.callback.conntect(this, &amu::gen_expr_ast);
     cmdargs.set_default_callback(&amu::cmdline_invalid_args);
 
-    auto R = cmdargs.process(argc, argv);
-    // ...
+    return cmdargs.process(argc, argv);
 
-    return book::rem::code();
 }
 
 
@@ -99,10 +97,26 @@ rem::code amu::eval_expression(const book::cmd::argdata<amu>& arg)
 }
 
 
+/*!
+ * \brief amu::source_file
+ * \param  book::cmd::argdata<amu>& arg
+ * \return rem::accepted;
+ * \note Likely the most used option when invoking the interpreter.
+ * \author &copy; 2023, oldlonecoder (serge.lussier@oldlonecoder.club)
+ */
 rem::code amu::source_file(const book::cmd::argdata<amu>& arg)
 {
-    book::rem::push_info(HERE) << " compile file: '" << color::Yellow << arg.arguments[0] << color::Reset << "' :" << book::rem::commit;
-    return book::rem::notimplemented;
+    book::rem::push_debug(HERE) << " Source file '" << color::Yellow << arg.arguments[0] << color::Reset << "':" << book::rem::commit;
+    filename = arg.arguments[0].data();
+    if(open_file() != book::rem::accepted) return rem::failed;
+
+
+    book::rem::push_info(HERE) << " ready to compile file: '" << color::Yellow << arg.arguments[0] << color::Reset << "' :" << book::rem::commit;
+
+    compiler cc(this);
+    cc.config() = { source_content, &tokens_stream };
+
+    return cc.compile();
 }
 
 rem::code amu::cmdline_invalid_args(const book::cmd::argdata<amu>& a)
