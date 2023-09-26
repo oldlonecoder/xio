@@ -46,10 +46,12 @@ auto main(int argc, char** argv) -> int
     interpretr i;
 
     try{
-        auto R = i.process_cmdline(argc,argv);
-        //auto alu = i["x = 42/4 + 5(3+4*3/5+34) - 42 d = 12;"];
-        auto alu = i.value();
-        rem::out() << " Result: " << color::Yellow << alu() << book::rem::commit;
+        if(i.process_cmdline(argc,argv) == book::rem::accepted)
+        {
+            //auto alu = i["x = 42/4 + 5(3+4*3/5+34) - 42 d = 12;"];
+            auto alu = i.value();
+            rem::out() << " Result: " << color::Yellow << alu() << book::rem::commit;
+        }
     }
     catch(book::rem & )
     {
