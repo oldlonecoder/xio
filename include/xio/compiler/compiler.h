@@ -67,6 +67,12 @@ class XIO_PUBLIC compiler
 
     compiler::context ctx;
 
+    using parser_pairs_t = std::map<mnemonic, xio*(compiler::*)()>; ///< Paired mnemonic to parser.
+    using parser_rules_t = std::map<std::string_view, xio*(compiler::*)()>; ///< Paired rule name to parser.
+
+    static parser_pairs_t   mnemonic_parsers;
+    static parser_rules_t   rule_parsers;
+
 public:
     
     struct XIO_PUBLIC config_data
@@ -95,12 +101,11 @@ public:
     compiler& operator = (const compiler&) = delete;
     xiobloc* bloc() { return _bloc; }
     // ------------------ parsers -Cannot be used yet-----------
-    book::rem::code parse_expression();
+    xio* parse_expression();
     book::rem::code evaluate_expr(xiobloc* blk, const char* expr_text);
 
     // -------------------Cannot be used yet--------------------
     ::xio::xio* make_xio_node(token_data* token);
-    book::rem::code parse_rule(const std::string& rule_name);
     // ---------------------------------------------------------
     book::rem::code compile();
 
@@ -111,6 +116,15 @@ private:
     token_data::list tokens_line_from(token_data* token);
 
     compiler::config_data cnf;
+
+    xio* parse_if();
+    xio* parse_do();
+    xio* parse_while();
+    xio* parse_until();
+    xio* parse_for();
+
+    xio* return_stmt();
+
 };
 
 }

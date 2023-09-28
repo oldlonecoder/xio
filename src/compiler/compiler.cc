@@ -30,16 +30,16 @@ namespace xio
 {
 
 
-
-std::map<std::string, book::rem::code(compiler::*)()> extern_parsers =
+compiler::parser_pairs_t   compiler::mnemonic_parsers=
 {
-    {"expression", &compiler::parse_expression},
-    {"functionid", nullptr},
-    {"newvar", nullptr},
-    {"obj_instance",nullptr},
-    {"objectid", nullptr},
-    {"var_id", nullptr}
+    {mnemonic::Return, &compiler::return_stmt}
 };
+
+compiler::parser_rules_t   compiler::rule_parsers=
+{
+    {"expression", &compiler::parse_expression}
+};
+
 
 
 
@@ -125,62 +125,49 @@ book::rem::code compiler::evaluate_expr(xiobloc *blk, const char *expr_text)
 
 
 /**
- *  \brief parse_expr  Explicitely parses rule 'expression'.
+ *  \brief parse_expr  Explicitely parses rule 'expression' using the current context data.
  *
  * \return book::rem::accepted, or book::rem::error if failed.
  * \author &copy; August 23, 2023; oldlonecoder, (serge.lussier@oldlonecoder.club)
-
+ * \note   Stop conditions are yet to be determined clearly. The current is
+ *         1 - eof
+ *         2 - eos ( end of statement mnemonic or simply the ';' mnemonic )
+ *         3 - Expression ends on invalid relationanl token or invalid mnemonic when in condition expr context
+ *         -- Other ways that are not yet explored/implemented: ( [condition] expr ) [expr] {expr} syntaxes.
  */
-book::rem::code compiler::parse_expression()
+xio* compiler::parse_expression()
 {
-    book::rem::push_error(HERE) << " This rule parser is not yet implemented. " << book::rem::commit;
-    return book::rem::notimplemented;
-}
-
-
-/**
- * \brief parse_rule
- *
- * \param rule_name
- * \return book::rem::accepted, or book::rem::rejected if <i>rule name</i> does not matches the code.
- * \author &copy; August 23, 2023; oldlonecoder, (serge.lussier@oldlonecoder.club)
-
- */
-book::rem::code compiler::parse_rule(const std::string& rule_name)
-{
-    grammar::rule* rule = grammar::rules[rule_name];
-    if (!rule)
+    book::rem::push_debug(HERE) << " ==> Entering on token:" << book::rem::endl << ctx.token()->details (true) <<  book::rem::commit;
+    xio* x{nullptr};
+    if(!(x = xio::begin(ctx.bloc, ctx.token(), [this](token_data* t)->xio*{ return make_xio_node(t); })))
     {
-        book::rem::push_error() << " the rule identified by '" << rule_name << "' doe not exist."  << book::rem::commit;
-        return book::rem::notexist;
+        book::rem::push_status(HERE) << color::Yellow << " : seems not an expression at all at " << book::rem::endl << ctx.token()->details(true) << book::rem::commit;
+        return nullptr;
     }
 
-    if (rule->a.is_parserctrl())
-    {
-        for (auto& [rid, fn] : extern_parsers)
+    ctx++;
+    while((ctx.cur < cnf.tokens_stream->end()) && (ctx.cur->m != ::xio::mnemonic::Semicolon)){
+        x = x->input(ctx.bloc, ctx.token(), [this](token_data* token)-> xio*{ return make_xio_node(token); });
+        if(!x)
         {
-            if (rid == rule_name)
-            {
-                if (!fn)
-                {
-                    book::rem::push_error() << "[parser rule]: The external rule identified by '" << rule->a() << color::Reset << '\'' << color::Yellow << rule_name << color::Reset << "' is " << book::rem::notimplemented << book::rem::commit;
-                    return book::rem::notimplemented;
-                }
-                return (this->*fn)();
-            }
+            book::rem::out(HERE) << color::Yellow << " arithmetic expression inputs stopped  by unexpected token - returning." << book::rem::commit;
+            break;
         }
-        book::rem::push_error() << "[parser rule]: The external rule identified by '" << color::Yellow << rule_name << color::Reset << "' is out of bounds : " << book::rem::notexist << book::rem::commit;
+        ctx.instructions.push_back(x);
+        ctx++;
     }
 
-    //...
-    book::rem::push_message() << "[parser rule]: The sequential rule identified by " << rule->a() << color::Reset << '\''
-        << color::Yellow
-        << rule_name
-        << color::Reset << "' is"
-        << book::rem::notimplemented << book::rem::commit;
+    xio* root = ctx.instructions.back()->tree_close();
+    if(!root)
+        ctx.reject();
 
-    return book::rem::notimplemented;
+    book::rem::push_info() << " Returning accepted." << book::rem::commit;
+    ctx.accept(root);
+
+    return root;
 }
+
+
 
 rem::code compiler::compile()
 {
@@ -236,6 +223,36 @@ token_data::list compiler::tokens_line_from(token_data* token)
     return tokens;
 }
 
+xio *compiler::parse_if()
+{
+    return nullptr;
+}
+
+xio *compiler::parse_do()
+{
+    return nullptr;
+}
+
+xio *compiler::parse_while()
+{
+    return nullptr;
+}
+
+xio *compiler::parse_until()
+{
+    return nullptr;
+}
+
+xio *compiler::parse_for()
+{
+    return nullptr;
+}
+
+xio *compiler::return_stmt()
+{
+    return nullptr;
+}
+
 
 
 /**
@@ -278,7 +295,7 @@ token_data::list compiler::tokens_line_from(token_data* token)
             book::rem::push_message(HERE) << "unhandled token:" << book::rem::commit;
         break;
     }
-    return nullptr;
+        return nullptr;
 }
 
 
