@@ -1030,7 +1030,7 @@ lexer::LexicalColours::~LexicalColours()
 
 stracc lexer::LexicalColours::colorize(xio::token_data::list* tokens)
 {
-    int offset  = 0;
+    size_t offset  = 0;
     std::string _color;
     for (auto const& Token : *tokens)
     {

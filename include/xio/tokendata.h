@@ -48,12 +48,12 @@ namespace xio
 
         struct XIO_PUBLIC location_data
         {
-            const char* begin = nullptr;
-            const char* end = nullptr;
-            int     linenum = -1; ///< line number
-            int     colnum = -1; ///< Column number
-            int64_t offset = -1; ///< Absolute Offset from the beginning of the Source Text.
-            int     ln = 0; ///< Length of this token attribute.
+            const char* begin   = nullptr;
+            const char* end     = nullptr;
+            int         linenum = -1; ///< line number
+            int         colnum  = -1; ///< Column number
+            int64_t     offset  = -1; ///< Absolute Offset from the beginning of the Source Text.
+            size_t      ln      = 0; ///< Length of this token attribute.
             std::string operator()() const;
             std::string text() const;
             std::string position() const;
