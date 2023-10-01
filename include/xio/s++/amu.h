@@ -41,10 +41,10 @@ public:
     stracc export_expr_ast(const std::string& expr);
 private:
 
-    rem::code eval_expression(const book::cmd::argdata<amu>& arg);
-    rem::code source_file(const book::cmd::argdata<amu>& arg);
+    rem::code eval_expression(std::string_view expr_str);
+    rem::code source_file(std::string_view src);
 
-    rem::code cmdline_invalid_args(const book::cmd::argdata<amu>& a);
+    rem::code cmdline_invalid_args(std::string_view arg);
 
 };
 

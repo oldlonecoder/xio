@@ -52,7 +52,6 @@ public:
 
     // Quick arithmetic expression evaluator ( small source text ):
     alu operator[](const std::string& expr);
-    book::rem::code process_cmdline(int argc, char** argv) override;
     
     //stracc export_expr_ast(const std::string& expr);
     static void error(book::rem::type ertype, book::rem::code ercode, token_data::iterator token, const token_data::list& line_seq);

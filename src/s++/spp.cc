@@ -22,24 +22,6 @@ interpretr::~interpretr()
 
 
 
-
-
-/*!
- * \brief interpretr::process Load sources from the file or expression given on the commandline
- * \param argc
- * \param argv
- * \return
- */
-book::rem::code interpretr::process_cmdline(int argc, char** argv)
-{
-
-    if(rem::code result; (result = amu::process_cmdline(argc, argv)) != rem::accepted) return result;
-
-    //export_expr_ast(source_content);
-    return book::rem::accepted;
-}
-
-
 /**
  * \brief operator[] Quick arithmetic expression evaluator (small source code)
  *

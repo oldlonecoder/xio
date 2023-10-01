@@ -1,4 +1,6 @@
 #include <xio/s++/spp.h>
+#include <logbook/cargs.h>
+
 #include <signal.h>
 
 using book::rem;
@@ -27,12 +29,85 @@ void sig_fault( int s)
 
 void sig_abort( int s)
 {
-   //rem::push_aborted() << " dump messages stream and exit:";
-   //rem::clear(nullptr);
-   std::cerr << s << '\n';
+    //rem::push_aborted() << " dump messages stream and exit:";
+    //rem::clear(nullptr);
+    std::cerr << s << '\n';
 
-  exit(127);
+    exit(127);
 }
+
+// --------------------------------------------------------------------------
+namespace book
+{
+
+
+class app
+{
+    cmd::cargs<app> args;
+public:
+
+    app() = default;
+    ~app();
+
+    app(std::string_view title);
+
+    rem::code eval_expression(const cmd::argdata<app>& arg);
+    rem::code compile_source(const cmd::argdata<app>& arg);
+    rem::code set_draw_ast(const cmd::argdata<app>& arg);
+    rem::code cmdline_args(const cmd::argdata<app>& arg);
+
+
+    rem::code process(int argc, char **argv);
+};
+
+app::app(std::string_view title)
+{
+    args << book::cmd::argdata<app>{ this, &app::eval_expression,"Evaluate Expression", "-e", "--expression", "Evaluate arithmetic expression from the command-line", 1};
+    args << book::cmd::argdata<app>{ this, &app::compile_source, "Source File", "-f", "--file", "Loads and compile source file", 1 };
+    args << book::cmd::argdata<app>{ this, 0,"Journal", "-j", "--journal", "Set the logger journal file", 1 };
+    args << book::cmd::argdata<app>{ this, 0,"Expression AST", "-t", "--expression-ast", "Create the expression AST in the dot file", 1 };
+
+    //targ.callback.conntect(this, &amu::gen_expr_ast);
+    args.set_default_callback(&app::cmdline_args);
+
+}
+
+rem::code app::eval_expression(const cmd::argdata<app> &arg)
+{
+    interpretr i;
+    try{
+        auto alu = i[arg.arguments[0].data()];
+    }
+    catch(book::rem&){}
+    catch(std::exception e)
+    {
+        rem::push_except() << e.what() << rem::commit;
+    }
+
+    book::rem::clear([](book::rem&){;});
+    return rem::success;
+}
+
+rem::code app::compile_source(const cmd::argdata<app> &arg)
+{
+    return rem::notimplemented;
+}
+
+rem::code app::cmdline_args(const cmd::argdata<app> &arg)
+{
+    return rem::notimplemented;
+}
+
+
+
+rem::code app::process(int argc, char **argv)
+{
+    return args.process(argc,argv);
+}
+
+
+}
+
 
 
 
@@ -43,21 +118,11 @@ auto main(int argc, char** argv) -> int
     ::signal(SIGSEGV, sig_fault);
     ::signal(SIGABRT, sig_abort);
 
-    interpretr i;
+    book::app application("testing the app and the interpreter...");
 
-    try{
-        if(i.process_cmdline(argc,argv) == book::rem::accepted)
-        {
-            //auto alu = i["x = 42/4 + 5(3+4*3/5+34) - 42 d = 12;"];
-            auto alu = i.value();
-            rem::out() << " Result: " << color::Yellow << alu() << book::rem::commit;
-        }
-    }
-    catch(book::rem & )
-    {
-        // no need to do thingss here ...
-    }
-    book::rem::clear([](book::rem&){;});
+    (void)application.process(argc, argv);
+
+
 
     return 0;
 }
