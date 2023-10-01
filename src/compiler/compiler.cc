@@ -66,7 +66,7 @@ compiler::~compiler()
 book::rem::code compiler::evaluate_expr(xiobloc *blk, const char *expr_text)
 {
     _bloc = blk; ///< amu's bloc address likelly...
-    
+
     lexer lex;
     lex.config() = {expr_text, cnf.tokens_stream};
 
@@ -123,6 +123,19 @@ book::rem::code compiler::evaluate_expr(xiobloc *blk, const char *expr_text)
 }
 
 
+/*!
+ * \brief compiler::input Exploring; Implement token (sub-)sequence input and switch to the appropriate parser for the :
+ *        syntax-rule or term of statement in the current rule context
+ * \param address of the current (input) token.
+ * \return pointer to the new "xio'ed" token.
+ * \author &copy; 2023, oldlonecoder (serge.lussier@oldlonecoder.club)
+
+xio *compiler::input(token_data *token)
+{
+    return nullptr;
+}
+
+*/
 
 /**
  *  \brief parse_expr  Explicitely parses rule 'expression' using the current context data.

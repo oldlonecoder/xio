@@ -104,6 +104,10 @@ public:
     xio* parse_expression();
     book::rem::code evaluate_expr(xiobloc* blk, const char* expr_text);
 
+
+    xio* input(token_data* token); // Let's explore the same principle as in xio::input.
+
+
     // -------------------Cannot be used yet--------------------
     ::xio::xio* make_xio_node(token_data* token);
     // ---------------------------------------------------------
@@ -112,6 +116,9 @@ public:
 private:
     book::rem::code lexical_analyse();
     
+
+
+
     xio* parse_rvalue_keyword();
     token_data::list tokens_line_from(token_data* token);
 
