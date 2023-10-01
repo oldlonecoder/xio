@@ -1,0 +1,10 @@
+digraph arithmetic_expressionree {
+ratio=compress; ranksep=.55; size = "6.5,6.5"; bgcolor="#606060"; 
+    node [fontname="JetBrainsMono NF", fontsize=18, fontcolor="#ff500f"];
+    label = < <u> arithmetic expresion ast : </u> <br/> <br/>Univers = 42.0;>; fontsize = 16; fontcolor="#00d787"
+    xioNode000001B4BE0F80B0 [shape=none, label="="]
+    xioNode000001B4BE1232C0 [shape=none, label="Univers"]
+    xioNode000001B4BE123150 [shape=none, label="42.0"]
+    xioNode000001B4BE0F80B0 -> xioNode000001B4BE1232C0 [dir = none, color="#A07060", penwidth=5];
+    xioNode000001B4BE0F80B0 -> xioNode000001B4BE123150 [dir = none, color="#A07060", penwidth=5];
+}
