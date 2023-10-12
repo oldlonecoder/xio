@@ -95,6 +95,12 @@ book::code app::eval_expression(const cmd::argdata<app> &arg)
 
 book::code app::compile_source(const cmd::argdata<app> &arg)
 {
+    Book::debug() << book::functions::endl << " As of " << book::functions::weekday << ", " << book::functions::monthname
+                  << ' ' << book::functions::day << ' ' << book::functions::year
+                  << ", xio project is still exploring its logistics. Thus, this option:" << book::functions::endl
+                  << color::Yellow << arg.description << color::White << book::functions::endl
+                  << "has been unimplemented ...Temporary...";
+
     return book::code::notimplemented;
 }
 
@@ -125,7 +131,7 @@ auto main(int argc, char** argv) -> int
 
     try
     {
-        Book& AppBook = Book::init("logbook");
+        Book& AppBook = Book::init("eXecutable-Instruction-Objects");
         AppBook.open();
         AppBook.descriptions =
 R"(
@@ -138,6 +144,10 @@ R"(
         auto c = ml_description << AppBook.descriptions >> head;
         if(c != book::code::success)
             std::cerr << " text processing failed.";
+        auto & xiodev_section  = AppBook.create_section("xio.dev");
+        xiodev_section.open().create_stack("xio-eval_expression-dev");
+        /*auto & stackdev =*/
+        AppBook["xio.dev"]["xio-eval_expression-dev"];
 
         Book::out() << book::functions::endl << head;
         book::app application("testing the app and the interpreter...");
