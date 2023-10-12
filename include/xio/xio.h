@@ -98,9 +98,9 @@ public:
 
     xio::list::iterator query(xio* c);
 
-    book::rem::code append_child(xio* c);
-    virtual book::rem::code detach(xio* c);
-    virtual book::rem::code detach();
+    book::code append_child(xio* c);
+    virtual book::code detach(xio* c);
+    virtual book::code detach();
 
 protected:
 
@@ -124,9 +124,9 @@ protected:
     xio* warning(xio*);
     //xio* Fatal(xio*);
 
-    static void make_error(book::rem::code ErrCode, xio* source_node, xio* input_node);
-    static void make_error(book::rem::code ErrCode, xio* source_node, token_data* input_token);
-    void header(xio* input_node, book::source_location&& Loc = {});
+    static void make_error(book::code ErrCode, xio* source_node, xio* input_node);
+    static void make_error(book::code ErrCode, xio* source_node, token_data* input_token);
+    void header(xio* input_node, std::source_location&& Loc = std::source_location::current());
 
 
     // -------- Arithmetic binary tree INPUT: -----------------------------------

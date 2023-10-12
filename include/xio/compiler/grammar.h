@@ -323,7 +323,7 @@ public:
         ~grammar();
         stracc& text() { return _text; }
 
-        book::rem::code build();
+        book::code build();
 
         void dump();
         std::string dump_sequence(const term_seq& seq);
@@ -349,7 +349,7 @@ public:
         rule* _rule = nullptr;
         static rule* query_rule(const std::string& a_id);
 
-        using RuleScanner = book::rem::code(grammar::*)(strbrk::word::iterator&);
+        using RuleScanner = book::code(grammar::*)(strbrk::word::iterator&);
 
         stracc               _text;
         strbrk               _words;
@@ -372,15 +372,15 @@ public:
 
         //--------------- Rules builders -------------------
 
-        book::rem::code parse_identifier(strbrk::word::iterator& crs);
-        book::rem::code enter_rule_def(strbrk::word::iterator& crs);
-        book::rem::code new_sequence(strbrk::word::iterator& crs);
-        book::rem::code end_rule(strbrk::word::iterator& crs);
-        book::rem::code set_repeat(strbrk::word::iterator& crs);
-        book::rem::code set_optional(strbrk::word::iterator& crs);
-        book::rem::code enter_litteral(strbrk::word::iterator& crs);
-        book::rem::code set_oneof(strbrk::word::iterator& crs);
-        book::rem::code set_parserctrl(strbrk::word::iterator& crs);
+        book::code parse_identifier(strbrk::word::iterator& crs);
+        book::code enter_rule_def(strbrk::word::iterator& crs);
+        book::code new_sequence(strbrk::word::iterator& crs);
+        book::code end_rule(strbrk::word::iterator& crs);
+        book::code set_repeat(strbrk::word::iterator& crs);
+        book::code set_optional(strbrk::word::iterator& crs);
+        book::code enter_litteral(strbrk::word::iterator& crs);
+        book::code set_oneof(strbrk::word::iterator& crs);
+        book::code set_parserctrl(strbrk::word::iterator& crs);
 };
 
 }

@@ -197,7 +197,7 @@ std::string token_data::text_line() const
         while (*cc && (*cc != '\n') && (*cc != '\r'))
             str += *cc++;
     }
-    book::rem::push_debug(HERE) << str() << book::rem::commit;
+    Book::debug() << book::functions::endl << str();
     return str();
 }
 
@@ -377,7 +377,7 @@ std::string token_data::dump_token_table()
 {
     stracc acc = "-----------------------Tokens Table --------------------------\n";
 
-    for(auto token: tokens_table)
+    for(auto const& token: tokens_table)
     {
         acc = "[%-16s] %s\n";
         acc << mnemonic_name(token.m) << token.semantic_text();

@@ -15,14 +15,14 @@ std::string_view str_code_none = ";";
 
 
 
-rem::code amu::open_file()
+book::code amu::open_file()
 {
 
     //int a = access(_filename.c_str(), F_OK|R_OK);
     //if(a)
     //{
-    //    book::rem::push_error(HEREF) << strerror(errno) << book::rem::commit;
-    //    return book::rem::notexist;
+    //    Book::error(F) << strerror(errno);
+    //    return book::notexist;
     //}
 
     std::ifstream in; // std::iobase::in
@@ -40,32 +40,33 @@ rem::code amu::open_file()
     }
     else
     {
-        book::rem::push_error() << "amu::open_file '" << filename << "'" << book::rem::commit;
-        return book::rem::failed;
+        Book::error() << "amu::open_file '" << filename << "'";
+        return book::code::failed;
     }
 
-    return book::rem::accepted;
+    return book::code::accepted;
 }
 
-book::rem::code amu::compile()
+book::code amu::compile()
 {
     cc = new compiler();
     cc->config() = {source_content, &tokens_stream};
     auto result = cc->compile();
     //...
-    return book::rem::notimplemented;
+    return book::code::notimplemented;
 }
 
 
 
-rem::code amu::eval_expression(std::string_view  expr_str)
+
+book::code amu::eval_expression(std::string_view  expr_str)
 {
-    book::rem::push_info(HERE) << " Evaluate: '" << color::Yellow << expr_str << color::Reset << "' :" << book::rem::commit;
+    Book::info() << " Evaluate: '" << color::Yellow << expr_str << color::Reset << "' :";
     cc = new compiler(this);
     cc->config() = { expr_str.data(), &tokens_stream };
 
-    // - a little mis config here in that the compiler requires the expression source text here:
-    if(rem::code result; ( result = cc->evaluate_expr(this, expr_str.data())) != rem::accepted) return result;
+    // - a little mis config  in that the compiler requires the expression source text :
+    if(book::code result; ( result = cc->evaluate_expr(this, expr_str.data())) != book::code::accepted) return result;
 
 
     export_expr_ast(std::string(expr_str.data()));
@@ -73,30 +74,30 @@ rem::code amu::eval_expression(std::string_view  expr_str)
     lexer lex;
     lex.config() = {expr_str.data() , &tokens_stream };
     stracc text = lex.colorize();
-    book::rem::out() << "Evaluate expression: [" << text << color::Reset << "] - result : " << book::rem::commit;
+    Book::out() << "Evaluate expression: [" << text << color::Reset << "] - result : ";
     for(auto* v : *_xiovars)
     {
-        book::rem::out() << "%-10s" << v->attribute() << color::White << " = " << color::Yellow << value()() << book::rem::commit;
+        Book::out() << "%-10s" << v->attribute() << color::White << " = " << color::Yellow << value()();
     }
-    return rem::accepted;
+    return book::code::accepted;
 }
 
 
 /*!
  * \brief amu::source_file
  * \param  book::cmd::argdata<amu>& arg
- * \return rem::accepted;
+ * \return book::code::accepted;
  * \note Likely the most used option when invoking the interpreter.
  * \author &copy; 2023, oldlonecoder (serge.lussier@oldlonecoder.club)
  */
-rem::code amu::source_file(std::string_view arg)
+book::code amu::source_file(std::string_view arg)
 {
-    book::rem::push_debug(HERE) << " Source file '" << color::Yellow << arg << color::Reset << "':" << book::rem::commit;
+    Book::debug() << " Source file '" << color::Yellow << arg << color::Reset << "':";
     filename = arg.data();
-    if(open_file() != book::rem::accepted) return rem::failed;
+    if(open_file() != book::code::accepted) return book::code::failed;
 
 
-    book::rem::push_info(HERE) << " ready to compile file: '" << color::Yellow << arg << color::Reset << "' :" << book::rem::commit;
+    Book::info() << " ready to compile file: '" << color::Yellow << arg << color::Reset << "' :";
 
     compiler cc(this);
     cc.config() = { source_content, &tokens_stream };
@@ -121,12 +122,12 @@ amu::~amu()
 stracc amu::export_expr_ast(const std::string& expr)
 {
     stracc str = "";
-    book::rem::push_debug(HERE) << "expr: '" << expr << "':" << book::rem::commit;
+    Book::debug() << "expr: '" << expr << "':";
     xio::dot_tree_start(str, expr);
     xio::dot_tree(_instructions->front(), str);
     str << "}";
-    //book::rem::push_debug(HERE) << " tree output: ";
-    //book::rem::out() << str;
+    //Book::debug() << " tree output: ";
+    //Book::out() << str;
     std::ofstream of("./xio.dot");
     of << str();
     of.close();

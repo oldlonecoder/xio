@@ -18,7 +18,7 @@
 #include "xio/xiovar.h"
 
 
-using book::rem;
+
 
 
 namespace xio
@@ -74,7 +74,7 @@ private:
         //          logdebug << " xio_stack::rt_function(const alu::list_t&):  " << Ends;
         for (auto& a : params)
         {
-            rem::push_debug() << "arg: [" << color::Yellow << a() << color::Reset << "]";
+            Book::debug() << "arg: [" << color::Yellow << a() << color::Reset << "]";
            //...
         }
         return accumulate(params, std::index_sequence_for<params_...>{});
@@ -140,10 +140,10 @@ public:
     //xiovar* ref_var(xio* var_); ///< ?? When parsing (compiling) the xio node is created (...or not?)
     xiovar* new_var(token_data* info_); ///< ?? When parsing (compiling) the xio node is created (...or not?)
 
-    rem::code detach(xio* x) override;
-    rem::code append_instruction(xio* x);
+    book::code detach(xio* x) override;
+    book::code append_instruction(xio* x);
 
-    virtual rem::code instanciate(); ///< Strictly specific to instanciation from the execution of the interpreter.
+    virtual book::code instanciate(); ///< Strictly specific to instanciation from the execution of the interpreter.
 
 };
 

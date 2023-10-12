@@ -13,7 +13,7 @@ namespace xio
 //
 
 
-std::map<grammar::term::type, color::type> colours =
+std::map<grammar::term::type, color::code> colours =
 {
     {grammar::term::type::m, color::LightSteelBlue3},
     {grammar::term::type::r, color::LightSalmon4},
@@ -79,41 +79,41 @@ grammar::~grammar()
 
 }
 
-book::rem::code grammar::build()
+book::code grammar::build()
 {
-    book::rem::push_info() << __PRETTY_FUNCTION__ << ":" << book::rem::commit;
+    Book::info() << __PRETTY_FUNCTION__ << ":";
     if(built())
     {
-        book::rem::push_debug() << "grammar is already built - ok"  << book::rem::commit;
-        return book::rem::ok;
+        Book::debug() << "grammar is already built - ok" ;
+        return book::code::ok;
     }
     if(_text().empty())
         _text = grammar_text;
 
-    book::rem::push_debug()
+    Book::debug()
         << color::White << ":Building rules :\n----------------------------\n"
         << color::Yellow << _text
-        << color::White << "\n----------------------------------\n" << book::rem::commit;
+        << color::White << "\n----------------------------------\n";
     _words = strbrk();
     strbrk::config_data data = {_text(), ":.+*?#", strbrk::keep};
 
-    book::rem::push_debug() << "Tokenizing rules source text:" << book::rem::commit;
+    Book::debug() << "Tokenizing rules source text:";
     std::size_t count = _words(data);
 
     auto crs=data.words.begin();
 
     if(!count)
     {
-        book::rem::push_fatal() << ": grammar. (internal error)" << book::rem::commit;
-        return book::rem::empty;
+        Book::fatal() << ": grammar. (internal error)";
+        return book::code::empty;
     }
 
-    book::rem::push_debug() << data.words.size() << " data.words." << book::rem::commit;
+    Book::debug() << data.words.size() << " data.words.";
     _state = st_begin;
-    book::rem::push_debug(HERE) << " state machine set to '" << color::Yellow << "st_begin" << color::Reset << "'" << book::rem::commit;
+    Book::debug() << " state machine set to '" << color::Yellow << "st_begin" << color::Reset << "'";
     do
     {
-        book::rem::code r;
+        book::code r;
         auto      p = grammar::grammar_dictionnary.find((*crs)().c_str()[0]);
 
         if(p != grammar::grammar_dictionnary.end())
@@ -124,12 +124,12 @@ book::rem::code grammar::build()
         {
             r = parse_identifier(crs);
         }
-        if(r != book::rem::accepted)
+        if(r != book::code::accepted)
             return r;
     }
     while(crs != data.words.end());
 
-    book::rem::push_message() << " finalizing rules:" << book::rem::commit;
+    Book::message() << " finalizing rules:";
 
     for (auto& [rule_name, rule_addr] : rules)
     {
@@ -142,11 +142,11 @@ book::rem::code grammar::build()
         }
         else
             str << "has " << color::Yellow << rule_addr->sequences.size() << color::Reset << " sequence(s) of terms ( and / or sub rules).";
-        book::rem::push_info() << str << book::rem::commit;
+        Book::info() << str;
     }
 
-    book::rem::push_message() << "done building rules..." << book::rem::commit;
-    return book::rem::accepted;
+    Book::message() << "done building rules...";
+    return book::code::accepted;
 }
 
 std::string grammar::dump_sequence(const term_seq& seq)
@@ -162,8 +162,8 @@ std::string grammar::dump_sequence(const term_seq& seq)
 void grammar::dump()
 {
 
-    book::rem::out() << color::Red4 << "%-15s" << "rule" <<  color::Black << " | terms sequence:" << book::rem::commit;
-    book::rem::out() << "-----------------------------------------------------------------------------------" << book::rem::commit;
+    Book::out() << color::Red4 << "%-15s" << "rule" <<  color::Black << " | terms sequence:";
+    Book::out() << "-----------------------------------------------------------------------------------";
     stracc Out;
     for(const auto &rule: rules)
     {
@@ -176,7 +176,7 @@ void grammar::dump()
         }
         Out << '\n';
     }
-    book::rem::out() << Out() << book::rem::commit;
+    Book::out() << Out();
 }
 
 void grammar::init_rules()
@@ -184,19 +184,19 @@ void grammar::init_rules()
 
 }
 
-book::rem::code grammar::parse_identifier(strbrk::word::iterator  &crs)
+book::code grammar::parse_identifier(strbrk::word::iterator  &crs)
 {
     rule *r = query_rule((*crs)());
     switch(_state)
     {
         case st_begin:
-        //book::rem::push_debug(HERE) << " st_begin:" << (*crs)() << book::rem::commit;
+        //Book::debug() << " st_begin:" << (*crs)();
             if(r)
             {
                 if(!r->empty())
                 {
-                    book::rem::push_fatal() << " rule, identified by '" << color::Yellow << (*crs)() << color::Red4 <<" already exists in the context of a new rule definition = " << book::rem::rejected << book::rem::commit;
-                    return book::rem::rejected;
+                    Book::fatal() << " rule, identified by '" << color::Yellow << (*crs)() << color::Red4 <<" already exists in the context of a new rule definition = " << book::code::rejected;
+                    return book::code::rejected;
                 }
                 _rule = r;
             }
@@ -223,12 +223,12 @@ book::rem::code grammar::parse_identifier(strbrk::word::iterator  &crs)
                 a.reset();
                 break;
             }*/
-            //book::rem::out() << " `in sequence state`: Checking type (token text) '" << color::LightGoldenrod3 << (*crs)() << color::Reset << "':" << book::rem::commit;
+            //Book::out() << " `in sequence state`: Checking type (token text) '" << color::LightGoldenrod3 << (*crs)() << color::Reset << "':";
             type::T t = type::from_str((*crs)());
-            //book::rem::push_debug(HERE) << " xio:type(" << color::Yellow <<  (*crs)() << color::Reset << "):'" << xio::type::name(t) << book::rem::commit;
+            //Book::debug() << " xio:type(" << color::Yellow <<  (*crs)() << color::Reset << "):'" << xio::type::name(t);
             if(t)// & teacc::type::bloc_t) // Quick and d_words.config() = data;irty hack about bypassing the lexer::teacc::type::bloc type:
             {
-               // book::rem::out() << " type name:'" << type::name(t) << "' <==> token:'" << (*crs)() << " properties: [" << a() << "]" << book::rem::commit;
+               // Book::out() << " type name:'" << type::name(t) << "' <==> token:'" << (*crs)() << " properties: [" << a() << "]";
                 _rule->a = a;
                 (*_rule) | t;
                 a.Reset();
@@ -237,7 +237,7 @@ book::rem::code grammar::parse_identifier(strbrk::word::iterator  &crs)
 
             if(r)
             {
-                //book::rem::out() << " rule name:'" << _rule->name() << "' <==> token:'" << (*crs)() << " properties: [" << a() << "]" << book::rem::commit;
+                //Book::out() << " rule name:'" << _rule->name() << "' <==> token:'" << (*crs)() << " properties: [" << a() << "]";
                 _rule->a = a;
                 (*_rule) | r;
                 a.Reset();
@@ -246,8 +246,8 @@ book::rem::code grammar::parse_identifier(strbrk::word::iterator  &crs)
             else
             {
                 r = new rule((*crs)());
-                //book::rem::out() << "Creating new forward rule ( rule term ) identified by:" << color::LightGoldenrod4 << r->name()
-                //    << color::Reset << " - properties: " << a() << book::rem::commit;
+                //Book::out() << "Creating new forward rule ( rule term ) identified by:" << color::LightGoldenrod4 << r->name()
+                //    << color::Reset << " - properties: " << a();
                 rules[(*crs)()] = r;
                 _rule->a = a;
                 _state = st_seq; //  expect ':' as next token in main loop.
@@ -257,10 +257,10 @@ book::rem::code grammar::parse_identifier(strbrk::word::iterator  &crs)
             break;
     }
     ++crs;
-    return book::rem::accepted;
+    return book::code::accepted;
 }
 
-book::rem::code grammar::enter_rule_def(strbrk::word::iterator &crs)
+book::code grammar::enter_rule_def(strbrk::word::iterator &crs)
 {
     // ':' :
     if(_state == st_init_rule)
@@ -268,13 +268,13 @@ book::rem::code grammar::enter_rule_def(strbrk::word::iterator &crs)
         _state = st_seq;
         a.Reset();
         ++crs;
-        return book::rem::accepted;
+        return book::code::accepted;
     }
-    book::rem::push_fatal(HEREF) << " misplaced ':' " << book::rem::commit;
-    return book::rem::rejected;
+    Book::fatal() << " misplaced ':' ";
+    return book::code::rejected;
 }
 
-book::rem::code grammar::new_sequence(strbrk::word::iterator &crs)
+book::code grammar::new_sequence(strbrk::word::iterator &crs)
 {
     // logdebug
     //     << color::HCyan << __FUNCTION__
@@ -285,18 +285,18 @@ book::rem::code grammar::new_sequence(strbrk::word::iterator &crs)
 
     if(_state == st_option)
     {
-        book::rem::push_fatal() << " syntax error: " << (*crs)() << "' is invalid in this context";
-        return book::rem::rejected;
+        Book::fatal() << " syntax error: " << (*crs)() << "' is invalid in this context";
+        return book::code::rejected;
     }
 
     _rule->new_sequence();
     _state = st_seq;
     a.Reset();
     ++crs;
-    return book::rem::accepted;
+    return book::code::accepted;
 }
 
-book::rem::code grammar::end_rule(strbrk::word::iterator &crs)
+book::code grammar::end_rule(strbrk::word::iterator &crs)
 {
     // logdebug
     //     << color::HCyan << __FUNCTION__
@@ -306,10 +306,10 @@ book::rem::code grammar::end_rule(strbrk::word::iterator &crs)
     //     << Ends;
     _state = st_begin;
     ++crs;
-    return book::rem::accepted;
+    return book::code::accepted;
 }
 
-book::rem::code grammar::set_repeat(strbrk::word::iterator &crs)
+book::code grammar::set_repeat(strbrk::word::iterator &crs)
 {
     //logdebug
     //    << color::HCyan << __FUNCTION__
@@ -320,15 +320,15 @@ book::rem::code grammar::set_repeat(strbrk::word::iterator &crs)
     _state = st_option;
     +a;
     ++crs;
-    return book::rem::accepted;
+    return book::code::accepted;
 }
 
-book::rem::code grammar::set_parserctrl(strbrk::word::iterator &crs)
+book::code grammar::set_parserctrl(strbrk::word::iterator &crs)
 {
     !a;
     _state = st_option;
     /*
-               book::rem::push_debug()
+               Book::debug()
                << color::Yellow << a()
                << color::White << ": ["
                << color::Yellow << *crs
@@ -336,10 +336,10 @@ book::rem::code grammar::set_parserctrl(strbrk::word::iterator &crs)
    */
 
     ++crs;
-    return book::rem::accepted;
+    return book::code::accepted;
 }
 
-book::rem::code grammar::set_optional(strbrk::word::iterator &crs)
+book::code grammar::set_optional(strbrk::word::iterator &crs)
 {
     //logdebug
     //    << color::HCyan << __FUNCTION__
@@ -350,21 +350,21 @@ book::rem::code grammar::set_optional(strbrk::word::iterator &crs)
     *a;
     ++crs;
     _state = st_option;
-    return book::rem::accepted;
+    return book::code::accepted;
 }
 
-book::rem::code grammar::enter_litteral(strbrk::word::iterator &crs)
+book::code grammar::enter_litteral(strbrk::word::iterator &crs)
 {
 
-    //    book::rem::push_debug()
+    //    Book::debug()
     //    << color::White << ": ["
     //    << color::Yellow << *crs
     //    << color::White << ']';
 
     if((_state != st_seq) && (_state != st_option))
     {
-        book::rem::push_fatal() << "syntax error '" << (*crs)() << "' is not a valid s++ grammar token in context" << "(state machine:" << (int) _state << ")" << book::rem::commit;
-        return book::rem::rejected;
+        Book::fatal() << "syntax error '" << (*crs)() << "' is not a valid s++ grammar token in context" << "(state machine:" << (int) _state << ")";
+        return book::code::rejected;
     }
 
     strbrk::word::iterator i, quote;
@@ -372,8 +372,8 @@ book::rem::code grammar::enter_litteral(strbrk::word::iterator &crs)
     ++i;
     if((*i)() == (*quote)())
     {
-        book::rem::push_fatal() << "error: litteral grammar element cannot be empty" << book::rem::commit;
-        return book::rem::rejected;
+        Book::fatal() << "error: litteral grammar element cannot be empty";
+        return book::code::rejected;
     }
 
     token_data token = token_data::scan((*i)().c_str());
@@ -385,8 +385,8 @@ book::rem::code grammar::enter_litteral(strbrk::word::iterator &crs)
     }
     else
     {
-        book::rem::push_fatal() << "syntax error '" << (*i)() << "' is not a valid s++ grammar token" << book::rem::commit;
-        return book::rem::rejected;
+        Book::fatal() << "syntax error '" << (*i)() << "' is not a valid s++ grammar token";
+        return book::code::rejected;
     }
     crs = i;
     ++crs;
@@ -394,10 +394,10 @@ book::rem::code grammar::enter_litteral(strbrk::word::iterator &crs)
         ++crs;
     //++crs; // will be on the next token.
 
-    return book::rem::accepted;
+    return book::code::accepted;
 }
 
-book::rem::code grammar::set_oneof(strbrk::word::iterator &crs)
+book::code grammar::set_oneof(strbrk::word::iterator &crs)
 {
     //     logdebug
     //         << color::HCyan << __FUNCTION__
@@ -407,7 +407,7 @@ book::rem::code grammar::set_oneof(strbrk::word::iterator &crs)
     //         << Ends;
     ~a;
     ++crs;
-    return book::rem::accepted;
+    return book::code::accepted;
 }
 
 [[maybe_unused]] int grammar::init()
@@ -418,7 +418,7 @@ book::rem::code grammar::set_oneof(strbrk::word::iterator &crs)
 
 grammar::rule *grammar::query_rule(const std::string &rule_id)
 {
-    //book::rem::push_debug(HERE) << " '" << color::Yellow << rule_id << color::Reset << "':";
+    //Book::debug() << " '" << color::Yellow << rule_id << color::Reset << "':";
     auto i = rules.find(rule_id);
     return i == rules.end() ? nullptr : i->second;
 }
@@ -426,14 +426,14 @@ grammar::rule *grammar::query_rule(const std::string &rule_id)
 
 const grammar::rule *grammar::operator[](const std::string &r_id) const
 {
-    book::rem::push_debug(HEREF) << " query: '" << r_id << "':\n" << book::rem::commit;
+    Book::debug() << " query: '" << r_id << "':\n";
     auto i = grammar::rules.find(r_id);
     if(i == grammar::rules.end())
     {
-        //book::rem::push_error() << " no such rule: '" << r_id << "'" << book::rem::commit;
+        //Book::error() << " no such rule: '" << r_id << "'";
         return nullptr;
     }
-    book::rem::push_debug() << " rule '" << r_id << "' found." << book::rem::commit;
+    Book::debug() << " rule '" << r_id << "' found.";
     return i->second;
 }
 void grammar::destroy_rules()

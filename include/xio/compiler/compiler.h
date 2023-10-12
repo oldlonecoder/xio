@@ -41,7 +41,7 @@ class XIO_PUBLIC compiler
         ::xio::type::T       current_type = ::xio::type::Number;
         ///...
 
-        book::rem::code state = book::rem::none;
+        book::code state = book::code::eof;
 
         xio::list instructions; ///< filling the temp xio buffer before the commit into the instructions list of the scope-bloc ( local stack ).
 
@@ -102,7 +102,7 @@ public:
     xiobloc* bloc() { return _bloc; }
     // ------------------ parsers -Cannot be used yet-----------
     xio* parse_expression();
-    book::rem::code evaluate_expr(xiobloc* blk, const char* expr_text);
+    book::code evaluate_expr(xiobloc* blk, const char* expr_text);
 
 
     xio* input(token_data* token); // Let's explore the same principle as in xio::input.
@@ -111,10 +111,10 @@ public:
     // -------------------Cannot be used yet--------------------
     ::xio::xio* make_xio_node(token_data* token);
     // ---------------------------------------------------------
-    book::rem::code compile();
+    book::code compile();
 
 private:
-    book::rem::code lexical_analyse();
+    book::code lexical_analyse();
     
 
 

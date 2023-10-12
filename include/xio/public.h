@@ -43,7 +43,7 @@
 #include <cstdint>
 #include <thread>
 // This project depends on:
-#include <logbook/rem.h>
+#include <logbook/Book.h>
 
 
 

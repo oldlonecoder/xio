@@ -102,18 +102,18 @@ bool xiobloc::operator!=(const xiobloc& other) const
 /*!
     @brief Creates a new xiovar inside this xiobloc scope.
 
-    @return xiovar pointer or a book::book::rem::error/warning if the xiovar already exists in this xiobloc or in the parent scopes...
+    @return xiovar pointer or a book::book::code::error/warning if the xiovar already exists in this xiobloc or in the parent scopes...
     @author @copy; 2022, Serge Lussier <oldlonecoder; bretzel> lussier.serge@gmail.com
 
     @note ( dev note: Make declaration rule syntax mandatory for creating any var, anywhere, thus prevent using new vars into middle of expression )
  */
 xiovar* xiobloc::new_var(token_data* info_)
 {
-    book::rem::push_debug() << __LINE__ << ": xiobloc::new_var(" << color::Yellow << info_->text() << color::Reset << "):";
+    Book::debug() << __LINE__ << ": xiobloc::new_var(" << color::Yellow << info_->text() << color::Reset << "):";
     auto* v = query_var(info_->text());
     if(!v)
     {
-        book::rem::push_info() << __LINE__ << ": xiobloc::new_var(" << color::Yellow << info_->text() << color::Reset << ") new local variable.";
+        Book::info() << __LINE__ << ": xiobloc::new_var(" << color::Yellow << info_->text() << color::Reset << ") new local variable.";
         if(!_xiovars) _xiovars = new xiovar::list;
         _xiovars->push_back(new xiovar(this, info_));
         xiovar* xv = _xiovars->back();
@@ -121,14 +121,14 @@ xiovar* xiobloc::new_var(token_data* info_)
         return xv;
     }
     xiovar* var = new xiovar(this,info_, v->_index, v->acc);
-    book::rem::push_debug() << __LINE__ << ": xiobloc::new_var(" << color::Yellow << info_->text() << color::Reset << "): created new ref to variable.";
+    Book::debug() << __LINE__ << ": xiobloc::new_var(" << color::Yellow << info_->text() << color::Reset << "): created new ref to variable.";
     return var;
 }
 
-book::rem::code xiobloc::detach(xio *x)
+book::code xiobloc::detach(xio *x)
 {
     auto r = xio::detach(x);
-    if(r != book::rem::accepted) return r;
+    if(r != book::code::accepted) return r;
 
     if(_instructions)
     {
@@ -139,7 +139,7 @@ book::rem::code xiobloc::detach(xio *x)
             delete _instructions;
             _instructions = nullptr;
         }
-        return book::rem::accepted;
+        return book::code::accepted;
     }
 
     if(_xiovars)
@@ -151,26 +151,26 @@ book::rem::code xiobloc::detach(xio *x)
             delete _xiovars;
             _xiovars = nullptr;
         }
-        return book::rem::accepted;
+        return book::code::accepted;
     }
 
     //...
     return r;
 }
 
-book::rem::code xiobloc::append_instruction(xio *x)
+book::code xiobloc::append_instruction(xio *x)
 {
     if(!_instructions)
         _instructions = new xio::list;
     _instructions->push_back(x);
-    return book::rem::accepted;
+    return book::code::accepted;
 }
 
 
-book::rem::code xiobloc::instanciate()
+book::code xiobloc::instanciate()
 {
 
-    return book::rem::notimplemented;
+    return book::code::notimplemented;
 }
 
 
@@ -200,7 +200,7 @@ alu xiobloc::jsr()
 {
     if(!_instructions)
     {
-        book::rem::push_warning() << " Executing xiobloc with no instructions. returning current alu value.";
+        Book::warning() << " Executing xiobloc with no instructions. returning current alu value.";
         return *acc;
     }
 

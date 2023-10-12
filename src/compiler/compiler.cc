@@ -7,7 +7,7 @@
  *   by the author (Serge Lussier)                                         *
  *   and no one else then not even {copilot, chatgpt, or any other AI}     *
  *   --------------------------------------------------------------------- *
- *   Copyrights from authors other than Serge Lussier also apply here      *
+ *   Copyrights from authors other than Serge Lussier also apply       *
  ***************************************************************************/
 
 
@@ -60,10 +60,10 @@ compiler::~compiler()
  *
  * \param blk
  * \param expr_text
- * \return rem::code::accepted or rejected;
+ * \return book::code::accepted or rejected;
  * \author &copy; 2023, oldlonecoder (serge.lussier@goldlonecoder.club) ;)
  */
-book::rem::code compiler::evaluate_expr(xiobloc *blk, const char *expr_text)
+book::code compiler::evaluate_expr(xiobloc *blk, const char *expr_text)
 {
     _bloc = blk; ///< amu's bloc address likelly...
 
@@ -71,29 +71,29 @@ book::rem::code compiler::evaluate_expr(xiobloc *blk, const char *expr_text)
     lex.config() = {expr_text, cnf.tokens_stream};
 
     auto R = lex();
-    if(R!=book::rem::accepted)
+    if(R!=book::code::accepted)
     {
-        book::rem::push_error() << R << rem::commit;
-        return book::rem::rejected;
+        Book::error() << R ;
+        return book::code::rejected;
     }
 
 
-    book::rem::push_debug(HERE) << " lexer terminated successfully : prepare (coloured) tokens with details [lexer_color]:" << book::rem::endl << book::rem::commit;
+    Book::debug() << " lexer terminated successfully : prepare (coloured) tokens with details [lexer_color]:" << book::functions::endl ;
 
     std::string code = expr_text;
     stracc text = lex.colorize();
-    book::rem::push_info() <<  color::BlueViolet << "xio" << color::White << "::" <<
+    Book::info() <<  color::BlueViolet << "xio" << color::White << "::" <<
       color::BlueViolet << "compiler" << color::White << "::" <<
-      color::BlueViolet << "evaluate_expr" << color::White << "(" << text << color::White << ") :" << book::rem::commit;
+      color::BlueViolet << "evaluate_expr" << color::White << "(" << text << color::White << ") :" ;
 
     ctx = context(_bloc, cnf.tokens_stream->begin(), cnf.tokens_stream->end(), cnf.tokens_stream->end());
 
-    book::rem::push_info() << "begin parse and build expr binary tree ( of xio nodes ): " << book::rem::commit;
+    Book::info() << "begin parse and build expr binary tree ( of xio nodes ): " ;
     xio* x{nullptr};
     if(!(x = xio::begin(ctx.bloc, ctx.token(), [this](token_data* t)->xio*{ return make_xio_node(t); })))
     {
-        book::rem::push_error() << color::Yellow << " arithmetic expression: source code seems not be an expression at all..." << book::rem::commit;
-        return book::rem::rejected;
+        Book::error() << color::Yellow << " arithmetic expression: source code seems not be an expression at all..." ;
+        return book::code::rejected;
     }
 
     ctx++;
@@ -101,7 +101,7 @@ book::rem::code compiler::evaluate_expr(xiobloc *blk, const char *expr_text)
         x = x->input(ctx.bloc, ctx.token(), [this](token_data* token)-> xio*{ return make_xio_node(token); });
         if(!x)
         {
-            book::rem::out(HERE) << color::Yellow << " arithmetic expression inputs stopped  by unexpected token - returning." << book::rem::commit;
+            Book::out() << color::Yellow << " arithmetic expression inputs stopped  by unexpected token - returning." ;
             break;
         }
         ctx.instructions.push_back(x);
@@ -112,14 +112,14 @@ book::rem::code compiler::evaluate_expr(xiobloc *blk, const char *expr_text)
     if(!root)
         ctx.reject();
 
-    book::rem::push_info() << " Returning accepted." << book::rem::commit;
+    Book::info() << " Returning accepted." ;
     ctx.accept(root);
-    book::rem::push_debug(HERE) << " root instruction :" << root->token()->details(true) << rem::commit;
+    Book::debug() << " root instruction :" << root->token()->details(true) ;
     // jnl.info() << ....
     // jnl.error() << ....
     // jnl.warning() << ....
     // jnl.debug() << ....
-    return alu(1.42f);
+    return book::code::success;
 }
 
 
@@ -140,7 +140,7 @@ xio *compiler::input(token_data *token)
 /**
  *  \brief parse_expr  Explicitely parses rule 'expression' using the current context data.
  *
- * \return book::rem::accepted, or book::rem::error if failed.
+ * \return book::code::accepted, or book::code::error if failed.
  * \author &copy; August 23, 2023; oldlonecoder, (serge.lussier@oldlonecoder.club)
  * \note   Stop conditions are yet to be determined clearly. The current is
  *         1 - eof
@@ -150,11 +150,11 @@ xio *compiler::input(token_data *token)
  */
 xio* compiler::parse_expression()
 {
-    book::rem::push_debug(HERE) << " ==> Entering on token:" << book::rem::endl << ctx.token()->details (true) <<  book::rem::commit;
+    Book::debug() << " ==> Entering on token:" << book::functions::endl << ctx.token()->details (true);
     xio* x{nullptr};
     if(!(x = xio::begin(ctx.bloc, ctx.token(), [this](token_data* t)->xio*{ return make_xio_node(t); })))
     {
-        book::rem::push_status(HERE) << color::Yellow << " : seems not an expression at all at " << book::rem::endl << ctx.token()->details(true) << book::rem::commit;
+        Book::status() << color::Yellow << " : seems not an expression at all at " << book::functions::endl << ctx.token()->details(true) ;
         return nullptr;
     }
 
@@ -163,7 +163,7 @@ xio* compiler::parse_expression()
         x = x->input(ctx.bloc, ctx.token(), [this](token_data* token)-> xio*{ return make_xio_node(token); });
         if(!x)
         {
-            book::rem::out(HERE) << color::Yellow << " arithmetic expression inputs stopped  by unexpected token - returning." << book::rem::commit;
+            Book::out() << color::Yellow << " arithmetic expression inputs stopped  by unexpected token - returning." ;
             break;
         }
         ctx.instructions.push_back(x);
@@ -174,7 +174,7 @@ xio* compiler::parse_expression()
     if(!root)
         ctx.reject();
 
-    book::rem::push_info() << " Returning accepted." << book::rem::commit;
+    Book::info() << " Returning accepted." ;
     ctx.accept(root);
 
     return root;
@@ -182,18 +182,18 @@ xio* compiler::parse_expression()
 
 
 
-rem::code compiler::compile()
+book::code compiler::compile()
 {
     auto R = lexical_analyse();
-    if(R != book::rem::accepted)
+    if(R != book::code::accepted)
         return R;
-    rem::push_debug(HEREF) << " returning because this request is not implemented yet..."  << book::rem::commit;
+    Book::debug() << " returning because this request is not implemented yet..."  ;
     //ctx = context(_bloc, cnf.tokens_stream->begin(), cnf.tokens_stream->end(), cnf.tokens_stream->end());
 
-    return book::rem::notimplemented;
+    return book::code::notimplemented;
 }
 
-rem::code compiler::lexical_analyse()
+book::code compiler::lexical_analyse()
 {
 
     lexer lex;
@@ -204,23 +204,23 @@ rem::code compiler::lexical_analyse()
       };
 
     auto R = lex();
-    if(R!=book::rem::accepted)
+    if(R!=book::code::accepted)
     {
-        book::rem::push_error() << R << book::rem::commit;
-        return book::rem::rejected;
+        Book::error() << R ;
+        return book::code::rejected;
     }
-    book::rem::push_test(HERE) << " lexer terminate successfully : prepare (lexical highlight) text of the source code:" << book::rem::endl << book::rem::commit;
-    book::rem::out() << lex.colorize() << book::rem::commit;
-    book::rem::push_message() << " will test lexer::mark(...):" << book::rem::endl << book::rem::commit;
-    book::rem::push_test(HERE) << lex.mark((*cnf.tokens_stream)[5], true) << book::rem::commit;
-    //book::rem::test(HERE) << "";
+    Book::test() << " lexer terminate successfully : prepare (lexical highlight) text of the source code:" << book::functions::endl ;
+    Book::out() << lex.colorize() ;
+    Book::message() << " will test lexer::mark(...):" << book::functions::endl ;
+    Book::test() << lex.mark((*cnf.tokens_stream)[5], true) ;
+    //book::code::test() << "";
 
-    return book::rem::accepted;
+    return book::code::accepted;
 }
 
 xio* compiler::parse_rvalue_keyword()
 {
-    book::rem::push_debug(HERE) << book::rem::notimplemented << ctx.token()->mark()  << book::rem::commit;
+    Book::debug() << book::code::notimplemented << ctx.token()->mark()  ;
     return nullptr;
 }
 
@@ -280,7 +280,7 @@ xio *compiler::return_stmt()
 ::xio::xio* compiler::make_xio_node(token_data* token)
 {
     // "Branch" on token type
-    book::rem::push_debug(HERE) << " Entering xio producer with "<< book::rem::endl << token->mark() << book::rem::commit;
+    Book::debug() << " Entering xio producer with "<< book::functions::endl << token->mark() ;
 
     switch(token->t)
     {
@@ -305,7 +305,7 @@ xio *compiler::return_stmt()
             return new xio(ctx.bloc,token);
         break;
         default:
-            book::rem::push_message(HERE) << "unhandled token:" << book::rem::commit;
+            Book::message() << "unhandled token:" ;
         break;
     }
         return nullptr;
@@ -386,7 +386,7 @@ void compiler::context::accept(xio* instruction)
     start = cur; ///< Pass the consumed tokens
     bloc->append_instruction(instruction);
     instructions.clear(); // Reset the xio::list buffer
-    state = book::rem::accepted;
+    state = book::code::accepted;
 }
 
 void compiler::context::reject()
@@ -398,7 +398,7 @@ void compiler::context::reject()
         delete x;
     }
 
-    state = book::rem::rejected;
+    state = book::code::rejected;
 }
 
 bool compiler::context::operator++(int)

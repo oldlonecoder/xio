@@ -1,9 +1,9 @@
 #include <xio/s++/spp.h>
 #include <logbook/cargs.h>
-
+#include <logbook/text.h>
 #include <signal.h>
 
-using book::rem;
+
 using xio::spp::interpretr;
 
 
@@ -51,13 +51,13 @@ public:
 
     app(std::string_view title);
 
-    rem::code eval_expression(const cmd::argdata<app>& arg);
-    rem::code compile_source(const cmd::argdata<app>& arg);
-    rem::code set_draw_ast(const cmd::argdata<app>& arg);
-    rem::code cmdline_args(const cmd::argdata<app>& arg);
+    book::code eval_expression(const cmd::argdata<app>& arg);
+    book::code compile_source(const cmd::argdata<app>& arg);
+    book::code set_draw_ast(const cmd::argdata<app>& arg);
+    book::code cmdline_args(const cmd::argdata<app>& arg);
 
 
-    rem::code process(int argc, char **argv);
+    book::code process(int argc, char **argv);
 };
 
 app::app(std::string_view title)
@@ -72,35 +72,40 @@ app::app(std::string_view title)
 
 }
 
-rem::code app::eval_expression(const cmd::argdata<app> &arg)
+app::~app()
+{
+    ;
+}
+
+book::code app::eval_expression(const cmd::argdata<app> &arg)
 {
     interpretr i;
     try{
         auto alu = i[arg.arguments[0].data()];
     }
-    catch(book::rem&){}
-    catch(std::exception e)
+    catch(Book::section::bloc_stack::element&){}
+    catch(Book::exception e)
     {
-        rem::push_except() << e.what() << rem::commit;
+        Book::except() << e.what();
     }
 
-    book::rem::clear([](book::rem&){;});
-    return rem::success;
+
+    return book::code::success;
 }
 
-rem::code app::compile_source(const cmd::argdata<app> &arg)
+book::code app::compile_source(const cmd::argdata<app> &arg)
 {
-    return rem::notimplemented;
+    return book::code::notimplemented;
 }
 
-rem::code app::cmdline_args(const cmd::argdata<app> &arg)
+book::code app::cmdline_args(const cmd::argdata<app> &arg)
 {
-    return rem::notimplemented;
+    return book::code::notimplemented;
 }
 
 
 
-rem::code app::process(int argc, char **argv)
+book::code app::process(int argc, char **argv)
 {
     return args.process(argc,argv);
 }
@@ -118,11 +123,38 @@ auto main(int argc, char** argv) -> int
     ::signal(SIGSEGV, sig_fault);
     ::signal(SIGABRT, sig_abort);
 
-    book::app application("testing the app and the interpreter...");
+    try
+    {
+        Book& AppBook = Book::init("logbook");
+        AppBook.open();
+        AppBook.descriptions =
+R"(
+<Icon:School; fg:Yellow>This is the development of the <fg:White>[xio & interpreter API explorations]<fg/>
+------------------------------------------------------------------------
+)";
 
-    (void)application.process(argc, argv);
+        std::string head;
+        book::text ml_description;
+        auto c = ml_description << AppBook.descriptions >> head;
+        if(c != book::code::success)
+            std::cerr << " text processing failed.";
 
+        Book::out() << book::functions::endl << head;
+        book::app application("testing the app and the interpreter...");
+        (void)application.process(argc, argv);
+    }
+    catch(Book::exception be)
+    {
+        std::cerr << " Cauch Book::exception: " << be.what() << '\n';
+        return 127;
+    }
+    /// xio and interpreter compiling stuff:
+    catch(Book::section::bloc_stack::element& bel)
+    {
+        std::cerr << " Caugh event exception held in Book element. Closing the Book now";
+    }
 
+    Book::close();
 
     return 0;
 }

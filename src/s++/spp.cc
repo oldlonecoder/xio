@@ -41,26 +41,26 @@ alu interpretr::operator[](const std::string& expr)
     
     auto R = expr_parser.evaluate_expr(this, expr.c_str());
     //auto R = expr_parser.parse_rule("expression");
-    if(R != book::rem::accepted)
+    if(R != book::code::accepted)
       return alu(1.42f);
 
     stracc str = "";
     xio::dot_tree_start(str, expr);
     xio::dot_tree(_instructions->front(), str);
     str << "}";
-    //book::rem::push_debug(HERE) << " tree output: ";
-    //book::rem::out() << str;
+    //book::code::push_debug(HERE) << " tree output: ";
+    //book::code::out() << str;
     std::ofstream of("./xio.dot");
     of << str();
     of.close();
     (void)system("dot -O xio.dot -Tpng && xdg-open xio.dot.png");
 
     alu r = jsr();
-    book::rem::push_debug(HERE) << " result: " << color::Yellow << r() << ": " << book::rem::endl;
+    Book::debug() << " result: " << color::Yellow << r() << ": " << book::functions::endl;
     if(_xiovars)
     {
       for(auto* v : *_xiovars)
-          book::rem::out() << color::White << "'" << v->t0->text() << color::White << "' :" <<color::Yellow << v->value()();
+          Book::out() << color::White << "'" << v->t0->text() << color::White << "' :" <<color::Yellow << v->value()();
     }
     return r;
 }
@@ -76,7 +76,7 @@ alu interpretr::operator[](const std::string& expr)
  * \param line_seq tokens collection sequence part of the line of text/code.
  * \author &copy;2023, oldlonecoder serge.lussier@oldlonecoder.club
  */
-void interpretr::error(book::rem::type ertype, book::rem::code ercode, token_data::iterator token, const token_data::list& line_seq)
+void interpretr::error(book::cat ertype, book::code ercode, token_data::iterator token, const token_data::list& line_seq)
 {
 
 }
@@ -88,7 +88,7 @@ void interpretr::error(book::rem::type ertype, book::rem::code ercode, token_dat
  * \param token
  * \param line_seq
  */
-void interpretr::warning(rem::type, rem::code, token_data::iterator token, const token_data::list& line_seq)
+void interpretr::warning(book::cat, book::code, token_data::iterator token, const token_data::list& line_seq)
 {
 
 }

@@ -34,17 +34,16 @@ public:
     amu(xiobloc* parent_bloc, const std::string& mname);
     
     ~amu() override;
-    book::rem::code open_file();
-    book::rem::code compile();
+    book::code open_file();
+    book::code compile();
 
-    virtual book::rem::code process_cmdline(int arc, char **argv);
     stracc export_expr_ast(const std::string& expr);
 private:
 
-    rem::code eval_expression(std::string_view expr_str);
-    rem::code source_file(std::string_view src);
+    book::code eval_expression(std::string_view expr_str);
+    book::code source_file(std::string_view src);
 
-    rem::code cmdline_invalid_args(std::string_view arg);
+    book::code cmdline_invalid_args(std::string_view arg);
 
 };
 

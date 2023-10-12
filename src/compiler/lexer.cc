@@ -8,9 +8,9 @@
  *   by the author (Serge Lussier)                                          *
  *   and no one else then not even {copilot, chatgpt, or any other AI}      *
  *   ---------------------------------------------------------------------  *
- *   Copyrights from authors other than the author also apply here          *
+ *   Copyrights from authors other than the author also apply           *
  *   This project is under the GPL (general public license_                 *
- *   The GPL is available everywhere open source gpl projects are published *
+ *   The GPL is available everyw open source gpl projects are published *
  ****************************************************************************/
 
 #include "xio/compiler/lexer.h"
@@ -18,7 +18,7 @@
 #include <chrtools/Icons.h>
 
 
-/** temporary copy-paste'd here **/
+/** temporary copy-paste'd  **/
 /*!
  * @brief  Scans for std maths factor notation, RESTRICTED (limited) syntax style:
  *
@@ -33,7 +33,7 @@ using namespace xio;
 
 lexer::scan_tbl scan_table;
 
-std::map<xio::type::T, color::type> PrimitiveTypesColors =
+std::map<xio::type::T, color::code> PrimitiveTypesColors =
     {
         {xio::type::Assign,    color::CadetBlue},
         {xio::type::Number,    color::Cyan2},
@@ -56,7 +56,7 @@ std::map<xio::type::T, color::type> PrimitiveTypesColors =
 
 //};
 
-std::map<xio::mnemonic, color::type>  MnemonicColors =
+std::map<xio::mnemonic, color::code>  MnemonicColors =
     {
         {xio::mnemonic::Null,                     color::White},
         {xio::mnemonic::LeftShift,               color::SkyBlue1},
@@ -262,7 +262,7 @@ void lexer::lex_cursor::sync()
         ++C_;
     }
 
-    //rem::codeDebug(__PRETTY_FUNCTION__) << ": " << Location();
+    //book::codeDebug(__PRETTY_FUNCTION__) << ": " << Location();
 }
 
 /*!
@@ -292,13 +292,13 @@ std::ptrdiff_t lexer::lex_cursor::index() const
  * @param SubStr_
  * @return Expect code.
  */
-[[maybe_unused]] rem::code lexer::lex_cursor::scan_to(const char *SubStr_)
+[[maybe_unused]] book::code lexer::lex_cursor::scan_to(const char *SubStr_)
 {
-    return book::rem::notimplemented;
+    return book::code::notimplemented;
 }
 
 
-rem::code lexer::lex_cursor::bloc_comment()
+book::code lexer::lex_cursor::bloc_comment()
 {
     stracc str;
     stracc bloc;
@@ -317,26 +317,26 @@ rem::code lexer::lex_cursor::bloc_comment()
             ++C;
             bloc << *C;
             if (*C == '/') {
-//                rem::push_debug() << rem::endl
-//                                  << color::Yellow << '[' << rem::endl
-//                                  << color::Reset << bloc << rem::endl
-//                                  << color::Yellow << ']' << rem::commit;
+//                Book::debug() << book::functions::endl
+//                                  << color::Yellow << '[' << book::functions::endl
+//                                  << color::Reset << bloc << book::functions::endl
+//                                  << color::Yellow << ']';
                 sync();
-//                rem::push_debug() << "Leaving lex_cursor::bloc_comment():" << rem::endl
-//                                  << rem::commit;
-//                rem::out() << "where *C = '" << color::Yellow << *C
+//                Book::debug() << "Leaving lex_cursor::bloc_comment():" << book::functions::endl
+//                                 ;
+//                book::code::out() << "w *C = '" << color::Yellow << *C
 //                           << color::Reset << "', column " << color::Yellow
 //                           << col << color::Reset << ", Line " << color::Yellow
-//                           << line << rem::commit;
-                return rem::accepted;
+//                           << line;
+                return book::code::accepted;
             }
             continue;
         }
         ++C;
         bloc << *C;
     }
-    throw book::rem::push_except() << rem::eof << " lexer: unmatched bloc comment end seq." << rem::commit;
-    return book::rem::eof; // rem::codeInt::Ok;
+    throw Book::except() << book::code::eof << " lexer: unmatched bloc comment end seq.";
+    return book::code::eof; // book::codeInt::Ok;
 }
 
 /*!
@@ -402,7 +402,7 @@ std::string lexer::lex_cursor::mark(int nspc) const
 
 std::string lexer::lex_cursor::scan_string()
 {
-    //rem::codeDebug(__PRETTY_FUNCTION__ +':'+ __LINE__) << '\n';
+    //book::codeDebug(__PRETTY_FUNCTION__ +':'+ __LINE__) << '\n';
     const char  *be    = C;
     char        Quote_ = *be;
     std::string Str;
@@ -415,14 +415,14 @@ std::string lexer::lex_cursor::scan_string()
     if(*be == '\\')
     {
         Str += *be++;
-        Str += *be++; // Assume no terminal escape sequence here!!!!! PLEASE be a quote!!!
+        Str += *be++; // Assume no terminal escape sequence !!!!! PLEASE be a quote!!!
         goto Constinue;
     }
 
     if((*be != Quote_) && (be > E))
     {
         sync();
-        rem::push_error() << " Unterminated string constant in internal_cursor::scan_string." << rem::endl << mark();
+        Book::error() << " Unterminated string constant in internal_cursor::scan_string." << book::functions::endl << mark();
         return "eof";
     }
     Str += *be; // Include the rhs Quote.
@@ -536,7 +536,7 @@ xio::type::T lexer::num_scanner::operator()() const
 
 lexer::scanner_fn lexer::get_scanner(token_data &token)
 {
-    //book::rem::push_debug(HERE) << " for " << color::Yellow << token.details(false) << book::rem::commit;
+    //Book::debug() << " for " << color::Yellow << token.details(false);
 
     for(const auto &scanners_tbl: scan_table)
     {
@@ -546,39 +546,39 @@ lexer::scanner_fn lexer::get_scanner(token_data &token)
     return nullptr;
 }
 
-rem::code lexer::input_binary_operator(token_data &token)
+book::code lexer::input_binary_operator(token_data &token)
 {
     //logger::debug() << __PRETTY_FUNCTION__ << ":\n";
     if (token.m == mnemonic::Sub || token.m == mnemonic::Add) {
-        if(scan_sign_prefix(token) == rem::accepted)
-            return rem::accepted;
+        if(scan_sign_prefix(token) == book::code::accepted)
+            return book::code::accepted;
     }
     accept(token);
     cursor._F = false;
-    return rem::accepted;
+    return book::code::accepted;
 }
 
 /*!
  * @brief Unknown Input Token (Either Number litteral or identifier).
  * @return Expect<>
  */
-rem::code lexer::input_default(token_data &atoken)
+book::code lexer::input_default(token_data &atoken)
 {
     //logger::debug() << __PRETTY_FUNCTION__ << ":\n";
-    if(scan_number(atoken) != rem::accepted)
+    if(scan_number(atoken) != book::code::accepted)
     {
-        //rem::codeDebug() << " Not a Number Trying scan_identifier:";
-        if(scan_identifier(atoken) != rem::accepted)
+        //book::codeDebug() << " Not a Number Trying scan_identifier:";
+        if(scan_identifier(atoken) != book::code::accepted)
         {
-            //rem::codePush() << mCursor.mark() << ":";
-            return rem::rejected;//rem::codePush() << //rem::codexio::type::Fatal << ": " << //rem::codeInt::UnExpected << " Token type " << atoken.type_name();
+            //book::codePush() << mCursor.mark() << ":";
+            return book::code::rejected;//book::codePush() << //book::codexio::type::Fatal << ": " << //book::codeInt::UnExpected << " Token type " << atoken.type_name();
         }
     }
 
-    return rem::accepted; // return rem::rejected  --- duh?
+    return book::code::accepted; // return book::code::rejected  --- duh?
 }
 
-rem::code lexer::input_unary_operator(token_data& atoken)
+book::code lexer::input_unary_operator(token_data& atoken)
 {
 
     // Possible prefix and Postfix unary operators:
@@ -594,57 +594,57 @@ rem::code lexer::input_unary_operator(token_data& atoken)
     return scan_postfix(atoken);
 }
 
-rem::code lexer::input_punctuation(token_data &atoken)
+book::code lexer::input_punctuation(token_data &atoken)
 {
-    //rem::push_debug(HEREF) << atoken.mark() << " @ " << cursor.location() << rem::commit;
+    //Book::debug(F) << atoken.mark() << " @ " << cursor.location();
     if (atoken.m == mnemonic::OpenPar) {
-        rem::push_debug(HERE) << atoken.text() << " - Openpar: check for mul insertion:";
-        // Bug here: the flag can be set without proper previous condition...let's investigate! :)
+        Book::debug() << atoken.text() << " - Openpar: check for mul insertion:";
+        // Bug : the flag can be set without proper previous condition...let's investigate! :)
         if (cursor._F) {
             if (!_config.Tokens->empty() && _config.Tokens->back()._flags.V) {
                 accept(atoken);
                 insert_multiply(atoken);
-                return rem::accepted;
+                return book::code::accepted;
             }
         }
-        rem::push_debug(HERE) << " not...checking if previous token is number:";
+        Book::debug() << " not...checking if previous token is number:";
         if (!_config.Tokens->empty()) {
-            rem::out() << "Previous token: " << rem::endl
+            Book::out() << "Previous token: " << book::functions::endl
                        << _config.Tokens->back().details() << ":";
             // La seule et unique condition est que le token precedant soit une valeur numerique litterale (ex.: '4').
             if (_config.Tokens->back().is_number()) {
                 accept(atoken);
                 insert_multiply(atoken);
-                return rem::accepted;
+                return book::code::accepted;
             }
         }
-        rem::push_debug(HERE) << "not...proceeding to the next token ... ";
+        Book::debug() << "not...proceeding to the next token ... ";
         return accept(atoken);
     }
     // ... A = .0123 :
     if (atoken.m == mnemonic::Dot) {
-        if(rem::code r; (r = scan_number(atoken)) == rem::accepted)
+        if(book::code r; (r = scan_number(atoken)) == book::code::accepted)
             return r;
     }
 
     return accept(atoken);
 }
 
-rem::code lexer::input_keyword(token_data &atoken)
+book::code lexer::input_keyword(token_data &atoken)
 {
     //logger::debug() << __PRETTY_FUNCTION__ << ":\n";
     return accept(atoken);
 }
 
-rem::code lexer::input_hex(token_data &atoken)
+book::code lexer::input_hex(token_data &atoken)
 {
     //logger::debug() << __PRETTY_FUNCTION__ << ":\n";
-    //rem::codeDebug(__PRETTY_FUNCTION__) << ":\n";
+    //book::codeDebug(__PRETTY_FUNCTION__) << ":\n";
     const char *C_ = cursor.C;
     C_ += atoken.text().length();
     const char *E_ = C_;
     if(isspace(*E_))
-        return rem::rejected;
+        return book::code::rejected;
 
     while(*E_ && !isspace(*E_) && ( ((*E_ >= '0') && (*E_ <= '9')) || ((*E_ >= 'A') && (*E_ <= 'F')) || ((*E_ >= 'a') && (*E_ <= 'f')) ) )
         ++E_;
@@ -660,10 +660,10 @@ rem::code lexer::input_hex(token_data &atoken)
 /*!
  * @brief Scans const numeric constrtuct
  * @param atoken
- * @return rem::accepted;
+ * @return book::code::accepted;
  * @todo scan Scientific Notation!!!
  */
-rem::code lexer::scan_number(token_data &atoken)
+book::code lexer::scan_number(token_data &atoken)
 {
 
     //logger::debug() << __PRETTY_FUNCTION__ << ":\n";
@@ -673,7 +673,7 @@ rem::code lexer::scan_number(token_data &atoken)
         ;
     }
     if(! Num)
-        return rem::rejected;
+        return book::code::rejected;
 
     if (cursor._F)
         cursor._F = false;
@@ -683,7 +683,7 @@ rem::code lexer::scan_number(token_data &atoken)
     atoken._flags.V   = 1;
     atoken.loc.begin = Num.B;
     atoken.loc.end = Num.E; // And Num.C ?
-    // rem::codeDebug() << "lexer::scan_number: Cursor on \n" << mCursor.mark();
+    // book::codeDebug() << "lexer::scan_number: Cursor on \n" << mCursor.mark();
     if(!(atoken.s & xio::type::Float))
     {
         stracc str;
@@ -726,15 +726,15 @@ rem::code lexer::scan_number(token_data &atoken)
     atoken.m = mnemonic::Noop;
     atoken.s |= type::Const;
     return accept(atoken);
-    //return rem::codeaccepted;
+    //return book::codeaccepted;
 }
 
-rem::code lexer::scan_identifier(token_data &atoken)
+book::code lexer::scan_identifier(token_data &atoken)
 {
 
-    //rem::codeDebug(__PRETTY_FUNCTION__);
+    //book::codeDebug(__PRETTY_FUNCTION__);
     const char *C = cursor.C;
-    if((!isalpha(*C)) && (*C != '_')) return rem::rejected;
+    if((!isalpha(*C)) && (*C != '_')) return book::code::rejected;
 
     if (!cursor._F) {
         if (!_config.Tokens->empty()) {
@@ -767,7 +767,7 @@ rem::code lexer::scan_identifier(token_data &atoken)
                // 2023-07-sept oldlonecoder).
                 insert_multiply(atoken);
 
-    return rem::accepted;
+    return book::code::accepted;
 }
 
 void lexer::insert_multiply(token_data &atoken)
@@ -775,14 +775,14 @@ void lexer::insert_multiply(token_data &atoken)
 
     auto i = --_config.Tokens->end();
     --i;
-//    book::rem::push_debug(HERE)
+//    Book::debug()
 //        << atoken.text() << "::colnum :" << color::Yellow << atoken.loc.colnum
-//        << book::rem::commit;
-//    book::rem::push_debug(HERE) << i->text() << "::colnum :" << color::Yellow
-//                                << i->loc.colnum << book::rem::commit;
+//       ;
+//    Book::debug() << i->text() << "::colnum :" << color::Yellow
+//                                << i->loc.colnum;
 
     if ((atoken.loc.colnum - i->loc.colnum) >= 2) {
-        book::rem::push_debug(HERE) << " rejected because there must be no spaces between the involved tokens..." << book::rem::commit;
+        Book::debug() << " rejected because t must be no spaces between the involved tokens...";
         return;
     }
     ++i;
@@ -799,12 +799,12 @@ void lexer::insert_multiply(token_data &atoken)
 }
 
 
-rem::code lexer::scan_sign_prefix(token_data &atoken)
+book::code lexer::scan_sign_prefix(token_data &atoken)
 {
     if (!_config.Tokens->empty() &&
         (_config.Tokens->back().s & xio::type::ClosePair)) {
         //logger::comment() << "lexer::scan_sign_prefix:\n" << atoken.mark() << "\n" << " rejected...\n";
-        return rem::rejected;
+        return book::code::rejected;
     }
 
     if (_config.Tokens->empty() || _config.Tokens->back().is_binary() ||
@@ -814,7 +814,7 @@ rem::code lexer::scan_sign_prefix(token_data &atoken)
         atoken.s = (atoken.s & ~xio::type::Binary) | xio::type::Sign | xio::type::Unary | xio::type::Prefix; // xio::type::Operator bit already set
         return accept(atoken);
     }
-    return rem::rejected;
+    return book::code::rejected;
 }
 
 /*!
@@ -822,7 +822,7 @@ rem::code lexer::scan_sign_prefix(token_data &atoken)
  *
  * @return
  */
-rem::code lexer::scan_prefix(token_data &atoken)
+book::code lexer::scan_prefix(token_data &atoken)
 {
     // Possible prefix and Postfix unary operators:
     if ((atoken.m == mnemonic::BinaryNot) || (atoken.m == mnemonic::Decr) ||
@@ -840,11 +840,11 @@ rem::code lexer::scan_prefix(token_data &atoken)
  *
  * @return
  */
-rem::code lexer::scan_postfix(token_data &atoken)
+book::code lexer::scan_postfix(token_data &atoken)
 {
     if (!((atoken.m == mnemonic::Decr) || (atoken.m == mnemonic::Incr) ||
           (atoken.m == mnemonic::BinaryNot)))
-        return rem::rejected;
+        return book::code::rejected;
 
     atoken.t = xio::type::Postfix;
     atoken.s = (atoken.s & ~xio::type::Prefix) | xio::type::Postfix; // unary/Operator ...  already set.
@@ -856,10 +856,10 @@ rem::code lexer::scan_postfix(token_data &atoken)
 
 #pragma endregion Scanners
 
-rem::code lexer::accept(token_data &atoken)
+book::code lexer::accept(token_data &atoken)
 {
     if(!atoken)
-        return rem::rejected;
+        return book::code::rejected;
 
     atoken.loc.linenum = cursor.line;
     atoken.loc.colnum = cursor.col;
@@ -875,11 +875,11 @@ rem::code lexer::accept(token_data &atoken)
 
     _config.Tokens->push_back(atoken);
     cursor.skip_ws();
-    return rem::accepted;
+    return book::code::accepted;
 }
 
 
-rem::code lexer::operator()()
+book::code lexer::operator()()
 {
     return process();
 }
@@ -892,7 +892,7 @@ void lexer::dump_tokens(std::function<void(const token_data &)> callback_)
         callback_(token);
 }
 
-rem::code lexer::input_text(token_data &atoken)
+book::code lexer::input_text(token_data &atoken)
 {
     //logger::debug() << __PRETTY_FUNCTION__ << ":\n";
 
@@ -900,9 +900,9 @@ rem::code lexer::input_text(token_data &atoken)
     //@todo Separate this token into three : {quote, text, quote}
 
     if(R.empty())
-        return rem::rejected;
+        return book::code::rejected;
 
-    // We separate tokens here ...
+    // We separate tokens  ...
     accept(atoken);
     //...
     const char *e = cursor.C + (R.length() - 2); // oops!
@@ -919,14 +919,14 @@ rem::code lexer::input_text(token_data &atoken)
     atoken.m = *e == '\'' ? mnemonic::Squote : mnemonic::Dquote;
 
     accept(atoken);
-    return rem::accepted;
+    return book::code::accepted;
 }
 
-rem::code lexer::process()
+book::code lexer::process()
 {
-    //rem::code R;
+    //book::code R;
     if (!_config)
-        return rem::rejected; // Use logger::push_error to queu error message and code...
+        return book::code::rejected; // Use logger::push_error to queu error message and code...
     //...
     if(scan_table.empty())
     {
@@ -948,15 +948,15 @@ rem::code lexer::process()
 
     cursor = lexer::lex_cursor(_config.Source);
     cursor.skip_ws();
-    //rem::codeDebug() << "lexer::Exec(): Scanning '" << mCursor.colnum << "':\n";
+    //book::codeDebug() << "lexer::Exec(): Scanning '" << mCursor.colnum << "':\n";
 
     const char *C = nullptr;
     while (!cursor.end_of_file()) {
         if (C == cursor.C) {
-                rem::push_error()
-                    << "lexer: internal infinite loop! cursor at:" << rem::endl
-                    << cursor.mark() << book::rem::commit;
-                return rem::rejected;
+                Book::error()
+                    << "lexer: internal infinite loop! cursor at:" << book::functions::endl
+                    << cursor.mark();
+                return book::code::rejected;
         }
 
         C = cursor.C;
@@ -967,22 +967,22 @@ rem::code lexer::process()
         if(S)
         {
 
-            if((this->*S)(atoken) != rem::accepted)
+            if((this->*S)(atoken) != book::code::accepted)
             {
-                rem::push_aborted()
+                Book::aborted()
                     << "lexer: unexpected rejected at position:" << cursor.mark()
-                    << book::rem::commit;
-                return rem::rejected;
+                   ;
+                return book::code::rejected;
             }
         }
     }
-    return rem::accepted;//rem::codeInt::Ok;
+    return book::code::accepted;//book::codeInt::Ok;
 }
 
 
-rem::code lexer::scan_cpp_comment(token_data& atoken)
+book::code lexer::scan_cpp_comment(token_data& atoken)
 {
-    //book::rem::push_debug(HEREF) << mnemonic_name(atoken.m) << " :@ " << cursor.location() << book::rem::commit;
+    //Book::debug(F) << mnemonic_name(atoken.m) << " :@ " << cursor.location();
     atoken.loc.begin = cursor.C;
     atoken.loc.linenum = cursor.line;
     atoken.loc.colnum = cursor.col;
@@ -996,10 +996,10 @@ rem::code lexer::scan_cpp_comment(token_data& atoken)
     _config.Tokens->push_back(atoken);
     cursor.sync();
 
-    return rem::accepted;
+    return book::code::accepted;
 }
 
-rem::code lexer::scan_comment_bloc(xio::token_data& atoken)
+book::code lexer::scan_comment_bloc(xio::token_data& atoken)
 {
     atoken.loc.begin = cursor.C;
     atoken.loc.linenum = cursor.line;
@@ -1010,14 +1010,14 @@ rem::code lexer::scan_comment_bloc(xio::token_data& atoken)
     atoken.loc.end = cursor.C;
     atoken.loc.ln = atoken.loc.end - atoken.loc.begin;
     cursor++;
-    //book::rem::push_debug(HERE) << "cursor: " << cursor.location() << rem::commit;
+    //Book::debug() << "cursor: " << cursor.location();
     cursor.sync();
     _config.Tokens->push_back(atoken);
-    //rem::push_debug(HERE) << book::rem::endl << atoken.details() << book::rem::endl << book::rem::endl << rem::commit;
+    //Book::debug() << book::functions::endl << atoken.details() << book::functions::endl << book::functions::endl;
     if (cursor.end_of_file())
-        throw rem::push_except() << rem::unexpected << rem::eof << " unterminated bloc comment." << rem::commit;
+        throw Book::except() << book::code::unexpected << book::code::eof << " unterminated bloc comment.";
 
-    return rem::accepted;
+    return book::code::accepted;
 }
 
 
@@ -1043,37 +1043,37 @@ stracc lexer::LexicalColours::colorize(xio::token_data::list* tokens)
             text.insert(Token.loc.offset + offset, _color);
             offset += _color.length();
         }
-        //book::rem::out() << line << book::rem::commit;
+        //book::code::out() << line;
     }
     return text;
 }
 
 std::string lexer::mark(const xio::token_data &token, bool c)
 {
-    //book::rem::push_debug() << " Marking token: " << token.details() << book::rem::commit;
+    //Book::debug() << " Marking token: " << token.details();
     std::string line = token.text_line();
 
     token_data::list::iterator start_token = _config.Tokens->begin();
     token_data::iterator end_token = start_token;
     for(; start_token != _config.Tokens->end(); start_token++)
     {
-//        book::rem::push_debug() << "this token:" << start_token->text()  << book::rem::endl
-//                           << " == " <<  book::rem::endl
-//                           << token.text() << " ?" << book::rem::endl << book::rem::commit;
+//        Book::debug() << "this token:" << start_token->text()  << book::functions::endl
+//                           << " == " <<  book::functions::endl
+//                           << token.text() << " ?" << book::functions::endl;
 
         if(start_token->loc.linenum == token.loc.linenum) break;
     }
     end_token = start_token;
 
 
-    //book::rem::push_debug(HERE) << "start_token: '" << start_token->details() << book::rem::commit;
+    //Book::debug() << "start_token: '" << start_token->details();
 
     for(;end_token != _config.Tokens->end() && (end_token->loc.linenum == token.loc.linenum); end_token++)
         ;
 
     if(end_token == _config.Tokens->end()) --end_token;
 
-    //book::rem::push_debug(HERE) << "end_token: '" << end_token->details() << book::rem::commit;
+    //Book::debug() << "end_token: '" << end_token->details();
 
     int offset = 0;
     std::string _color;
@@ -1098,7 +1098,7 @@ std::string lexer::mark(const xio::token_data &token, bool c)
         << token.type_name() << " ; "
         << token.semantic_text() << "]";
     txt << '\n';
-    txt.fill(0x20, token.loc.colnum-1 + rem::indentation());
+    txt.fill(0x20, token.loc.colnum-1);
     txt << Icon::ArrowUp;
     return txt();
 }
