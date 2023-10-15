@@ -35,14 +35,18 @@ alu interpretr::operator[](const std::string& expr)
     grammar g;
     g.build();
     g.dump();
-    compiler expr_parser(this);
-    token_data::list tokens;
-    //expr_parser.config() = {expr.c_str(), &tokens};
+//    compiler expr_parser(this);
+//    token_data::list tokens;
+//    //expr_parser.config() = {expr.c_str(), &tokens};
     
-    auto R = expr_parser.evaluate_expr(this, expr.c_str());
-    //auto R = expr_parser.parse_rule("expression");
-    if(R != book::code::accepted)
-      return alu(1.42f);
+//    auto R = expr_parser.evaluate_expr(this, expr.c_str());
+//    //auto R = expr_parser.parse_rule("expression");
+//    if(R != book::code::accepted)
+//      return alu(1.42f);
+
+    auto R = amu::eval_expression(expr.c_str());
+    if(R != book::code::success)
+        return {static_cast<int>(R)};
 
     stracc str = "";
     xio::dot_tree_start(str, expr);
@@ -63,6 +67,11 @@ alu interpretr::operator[](const std::string& expr)
           Book::out() << color::White << "'" << v->t0->text() << color::White << "' :" <<color::Yellow << v->value()();
     }
     return r;
+}
+
+book::code interpretr::source(std::string_view filename)
+{
+    return amu::source_file(filename);
 }
 
 

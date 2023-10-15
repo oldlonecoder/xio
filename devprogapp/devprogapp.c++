@@ -95,13 +95,21 @@ book::code app::eval_expression(const cmd::argdata<app> &arg)
 
 book::code app::compile_source(const cmd::argdata<app> &arg)
 {
-    Book::debug() << book::functions::endl << " As of " << book::functions::weekday << ", " << book::functions::monthname
-                  << ' ' << book::functions::day << ' ' << book::functions::year
-                  << ", xio project is still exploring its logistics. Thus, this option:" << book::functions::endl
-                  << color::Yellow << arg.description << color::White << book::functions::endl
-                  << "has been unimplemented ...Temporary...";
 
-    return book::code::notimplemented;
+    interpretr i;
+    auto r = i.source(arg.arguments[0]);
+    if(r==book::code::success)
+        Book::debug() << " result:" << color::Yellow << i.value()();
+
+    return r;
+
+//    Book::debug() << book::functions::endl << " As of " << book::functions::weekday << ", " << book::functions::monthname
+//                  << ' ' << book::functions::day << ' ' << book::functions::year
+//                  << ", xio project is still exploring its logistics. Thus, this option:" << book::functions::endl
+//                  << color::Yellow << arg.description << color::White << book::functions::endl
+//                  << "has been unimplemented ...Temporary...";
+
+//    return book::code::notimplemented;
 }
 
 book::code app::cmdline_args(const cmd::argdata<app> &arg)

@@ -16,6 +16,7 @@ namespace xio
  */
 class XIO_PUBLIC amu : public xiobloc
 {
+    friend class spp::interpretr;
 protected:
     std::string      source_content;
     std::string      filename;

@@ -187,8 +187,17 @@ book::code compiler::compile()
     auto R = lexical_analyse();
     if(R != book::code::accepted)
         return R;
-    Book::debug() << " returning because this request is not implemented yet..."  ;
-    //ctx = context(_bloc, cnf.tokens_stream->begin(), cnf.tokens_stream->end(), cnf.tokens_stream->end());
+
+    Book::debug() << "Setting up the initial context:";
+    ctx = context(_bloc, cnf.tokens_stream->begin(), cnf.tokens_stream->end(), cnf.tokens_stream->end());
+    Book::debug() << " explicitly call parse_expression:";
+    xio* x = parse_expression();
+
+    if(x)
+        x->jsr();
+
+    Book::debug() << " returning because this request is not really implemented yet..."  ;
+
 
     return book::code::notimplemented;
 }
@@ -212,7 +221,7 @@ book::code compiler::lexical_analyse()
     Book::test() << " lexer terminate successfully : prepare (lexical highlight) text of the source code:" << book::functions::endl ;
     Book::out() << lex.colorize() ;
     Book::message() << " will test lexer::mark(...):" << book::functions::endl ;
-    Book::test() << lex.mark((*cnf.tokens_stream)[5], true) ;
+    Book::test() << book::functions::endl << lex.mark((*cnf.tokens_stream)[5], true) ;
     //book::code::test() << "";
 
     return book::code::accepted;

@@ -1064,7 +1064,7 @@ xio* xio::pop_par()
 
 xio* xio::begin(xio* parent_, token_data* token, xio::maker xmk)
 {
-    Book::debug() << color::Yellow << token->text() << book::functions::endl ;
+    Book::debug() << color::Yellow <<  book::functions::endl << token->text() << book::functions::endl ;
 
     if (!token->_flags.V)
         return nullptr;

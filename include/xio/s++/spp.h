@@ -52,7 +52,7 @@ public:
 
     // Quick arithmetic expression evaluator ( small source text ):
     alu operator[](const std::string& expr);
-    
+    book::code source(std::string_view filename);
     //stracc export_expr_ast(const std::string& expr);
     static void error(book::cat ertype, book::code ercode, token_data::iterator token, const token_data::list& line_seq);
     static void warning(book::cat wtype, book::code wcode, token_data::iterator token, const token_data::list& line_seq);

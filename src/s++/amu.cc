@@ -4,7 +4,6 @@
 
 
 
-
 namespace xio
 {
 
@@ -40,7 +39,7 @@ book::code amu::open_file()
     }
     else
     {
-        Book::error() << "amu::open_file '" << filename << "'";
+        Book::error() << '\'' << color::Yellow << filename << color::White <<'\'' << color::White << " " << strerror(errno);
         return book::code::failed;
     }
 
