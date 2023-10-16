@@ -1,42 +1,42 @@
 digraph arithmetic_expressionree {
-ratio=compress; ranksep=.55; size = "6.5,6.5";
-    node [fontname="Source Code Pro", fontsize=12];
-    label="Arithmetic Expr Tree:[x = 42/4 + 5(3+4*3/5+34) - 42 d = 12;]"; fontsize = 10;
-    xioNode0x55661e4f7ab0 [shape=none, label="="]
-    xioNode0x55661e4fd700 [shape=none, label="x"]
-    xioNode0x55661e50f0a0 [shape=none, label="-"]
-    xioNode0x55661e5122c0 [shape=none, label="+"]
-    xioNode0x55661e511ae0 [shape=none, label="/"]
-    xioNode0x55661e509a50 [shape=none, label="42"]
-    xioNode0x55661e511e40 [shape=none, label="4"]
-    xioNode0x55661e512a50 [shape=none, label="*"]
-    xioNode0x55661e512640 [shape=none, label="5"]
-    xioNode0x55661e50e340 [shape=none, label="+"]
-    xioNode0x55661e50a790 [shape=none, label="+"]
-    xioNode0x55661e512b90 [shape=none, label="3"]
-    xioNode0x55661e50dab0 [shape=none, label="/"]
-    xioNode0x55661e512780 [shape=none, label="*"]
-    xioNode0x55661e50b430 [shape=none, label="4"]
-    xioNode0x55661e50d670 [shape=none, label="3"]
-    xioNode0x55661e50ddb0 [shape=none, label="5"]
-    xioNode0x55661e50e820 [shape=none, label="34"]
-    xioNode0x55661e50f420 [shape=none, label="42"]
-    xioNode0x55661e4f7ab0 -> xioNode0x55661e4fd700;
-    xioNode0x55661e4f7ab0 -> xioNode0x55661e50f0a0;
-    xioNode0x55661e50f0a0 -> xioNode0x55661e5122c0;
-    xioNode0x55661e5122c0 -> xioNode0x55661e511ae0;
-    xioNode0x55661e511ae0 -> xioNode0x55661e509a50;
-    xioNode0x55661e511ae0 -> xioNode0x55661e511e40;
-    xioNode0x55661e5122c0 -> xioNode0x55661e512a50;
-    xioNode0x55661e512a50 -> xioNode0x55661e512640;
-    xioNode0x55661e512a50 -> xioNode0x55661e50e340;
-    xioNode0x55661e50e340 -> xioNode0x55661e50a790;
-    xioNode0x55661e50a790 -> xioNode0x55661e512b90;
-    xioNode0x55661e50a790 -> xioNode0x55661e50dab0;
-    xioNode0x55661e50dab0 -> xioNode0x55661e512780;
-    xioNode0x55661e512780 -> xioNode0x55661e50b430;
-    xioNode0x55661e512780 -> xioNode0x55661e50d670;
-    xioNode0x55661e50dab0 -> xioNode0x55661e50ddb0;
-    xioNode0x55661e50e340 -> xioNode0x55661e50e820;
-    xioNode0x55661e50f0a0 -> xioNode0x55661e50f420;
+ratio=compress; ranksep=.55; size = "6.5,6.5"; bgcolor="#606060"; 
+    node [fontname="JetBrainsMono NF", fontsize=18, fontcolor="#ff500f"];
+    label = < <u> arithmetic expresion ast : </u> <br/> <br/>x = 42/4 + 5(3+4*3/5+34) - 42 d = 12;>; fontsize = 16; fontcolor="#00d787"
+    xioNode0x55f3fc889990 [shape=none, label="="]
+    xioNode0x55f3fc889600 [shape=none, label="x"]
+    xioNode0x55f3fc8a2060 [shape=none, label="-"]
+    xioNode0x55f3fc899f40 [shape=none, label="+"]
+    xioNode0x55f3fc8966d0 [shape=none, label="/"]
+    xioNode0x55f3fc895f70 [shape=none, label="42"]
+    xioNode0x55f3fc8974e0 [shape=none, label="4"]
+    xioNode0x55f3fc89ba90 [shape=none, label="*"]
+    xioNode0x55f3fc89b210 [shape=none, label="5"]
+    xioNode0x55f3fc89f9e0 [shape=none, label="+"]
+    xioNode0x55f3fc8a2bf0 [shape=none, label="+"]
+    xioNode0x55f3fc89d300 [shape=none, label="3"]
+    xioNode0x55f3fc89e0c0 [shape=none, label="/"]
+    xioNode0x55f3fc8a4250 [shape=none, label="*"]
+    xioNode0x55f3fc8a3930 [shape=none, label="4"]
+    xioNode0x55f3fc89daa0 [shape=none, label="3"]
+    xioNode0x55f3fc89f0c0 [shape=none, label="5"]
+    xioNode0x55f3fc8a0d00 [shape=none, label="34"]
+    xioNode0x55f3fc8afb90 [shape=none, label="42"]
+    xioNode0x55f3fc889990 -> xioNode0x55f3fc889600 [dir = none, color="#A07060", penwidth=5];
+    xioNode0x55f3fc889990 -> xioNode0x55f3fc8a2060 [dir = none, color="#A07060", penwidth=5];
+    xioNode0x55f3fc8a2060 -> xioNode0x55f3fc899f40 [dir = none, color="#A07060", penwidth=5];
+    xioNode0x55f3fc899f40 -> xioNode0x55f3fc8966d0 [dir = none, color="#A07060", penwidth=5];
+    xioNode0x55f3fc8966d0 -> xioNode0x55f3fc895f70 [dir = none, color="#A07060", penwidth=5];
+    xioNode0x55f3fc8966d0 -> xioNode0x55f3fc8974e0 [dir = none, color="#A07060", penwidth=5];
+    xioNode0x55f3fc899f40 -> xioNode0x55f3fc89ba90 [dir = none, color="#A07060", penwidth=5];
+    xioNode0x55f3fc89ba90 -> xioNode0x55f3fc89b210 [dir = none, color="#A07060", penwidth=5];
+    xioNode0x55f3fc89ba90 -> xioNode0x55f3fc89f9e0 [dir = none, color="#A07060", penwidth=5];
+    xioNode0x55f3fc89f9e0 -> xioNode0x55f3fc8a2bf0 [dir = none, color="#A07060", penwidth=5];
+    xioNode0x55f3fc8a2bf0 -> xioNode0x55f3fc89d300 [dir = none, color="#A07060", penwidth=5];
+    xioNode0x55f3fc8a2bf0 -> xioNode0x55f3fc89e0c0 [dir = none, color="#A07060", penwidth=5];
+    xioNode0x55f3fc89e0c0 -> xioNode0x55f3fc8a4250 [dir = none, color="#A07060", penwidth=5];
+    xioNode0x55f3fc8a4250 -> xioNode0x55f3fc8a3930 [dir = none, color="#A07060", penwidth=5];
+    xioNode0x55f3fc8a4250 -> xioNode0x55f3fc89daa0 [dir = none, color="#A07060", penwidth=5];
+    xioNode0x55f3fc89e0c0 -> xioNode0x55f3fc89f0c0 [dir = none, color="#A07060", penwidth=5];
+    xioNode0x55f3fc89f9e0 -> xioNode0x55f3fc8a0d00 [dir = none, color="#A07060", penwidth=5];
+    xioNode0x55f3fc8a2060 -> xioNode0x55f3fc8afb90 [dir = none, color="#A07060", penwidth=5];
 }
