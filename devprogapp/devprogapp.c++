@@ -1,7 +1,7 @@
 #include <xio/s++/spp.h>
 #include <logbook/cargs.h>
 #include <logbook/text.h>
-#include <signal.h>
+#include <csignal>
 
 
 using xio::spp::interpretr;
@@ -16,6 +16,7 @@ void sig_int( int s )
     //rem::push_interrupted() << " dump messages stream and exit:";
     //rem::clear(nullptr);
     std::cerr << " sig interrupt caugh...\n";
+    Book::close();
     exit(3);
 }
 
@@ -24,6 +25,7 @@ void sig_fault( int s)
     //rem::push_segfault() << " dump messages stream and exit:";
     //rem::clear(nullptr);
     std::cerr << " sigfault caught...\n";
+    Book::close();
     exit(127);
 }
 
@@ -32,7 +34,7 @@ void sig_abort( int s)
     //rem::push_aborted() << " dump messages stream and exit:";
     //rem::clear(nullptr);
     std::cerr << s << '\n';
-
+    Book::close();
     exit(127);
 }
 
@@ -49,7 +51,7 @@ public:
     app() = default;
     ~app();
 
-    app(std::string_view title);
+    explicit app(std::string_view title);
 
     book::code eval_expression(const cmd::argdata<app>& arg);
     book::code compile_source(const cmd::argdata<app>& arg);
@@ -84,7 +86,7 @@ book::code app::eval_expression(const cmd::argdata<app> &arg)
         auto alu = i[arg.arguments[0].data()];
     }
     catch(Book::section::bloc_stack::element&){}
-    catch(Book::exception e)
+    catch(Book::exception& e)
     {
         Book::except() << e.what();
     }
@@ -114,6 +116,7 @@ book::code app::compile_source(const cmd::argdata<app> &arg)
 
 book::code app::cmdline_args(const cmd::argdata<app> &arg)
 {
+    args.usage();
     return book::code::notimplemented;
 }
 
@@ -122,6 +125,12 @@ book::code app::cmdline_args(const cmd::argdata<app> &arg)
 book::code app::process(int argc, char **argv)
 {
     return args.process(argc,argv);
+}
+
+book::code app::set_draw_ast(const cmd::argdata<app> &arg)
+{
+
+    return book::code::ok;
 }
 
 
@@ -141,8 +150,7 @@ auto main(int argc, char** argv) -> int
     {
         Book& AppBook = Book::init("eXecutable-Instruction-Objects");
         AppBook.open();
-        AppBook.descriptions =
-R"(
+        AppBook.descriptions = R"(
 <Icon:School; fg:Yellow>This is the development of the <fg:White>[xio & interpreter API explorations]<fg/>
 ------------------------------------------------------------------------
 )";
@@ -169,7 +177,7 @@ R"(
     /// xio and interpreter compiling stuff:
     catch(Book::section::bloc_stack::element& bel)
     {
-        std::cerr << " Caugh event exception held in Book element. Closing the Book now";
+        std::cerr << " Caugh event exception held in Book element contents file. Closing the Book now";
     }
 
     Book::close();

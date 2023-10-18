@@ -21,8 +21,6 @@ protected:
     std::string      source_content;
     std::string      filename;
 
-    book::cmd::cargs<amu> cmdargs;
-
     token_data::list tokens_stream;
     compiler*        cc   { nullptr };
     amu*             next { nullptr };
