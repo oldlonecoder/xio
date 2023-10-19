@@ -39,7 +39,24 @@ class XIO_PUBLIC compiler
         token_data::iterator start, end_stream, end, cur;
         xiobloc*             bloc{nullptr};
         ::xio::type::T       current_type = ::xio::type::Number;
-        ///...
+
+//        /*!
+//         * brief beggining state-machine for validating rules.
+//         */
+//        enum class  : uint8_t
+//        {
+//            global_scope,
+//            module_scope,
+//            expression,
+//            stmt,
+//            condexpr,
+//            declfunc,
+//            declparam,
+//            declvar,
+//            //...
+//        } stm{build::global_scope};
+//        using state_validations = std::map<compiler::context::mac_state, std::vector<grammar::rule*>>;
+
 
         book::code state = book::code::eof;
 
@@ -92,7 +109,7 @@ public:
     compiler(const compiler&) = delete;
     compiler(compiler&&) noexcept = delete;
 
-    compiler(xiobloc* bloc);
+    explicit compiler(xiobloc* bloc);
     
 
     ~compiler();
@@ -105,7 +122,7 @@ public:
     book::code evaluate_expr(xiobloc* blk, const char* expr_text);
 
 
-    xio* input(token_data* token); // Let's explore the same principle as in xio::input.
+    //xio* input(token_data* token); // Let's explore the same principle as in xio::input.
 
 
     // -------------------Cannot be used yet--------------------
