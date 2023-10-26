@@ -118,7 +118,7 @@ public:
     compiler& operator = (const compiler&) = delete;
     xiobloc* bloc() { return _bloc; }
     // ------------------ parsers -Cannot be used yet-----------
-    xio* parse_expression();
+    xio* compile_expression();
     book::code evaluate_expr(xiobloc* blk, const char* expr_text);
 
 
@@ -141,14 +141,15 @@ private:
 
     compiler::config_data cnf;
 
-    xio* parse_if();
-    xio* parse_do();
-    xio* parse_while();
-    xio* parse_until();
-    xio* parse_for();
+    xio* compile_if();
+    xio* compile_do();
+    xio* compile_while();
+    xio* compile_until();
+    xio* compile_for();
 
     xio* return_stmt();
 
+    book::code skip_comments();
 };
 
 }

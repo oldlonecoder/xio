@@ -37,7 +37,7 @@ compiler::parser_pairs_t   compiler::mnemonic_parsers=
 
 compiler::parser_rules_t   compiler::rule_parsers=
 {
-    {"expression", &compiler::parse_expression}
+    {"expression", &compiler::compile_expression}
 };
 
 
@@ -148,10 +148,17 @@ xio *compiler::input(token_data *token)
  *         3 - Expression ends on invalid relationanl token or invalid mnemonic when in condition expr context
  *         -- Other ways that are not yet explored/implemented: ( [condition] expr ) [expr] {expr} syntaxes.
  */
-xio* compiler::parse_expression()
+xio* compiler::compile_expression()
 {
     Book::debug() << " ==> Entering on token:" << book::functions::endl << ctx.token()->details (true);
     xio* x{nullptr};
+
+    if(skip_comments() == book::code::eof)
+    {
+        Book::message() << "eof on commented contents;  no expression; leaving";
+        return nullptr;
+    }
+
     if(!(x = xio::begin(ctx.bloc, ctx.token(), [this](token_data* t)->xio*{ return make_xio_node(t); })))
     {
         Book::status() << color::Yellow << " : seems not an expression at all at " << book::functions::endl << ctx.token()->details(true) ;
@@ -188,10 +195,11 @@ book::code compiler::compile()
     if(R != book::code::accepted)
         return R;
 
+
     Book::debug() << "Setting up the initial context:";
     ctx = context(_bloc, cnf.tokens_stream->begin(), cnf.tokens_stream->end(), cnf.tokens_stream->end());
-    Book::debug() << " explicitly call parse_expression:";
-    xio* x = parse_expression();
+    Book::debug() << " explicitly call compile_expression:";
+    xio* x = compile_expression();
 
     if(x)
         x->jsr();
@@ -245,27 +253,27 @@ token_data::list compiler::tokens_line_from(token_data* token)
     return tokens;
 }
 
-xio *compiler::parse_if()
+xio *compiler::compile_if()
 {
     return nullptr;
 }
 
-xio *compiler::parse_do()
+xio *compiler::compile_do()
 {
     return nullptr;
 }
 
-xio *compiler::parse_while()
+xio *compiler::compile_while()
 {
     return nullptr;
 }
 
-xio *compiler::parse_until()
+xio *compiler::compile_until()
 {
     return nullptr;
 }
 
-xio *compiler::parse_for()
+xio *compiler::compile_for()
 {
     return nullptr;
 }
@@ -318,6 +326,17 @@ xio *compiler::return_stmt()
         break;
     }
         return nullptr;
+}
+
+book::code compiler::skip_comments()
+{
+    Book::debug() << "Entering with token: " << book::functions::endl << ctx.token()->details(true);
+
+    while(!ctx.eof() && (((ctx.token()->m == mnemonic::BlocComment)) || ((ctx.token()->m == mnemonic::CommentCpp)))) ++ctx;
+    if(ctx.eof()) return book::code::eof;
+    Book::message() << " accepting skip comment.";
+    ctx.accept(nullptr);
+    return book::code::ok;
 }
 
 
@@ -393,7 +412,8 @@ void compiler::context::accept(xio* instruction)
 {
 
     start = cur; ///< Pass the consumed tokens
-    bloc->append_instruction(instruction);
+    if(instruction)
+        bloc->append_instruction(instruction);
     instructions.clear(); // Reset the xio::list buffer
     state = book::code::accepted;
 }
@@ -426,7 +446,6 @@ bool compiler::context::operator++()
 {
     if( cur >= end_stream) return false;
     ++cur;
-    ++end;
     return cur < end;
 }
 

@@ -48,6 +48,7 @@ book::code amu::open_file()
 
 book::code amu::compile()
 {
+    Book::debug() << " with source:";
     cc = new compiler();
     cc->config() = {source_content, &tokens_stream};
     auto result = cc->compile();
