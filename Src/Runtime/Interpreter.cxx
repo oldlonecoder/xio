@@ -32,7 +32,7 @@ Interpreter *Interpreter::Instance()
 
 Book::Result Interpreter::SourceFile(Core::Cmd::ArgumentData &Arg)
 {
-    AppBook::Message() << Book::Result::Notimplemented;
+    AppBook::Message() << "Command '" << Color::Yellow << Arg.Name << Color::Reset <<  "':" << Book::Result::Notimplemented;
     return Book::Result::Notimplemented;
 }
 
@@ -43,14 +43,13 @@ Book::Result Interpreter::ProcessArgs()
 
     Arg = Args << Core::Cmd::ArgumentData{"Eval Expression","-e","--eval","Evaluate Expression",1};
     Arg.Connect(this, &Interpreter::Expression);
-    Args.Execute();
-    return Book::Result::Ok;
+    return Args.Execute();
 }
 
 Book::Enums::Code Interpreter::Expression(Core::Cmd::ArgumentData &A)
 {
     AppBook::Message() << Book::Result::Notimplemented;
-    return Book::Enums::Code::Ok;
+    return Book::Result::Ok;
 }
 
 
