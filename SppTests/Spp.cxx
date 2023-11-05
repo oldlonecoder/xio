@@ -49,7 +49,7 @@ auto main(int argc, char** argv) -> int
 
     try
     {
-        AppBook& Livre = AppBook::Init("XioDev.Book");
+        AppBook& Livre = AppBook::Init("SppTests");
         AppBook::Open();
         Livre.Descriptions = R"(
 <Icon:School; fg:Yellow>This is the development of the <fg:White>[xio & interpreter API explorations]<fg/>
@@ -62,9 +62,9 @@ auto main(int argc, char** argv) -> int
         if(c != Book::Enums::Code::Success)
             std::cerr << " text processing failed.";
         auto & SppDev= AppBook::CreateSection("xio.dev");
-        SppDev.Open().CreateSectionContents("xio-EvalExpression-dev");
-        /*auto & stackdev =*/
-        Livre["xio.dev"]["xio-EvalExpression-dev"];
+        SppDev.Open().CreateSectionContents("Interpreter");
+
+        Livre["xio.dev"]["Interpreter"];
 
         AppBook::Out() << Book::Enums::Fn::Endl << head;
         Spp::Interpreter TestApplication("testing the SppTest and the interpreter...",argc,argv);
@@ -76,6 +76,7 @@ auto main(int argc, char** argv) -> int
     catch(AppBook::Exception& be)
     {
         std::cerr << " Cauch Book::exception: " << be.what() << '\n';
+        AppBook::Close();
         return 127;
     }
         /// xio and interpreter compiling stuff:
