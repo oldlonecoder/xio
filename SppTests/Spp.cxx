@@ -67,15 +67,15 @@ auto main(int argc, char** argv) -> int
         Livre["xio.dev"]["Interpreter"];
 
         AppBook::Out() << Book::Enums::Fn::Endl << head;
-        Spp::Interpreter TestApplication("testing the SppTest and the interpreter...",argc,argv);
-        auto R =  TestApplication.ProcessArgs();
+        Spp::Interpreter Interpreter("testing the SppTest and the interpreter...", argc, argv);
+        auto R =  Interpreter.ProcessArgs();
         if(R != Book::Result::Success)
             AppBook::Message() << " Interpreter tests failed...";
 
     }
     catch(AppBook::Exception& be)
     {
-        std::cerr << " Cauch Book::exception: " << be.what() << '\n';
+        std::cerr << " Caught Book::exception: " << be.what() << '\n';
         AppBook::Close();
         return 127;
     }

@@ -17,6 +17,7 @@ Interpreter::~Interpreter()
 
 Interpreter::Interpreter(std::string _Id, int argc, char **argv): Unit(nullptr, std::move(_Id))
 {
+    AppBook::Message() ;
     if(Interpreter::Instance()) throw AppBook::Exception("Cannot instantiate more than on Interpreter which is a singleton class.");
     for(int c = 1; c<argc; c++) CmdArgs.emplace_back(argv[c]);
 
@@ -38,11 +39,13 @@ Book::Result Interpreter::SourceFile(Core::Cmd::ArgumentData &Arg)
 
 Book::Result Interpreter::ProcessArgs()
 {
-    Core::Cmd::ArgumentData& Arg = Args << Core::Cmd::ArgumentData{"Compile Source","-c","--compile","Compile Gieven Souce File.",1};
-    Arg.Connect(this, &Interpreter::SourceFile);
+    AppBook::Debug() << " Configuring command line arguments:";
+    (Args << Core::Cmd::ArgumentData{"Compile Source","-c","--compile","Compile given [s++] script source File.",1}).Connect(this, &Interpreter::SourceFile);
+    (Args << Core::Cmd::ArgumentData{"Eval Expression","-e","--eval","Evaluate Expression",1}).Connect(this, &Interpreter::Expression);
+    AppBook::Debug() << ":" << Book::Fn::Endl << Args.Usage();
+    //auto& A = Args["Compile Source"];
+    Args.ProcessStringArray(CmdArgs);
 
-    Arg = Args << Core::Cmd::ArgumentData{"Eval Expression","-e","--eval","Evaluate Expression",1};
-    Arg.Connect(this, &Interpreter::Expression);
     return Args.Execute();
 }
 

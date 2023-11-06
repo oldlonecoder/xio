@@ -29,7 +29,7 @@ add_library(
         SppTests/Spp.cxx
         Src/Runtime/Interpreter.cxx
         include/Spp/Runtime/Interpreter.h
-        include/Spp/Compiler/Compiler.cxx
+        Src/Compiler/Compiler.cxx
         include/Spp/Compiler/Compiler.h
         Src/Runtime/Unit.cxx
         include/Spp/Runtime/Unit.h

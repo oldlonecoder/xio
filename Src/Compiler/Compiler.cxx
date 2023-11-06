@@ -2,7 +2,7 @@
 // Created by oldlonecoder on 11/2/23.
 //
 
-#include "Compiler.h"
+#include "Spp/Compiler/Compiler.h"
 
 namespace Spp
 {
@@ -21,11 +21,11 @@ Compiler::Compiler(Stack *_RBloc, std::string_view _Src)
  */
 Book::Result Compiler::operator()()
 {
-    if(!Experimentation::Grammar::IsBuilt())
-    {
-        AppBook::Error() << " Gammar rules not built yet!.";
-        return Book::Result::Failed;
-    }
+//    if(!Experimentation::Grammar::IsBuilt())
+//    {
+//        AppBook::Error() << " Gammar rules not built yet!.";
+//        return Book::Result::Failed;
+//    }
 
     Ctx = {Data.Tokens.begin(), Data.Tokens.begin(), Data.Tokens.end(), Data.RootBloc};
     Ctx.Rule = Experimentation::Grammar()["Unit"];
