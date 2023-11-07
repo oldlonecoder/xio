@@ -27,7 +27,7 @@ Book::Enums::Code Unit::Compile()
     if(_Source.empty())
         return Book::Enums::Code::Empty;
 
-    Compiler CC(this, _Source.c_str());
+    Compiler CC(this, _Source);
 
     return Book::Enums::Code::Ok;
 }
@@ -39,26 +39,22 @@ Alu Unit::JSR()
 
 Book::Enums::Code Unit::LoadSource()
 {
-
+    char  Line[256];
     std::ifstream in;
     in.open(_Filename);
-    if (in.is_open())
-    {
-        char  Line[256];
-        while (!in.eof())
-        {
-            in.getline(Line, 255);
-            _Source += Line;
-            _Source += '\n';
-        }
-        in.close();
-    }
-    else
+    if (!in.is_open())
     {
         AppBook::Error() << '\'' << Core::Color::Yellow << _Filename << Core::Color::White <<'\'' << Core::Color::White << " " << strerror(errno);
         return Book::Enums::Code::Failed;
     }
 
+    while (!in.eof())
+    {
+        in.getline(Line, 255);
+        _Source += Line;
+        _Source += '\n';
+    }
+    in.close();
     return Book::Enums::Code::Accepted;
 }
 
