@@ -33,9 +33,22 @@ Interpreter *Interpreter::Instance()
 
 Book::Result Interpreter::SourceFile(Core::Cmd::ArgumentData &Arg)
 {
-    AppBook::Message() << "Command '" << Color::Yellow << Arg.Name << Color::Reset <<  "':" << Book::Result::Notimplemented;
+    AppBook::Debug() << "Command '" << Color::Yellow << Arg.Name << Color::Reset <<  "':" << Color::CadetBlue2 <<  Arg.Arguments[0] << Color::Reset << ":";
+    _Filename = Arg.Arguments[0];
+    auto R = LoadSource();
+    if(R != Book::Result::Accepted)
+    {
+        AppBook::Error() << " Failed to load source.";
+        return R;
+    }
+    AppBook::Message() << " Source Loaded :";
+    AppBook::Out() << Color::White << "----------------------------------------------------------------------------------------";
+    AppBook::Out() << Color::CornflowerBlue << _Source;
+    AppBook::Out() << Color::White << "----------------------------------------------------------------------------------------";
+
     return Book::Result::Notimplemented;
 }
+
 
 Book::Result Interpreter::ProcessArgs()
 {
