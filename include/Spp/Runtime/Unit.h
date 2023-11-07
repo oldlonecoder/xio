@@ -27,12 +27,12 @@ class SPP_EXPORT Unit : public Stack
     // {
     //      Var = Toto::Var;
     // }
-    std::string      _Source;
-    std::string      _Filename;
-    SppToken::Array  _Tokens;
 
 
 protected:
+    std::string      _Source;
+    std::string      _Filename;
+    SppToken::Array  _Tokens;
 
     Book::Enums::Code LoadSource();
 
