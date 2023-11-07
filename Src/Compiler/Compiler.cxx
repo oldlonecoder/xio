@@ -49,12 +49,14 @@ xio *Compiler::CCUnit()
 bool Compiler::ContextData::operator++()
 {
     if(Cur >= EndStream) return false;
+    ++Cur;
     return Cur < EndStream;
 }
 
 bool Compiler::ContextData::operator++(int)
 {
     if(Cur >= EndStream) return false;
+    ++Cur;
     return Cur < EndStream;
 }
 
@@ -81,7 +83,7 @@ void Compiler::ContextData::Reject()
     CurType = Type::Null;
 }
 
-Compiler::ContextData::ContextData(const SppToken::Iterator &BeginStream, const SppToken::Iterator &StartSeq, const SppToken::Iterator &EndStream, Stack *Bloc)
+Compiler::ContextData::ContextData(SppToken::Iterator BeginStream, SppToken::Iterator StartSeq, SppToken::Iterator EndStream, Stack *Bloc)
     : BeginStream(BeginStream), StartSeq(StartSeq), EndStream(EndStream), Bloc(Bloc)
 {}
 
