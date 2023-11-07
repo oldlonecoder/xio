@@ -54,7 +54,7 @@ private:
         Experimentation::Grammar::Rule const* Rule;
         ContextData() = default;
         ~ContextData() = default;
-        ContextData(const SppToken::Iterator &BeginStream, const SppToken::Iterator &StartSeq, const SppToken::Iterator &EndStream, Stack *Bloc);
+        ContextData(SppToken::Iterator BeginStream, SppToken::Iterator StartSeq, SppToken::Iterator EndStream, Stack *Bloc);
 
         bool operator ++();
         bool operator ++(int);
