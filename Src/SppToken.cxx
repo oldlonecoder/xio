@@ -44,7 +44,7 @@ static std::map<Mnemonic, Type::T> key_to_type = {   {Mnemonic::I8,   Type::I8},
 
 std::string SppToken::LocationData::operator()() const
 {
-    // line y, col x: `attribute`
+    // line y, col x: `Attribute`
     return Text();
 }
 
