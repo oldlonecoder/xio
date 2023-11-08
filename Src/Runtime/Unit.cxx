@@ -28,6 +28,7 @@ Book::Enums::Code Unit::Compile()
         return Book::Enums::Code::Empty;
 
     Compiler CC(this, _Source);
+    CC();
 
     return Book::Enums::Code::Ok;
 }
