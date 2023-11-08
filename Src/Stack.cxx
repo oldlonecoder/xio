@@ -150,7 +150,7 @@ Book::Enums::Code Stack::RemoveVariable(Variable *_Obj)
 //Book::Enums::Code Stack::RemoveFunction(xio *_Obj)
 //{
 //    if(!LocalFunctions) return Book::Enums::Code::Rejected;
-//    auto It = std::find(LocalFunctions->begin(), LocalFunctions->end(),_Obj);
+//    auto It = std::find(LocalFunctions->TreeBegin(), LocalFunctions->end(),_Obj);
 //    if(It != LocalFunctions->end()) LocalFunctions->erase(It);
 //
 //    return Book::Enums::Code::Ok;
