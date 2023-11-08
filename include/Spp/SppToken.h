@@ -56,7 +56,7 @@ struct SPP_EXPORT SppToken
         int         Linenum = -1; ///< line number
         int         Colnum  = -1; ///< Column number
         int64_t     Offset  = -1; ///< Absolute Offset from the beginning of the Source Text.
-        size_t      Length      = 0; ///< Length of this TokenPtr attribute.
+        size_t      Length      = 0; ///< Length of this TokenPtr Attribute.
         std::string operator()() const;
         std::string Text() const;
         std::string Position() const;
