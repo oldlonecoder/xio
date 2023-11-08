@@ -23,6 +23,9 @@ namespace Spp
 
 class SPP_EXPORT Compiler
 {
+
+    friend class Unit;
+    friend class Interpreter;
 public:
     struct SPP_EXPORT ConfigData
     {
@@ -35,6 +38,9 @@ public:
     Compiler(Stack* _RBloc, std::string_view _Src);
 
     Compiler::ConfigData& Config() { return Data; }
+
+    Book::Result ExecuteLexer();
+
 private:
     struct ContextData
     {
@@ -50,7 +56,7 @@ private:
 
         Type::T     CurType { Type::Null };
 
-
+        SppToken& Token() { return *Cur; }
         Experimentation::Grammar::Rule const* Rule;
         ContextData() = default;
         ~ContextData() = default;
@@ -76,8 +82,14 @@ private:
     // Compilers :
 
     Book::Result operator()();
-
+    Book::Result SkipComments();
+    xio* NewXio(SppToken*);
     xio* CCUnit();
+
+    xio *ParseRightValueKeyword();
+
+    [[maybe_unused]] xio *ParseExpression();
+
 
 };
 
