@@ -271,7 +271,7 @@ class SPP_EXPORT Grammar
         using Array = std::map<std::string, Rule*>;
         using Iterator = Array::const_iterator;
 
-        Properties A = { 0, 0, 0, 0, 0 }; /// Volatile attribute infos. ( Copied into the rule's recursion context  )
+        Properties A = { 0, 0, 0, 0, 0 }; /// Volatile Attribute infos. ( Copied into the rule's recursion context  )
         Properties Inject = { 0, 0, 0, 0, 0 };
 
         std::string Id;
