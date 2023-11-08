@@ -192,7 +192,7 @@ xio::xio(Core::Object* parent_bloc, SppToken* atoken, Alu* a_alu): Core::Object(
 
 //Core::Object::Iterator xio::GetChildIterator(xio* c)
 //{
-//    auto It = _children.begin();
+//    auto It = _children.TreeBegin();
 //
 //    for(; It != _children.end(); It++)
 //    {
@@ -210,11 +210,11 @@ Alu xio::JSR()
 {
     //...
 
-    AppBook::Debug() << Color::White << attribute() << " Value:" << Color::Yellow << A->number<uint64_t>() << Book::Enums::Fn::Endl << SToken->Details(true) ;
+    AppBook::Debug() << Color::White << Attribute() << " Value:" << Color::Yellow << A->number<uint64_t>() << Book::Enums::Fn::Endl << SToken->Details(true) ;
     if(SToken->IsOperator())
     {
         if(SToken->IsBinary())
-            AppBook::Out() << xio::trace_connect_binary_operands(this) << Book::Enums::Fn::Endl ;
+            AppBook::Out() << xio::TraceConnectBinaryOperands(this) << Book::Enums::Fn::Endl ;
 
         if (Lhs) *A = Lhs->JSR(); // Always catch the lhs value so we return that one if t is no rhs operand.
         if (Rhs) *A = Rhs->JSR(); // Always catch the rhs value because it is the value to be returned after being applied to the lhs (if applicable).
@@ -430,7 +430,7 @@ Alu xio::Neq()
 
 Alu xio::Add()
 {
-    AppBook::Debug() << Color::Yellow << Lhs->Value()() << " " << Color::CornflowerBlue << attribute() << " " << Color::Yellow << Rhs->Value()() << ":";
+    AppBook::Debug() << Color::Yellow << Lhs->Value()() << " " << Color::CornflowerBlue << Attribute() << " " << Color::Yellow << Rhs->Value()() << ":";
     *A = *Lhs->A + *Rhs->A;
     AppBook::Out() << Color::CornflowerBlue << " = " << Color::Lime << (*A)();
     return *A;
@@ -441,7 +441,7 @@ Alu xio::Sub()
     if (SToken->S & Type::Sign)
         return Negative();
     AppBook::Debug() << Color::Lime
-                     << Color::Yellow << Lhs->Value()() << " " << Color::CornflowerBlue << attribute() << " " << Color::Yellow << Rhs->Value()() << ":";
+                     << Color::Yellow << Lhs->Value()() << " " << Color::CornflowerBlue << Attribute() << " " << Color::Yellow << Rhs->Value()() << ":";
     *A = *Lhs->A - *Rhs->A;
     AppBook::Out() << Color::CornflowerBlue << " = " << Color::Lime << (*A)();
 
@@ -450,9 +450,9 @@ Alu xio::Sub()
 Alu xio::Mul()
 {
     AppBook::Debug()
-        << Color::Yellow << Lhs->attribute()
-        << Color::CornflowerBlue << attribute()
-        << Color::Yellow << Rhs->attribute()
+        << Color::Yellow << Lhs->Attribute()
+        << Color::CornflowerBlue << Attribute()
+        << Color::Yellow << Rhs->Attribute()
         << Color::White;
     *A = *Lhs->A * *Rhs->A;
     AppBook::Out() << Color::CornflowerBlue << " => " << Color::Lime << (*A)() ;
@@ -479,8 +479,8 @@ Alu xio::GreaterThan()
 Alu xio::Assign()
 {
     AppBook::Debug() << Color::Lime
-                     << Color::Aquamarine3 << Lhs->attribute() << Color::Reset << " "
-                     << " " << Color::CornflowerBlue << attribute() << " "
+                     << Color::Aquamarine3 << Lhs->Attribute() << Color::Reset << " "
+                     << " " << Color::CornflowerBlue << Attribute() << " "
                      << Color::Yellow
                      << Rhs->Value()() << ":";
 
@@ -556,7 +556,7 @@ Alu xio::Division()
 {
     AppBook::Debug() << Color::Lime
                      << Color::Yellow << Lhs->Value()()
-                     << " " << Color::CornflowerBlue << attribute() << " "
+                     << " " << Color::CornflowerBlue << Attribute() << " "
                      << Color::Yellow
                      << Rhs->Value()() << ":";
 
@@ -570,9 +570,9 @@ Alu xio::Division()
 Alu xio::Factorial()
 {
     //*acc = acc->factorial(*lhs->acc);
-    AppBook::Debug() << Color::Lime << Lhs->attribute()
+    AppBook::Debug() << Color::Lime << Lhs->Attribute()
                      << Color::Yellow << " " << (*Lhs->A)() << " "
-                                << Color::CornflowerBlue << attribute() << Color::White << ":" ;
+                     << Color::CornflowerBlue << Attribute() << Color::White << ":" ;
 
     AppBook::Out() << xio::trace_connect_postfix_operands(this) ;
 
@@ -598,8 +598,8 @@ Alu xio::Positive()
 Alu xio::Negative()
 {
     AppBook::Debug() << Color::Lime
-                     << Color::CornflowerBlue << attribute()
-                     << Color::Yellow << Rhs->attribute()
+                     << Color::CornflowerBlue << Attribute()
+                     << Color::Yellow << Rhs->Attribute()
         << Color::White << "=" ;
 
     if (Rhs->A->number<double>() > 0) // ==> a = -1;  -a = ?
@@ -756,9 +756,9 @@ auto xio::Match(xio* in_lhs, xio* in_rhs)
 //---------------------------Arithmetic Expression Tree Building------------------------------------------------
 xio::move_table_t xio::move_tbl =
 {
-    // to_left:
-        {{Type::OpenPair, Type::Leaf | Type::Prefix | Type::Binary | Type::Id | Type::Number | Type::Const}, &xio::to_left},
-        {{Type::Binary | Type::Prefix | Type::Sign | Type::Assign,  Type::OpenPair | Type::Leaf | Type::Prefix | Type::Number | Type::Id}, &xio::to_right},
+    // ToLeft:
+        {{Type::OpenPair, Type::Leaf | Type::Prefix | Type::Binary | Type::Id | Type::Number | Type::Const}, &xio::ToLeft},
+        {{Type::Binary | Type::Prefix | Type::Sign | Type::Assign,  Type::OpenPair | Type::Leaf | Type::Prefix | Type::Number | Type::Id}, &xio::ToRight},
         // rpar_leaf:
         //    {{Type::close_pair, Type::leaf}, &xio::_rpar_leaf},
         //// _assign:
@@ -770,7 +770,7 @@ xio::move_table_t xio::move_tbl =
         // _binary:
         {{Type::Number | Type::Binary | Type::Prefix | Type::Postfix | Type::Id, Type::Assign | Type::Binary}, &xio::TreeInputBinary},
         // opo_right:
-        {{Type::Number | Type::Id, Type::Postfix}, &xio::op_to_right}
+        {{Type::Number | Type::Id, Type::Postfix}, &xio::OpToRight}
 };
 
 xio::input_table_t xio::input_tbl =
@@ -796,10 +796,10 @@ xio *xio::Warning(xio*)
 }
 void xio::make_error(Book::Enums::Code ErrCode, xio* source_node, xio* input_node)
 {
-    throw AppBook::Error() << source_node->attribute()
+    throw AppBook::Error() << source_node->Attribute()
         << " TokenPtr TreeInput error: "
         << ErrCode
-        << input_node->attribute()
+        << input_node->Attribute()
         << Book::Enums::Fn::Endl
         << input_node->SToken->Mark()
         << Book::Enums::Fn::Endl ;
@@ -807,7 +807,7 @@ void xio::make_error(Book::Enums::Code ErrCode, xio* source_node, xio* input_nod
 
 void xio::make_error(Book::Enums::Code ErrCode, xio* source_node, SppToken* inputoken)
 {
-    throw AppBook::Error() << source_node->attribute()
+    throw AppBook::Error() << source_node->Attribute()
         << " TokenPtr TreeInput error: "
         << ErrCode
         << inputoken->Text()
@@ -887,14 +887,14 @@ xio* xio::TreeInputBinary(xio* a)
     }
 
     if (SToken->M == Mnemonic::OpenPar)
-        return to_left(a);
+        return ToLeft(a);
 
     if (SToken->IsBinary())
     {
         //if (!rhs) syntax_error(a);
 
         if (a->SToken->D < SToken->D)
-            return to_right(a);
+            return ToRight(a);
         if (Op)
         {
             auto fn = Match(this, a);
@@ -904,7 +904,7 @@ xio* xio::TreeInputBinary(xio* a)
             return (Op->*fn)(a);
         }
 
-        a->to_left(this); // returns "this" but from  we must return a as the new insertion node into the tree...
+        a->ToLeft(this); // returns "this" but from  we must return a as the new insertion node into the tree...
         // The only case when it is required to return lhs ( left-hand-side node) is on openning par or left-pair(operator) that isolates the
         // inner expression between open-close pair.
         return a;
@@ -917,14 +917,14 @@ xio* xio::TreeInputBinary(xio* a)
         return (Op->*fn)(a);
 
     }
-    a->to_left(this);
+    a->ToLeft(this);
     return a;
 }
 
 xio* xio::_close_pair(xio* a)
 {
     Header(a);
-    xio* x = xio::pop_par();
+    xio* x = xio::PopPar();
     if (!x)
     {
         AppBook::Error() << "Unmatched left paranthese:" << Book::Enums::Fn::Endl << a->SToken->Mark() << Book::Enums::Fn::Endl ;
@@ -955,7 +955,7 @@ xio* xio::_close_par(xio* a)
 {
     Header(a);
 
-    xio* x = xio::pop_par();
+    xio* x = xio::PopPar();
     if (!x)
     {
         AppBook::Error() << "Unmatched left paranthese." << a->SToken->Mark() << Book::Enums::Fn::Endl ;
@@ -1013,7 +1013,7 @@ xio* xio::collapse_par_pair(xio* a)
         Op->Rhs = Lhs;
         if(a->SToken->D < Op->SToken->D)
         {
-            return Op->to_right(a);
+            return Op->ToRight(a);
         }
     }
 
@@ -1021,9 +1021,9 @@ xio* xio::collapse_par_pair(xio* a)
 
     if (Lhs->Op) {
         AppBook::Out()
-            << Color::Yellow << Lhs->Op->attribute() << Color::CornflowerBlue
+            << Color::Yellow << Lhs->Op->Attribute() << Color::CornflowerBlue
             << " <-- "
-            << Color::Yellow << a->attribute();
+            << Color::Yellow << a->Attribute();
 
         auto p_fn = Match(Lhs->Op, a);
         if (!p_fn)
@@ -1037,7 +1037,7 @@ xio* xio::collapse_par_pair(xio* a)
     return a;
 }
 
-xio* xio::op_to_right(xio* a)
+xio* xio::OpToRight(xio* a)
 {
     Header(a);
     if (!Op) {
@@ -1045,17 +1045,17 @@ xio* xio::op_to_right(xio* a)
         Op = a;
         return a;
     }
-    return Op->to_right(a);
+    return Op->ToRight(a);
 }
 
 
-int xio::push_par(xio* a)
+int xio::PushPar(xio* a)
 {
     xio::pars.push(a);
     return static_cast<int>(xio::pars.size());
 }
 
-xio* xio::pop_par()
+xio* xio::PopPar()
 {
     if (xio::pars.empty()) return nullptr;
     xio* x = xio::pars.top();
@@ -1064,28 +1064,28 @@ xio* xio::pop_par()
 }
 
 
-xio* xio::begin(xio* parent_, SppToken* token, xio::maker xmk)
+xio* xio::TreeBegin(xio* ParentObj, SppToken* Token, const xio::maker& Maker)
 {
-    AppBook::Debug() << Color::Yellow <<  Book::Enums::Fn::Endl << token->Text() << Book::Enums::Fn::Endl ;
+    AppBook::Debug() << Color::Yellow << Book::Enums::Fn::Endl << Token->Text() << Book::Enums::Fn::Endl ;
+    xio* a;
 
-    if (!token->Flags.V)
+    if (!Token->Flags.V)
         return nullptr;
 
-    xio* a{nullptr};
-    if(xmk)
-        a = xmk(token);
+    if(Maker)
+        a = Maker(Token);
     else
-        a = new xio(parent_, token);
+        a = new xio(ParentObj, Token);
 
     if(!a)
         return nullptr;
 
-    if (a->SToken->M == Mnemonic::OpenPar) push_par(a);
+    if (a->SToken->M == Mnemonic::OpenPar) PushPar(a);
     return a;
 }
 
 
-xio* xio::tree_close()
+xio* xio::CloseTree()
 {
     Header(this);
 
@@ -1116,17 +1116,17 @@ xio* xio::tree_close()
             if (Op)
             {
                 Op->Rhs = Lhs;
-                xio::trace_connect_binary_operands(Op);
+                xio::TraceConnectBinaryOperands(Op);
             }
 
             // discard();
-            return x->tree_root(false);
+            return x->TreeRoot(false);
         }
     }
-    return tree_root(false);
+    return TreeRoot(false);
 }
 
-xio* xio::tree_root(bool skip_syntax)
+xio* xio::TreeRoot(bool skip_syntax)
 {
     AppBook::Debug() << "Match tree ins from xio node:" << Book::Enums::Fn::Endl << SToken->Mark() << Book::Enums::Fn::Endl ;
     xio* x = this;
@@ -1171,13 +1171,13 @@ xio* xio::tree_root(bool skip_syntax)
     return  x;
 }
 
-xio* xio::to_right(xio* in_rhs)
+xio* xio::ToRight(xio* in_rhs)
 {
     Header(in_rhs);
 
     // Temporary hack....
     if (in_rhs->SToken->M == Mnemonic::OpenPar)
-        xio::push_par(in_rhs);
+        xio::PushPar(in_rhs);
 
     if (Rhs) {
         /*
@@ -1198,12 +1198,12 @@ xio* xio::to_right(xio* in_rhs)
     in_rhs->Op = this;
     if (SToken->IsBinary())
     {
-        AppBook::Debug() << xio::trace_connect_binary_operands(this);
+        AppBook::Debug() << xio::TraceConnectBinaryOperands(this);
     }
     return in_rhs;
 }
 
-xio* xio::to_left(xio* in_lhs)
+xio* xio::ToLeft(xio* in_lhs)
 {
     Header(in_lhs);
     /*
@@ -1305,13 +1305,13 @@ using Core::Rect;
 
 
 
-std::string xio::trace_connect_binary_operands(xio* x)
+std::string xio::TraceConnectBinaryOperands(xio* x)
 {
     // assume this binary operator already has its lhs rhs operands !!
     //StrAcc str;
-    auto lw = x->Lhs->attribute().length();
-    auto rw = x->Rhs->attribute().length();
-    auto ow = x->attribute().length();
+    auto lw = x->Lhs->Attribute().length();
+    auto rw = x->Rhs->Attribute().length();
+    auto ow = x->Attribute().length();
     auto w = lw + rw + 3; // total width
     w -= lw % 2 == 0;
 
@@ -1324,14 +1324,14 @@ std::string xio::trace_connect_binary_operands(xio* x)
     Core::WinBuffer area;
     area.SetGeometry(static_cast<int>(w), 3); // pour l'instant c'est hardcodé.
     area.GotoXY(oper_xy.X, 0);
-    area << x->attribute();
+    area << x->Attribute();
     area << Point{ static_cast<int>(m_lhs),1 } << "/ \\";
 
     area.GotoXY(0, 2);
-    area << x->Lhs->attribute();
+    area << x->Lhs->Attribute();
 
     area.GotoXY(static_cast<int>(m_lhs) + 2 + (rw <= 1 ? 1 : 0), 2);
-    area << x->Rhs->attribute();
+    area << x->Rhs->Attribute();
     return area;
 }
 
@@ -1340,9 +1340,9 @@ std::string xio::trace_connect_postfix_operands(xio* x)
 {
     // assume this binary operator already has its lhs rhs operands !!
     //StrAcc str;
-    auto lw = x->Lhs->attribute().length();
-    //auto rw = x->rhs->attribute().length();
-    auto ow = x->attribute().length();
+    auto lw = x->Lhs->Attribute().length();
+    //auto rw = x->rhs->Attribute().length();
+    auto ow = x->Attribute().length();
     auto w = lw + 3; // total width
     w -= lw % 2 == 0;
 
@@ -1355,14 +1355,14 @@ std::string xio::trace_connect_postfix_operands(xio* x)
     Core::WinBuffer area;
     area.SetGeometry(static_cast<int>(w), 3); // pour l'instant c'est hardcodé.
     area.GotoXY(oper_xy.X, 0);
-    area << x->attribute();
+    area << x->Attribute();
     area << Point{ static_cast<int>(m_lhs),1 } << "/ \\";
 
     area.GotoXY(0, 2);
-    area << x->Lhs->attribute();
+    area << x->Lhs->Attribute();
 
     //area.GotoXY(static_cast<int>(m_lhs) + 2;
-    //area << x->rhs->attribute();
+    //area << x->rhs->Attribute();
     return area;
 }
 #pragma endregion ast-digraph
