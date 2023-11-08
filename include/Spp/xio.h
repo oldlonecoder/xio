@@ -134,7 +134,6 @@ protected:
 #pragma region INPUT
 public:
     xio* TreeInput(xio* parent_bloc, SppToken* token, xio::maker mk= nullptr);  ///< TreeInput nullptr TokenPtr for telling To finalyse the tree... :)
-
     xio* TreeInputBinary(xio* a);
     //xio* _prefix(xio* a);
     //xio* _postfix(xio* a);
@@ -145,33 +144,33 @@ public:
     //xio* _rpar_leaf(xio* a);
     xio* _close_par(xio* a);
     xio* collapse_par_pair(xio* a);
-    xio* op_to_right(xio* a);
 
-    xio* tree_close();
-    xio* tree_root(bool skip_syntax);
+
+    xio* CloseTree();
+    xio* TreeRoot(bool skip_syntax);
     // (fr) D&egrave;s la phase d'association, on peut d&eacute;j&agrave; conna&icirc;tre le mouvement:
     //  - en validant l'appel de la fonction
     //  - en r&eacute;-associant le nouveau xio en se servant de la table move_tbl;
     // -----------------------------------------------------------------------------------------------
 
-
+    static xio* TreeBegin(xio* ParentObj, SppToken* Token, const xio::maker& Maker= nullptr);
+    xio* ToRight(xio* in_rhs);
+    xio* ToLeft(xio* in_lhs);
+    xio* OpToRight(xio* a);
 #pragma endregion INPUT
 
-    static xio* begin(xio* parent_, SppToken* token, xio::maker xmk=nullptr);
-    xio* to_right(xio* in_rhs);
-    xio* to_left(xio* in_lhs);
 
 #pragma endregion MOVE
 
-    std::string attribute() { return SToken ? SToken->Text() : "no attribute"; }
+    std::string Attribute() { return SToken ? SToken->Text() : "no Attribute"; }
 
     static auto Match(xio* in_lhs, xio* in_rhs);
 
     //static void clear_static_pool();
 
     static std::stack<xio*> pars;
-    static int push_par(xio* a);
-    static xio* pop_par();
+    static int PushPar(xio* a);
+    static xio* PopPar();
 
 
 #pragma region TRIGRAPH
@@ -186,7 +185,7 @@ public:
     //    static std::string trace_connect_binary_operands2(xio* x);
 
 #pragma endregion TRIGRAPH
-    static std::string trace_connect_binary_operands(xio* x);
+    static std::string TraceConnectBinaryOperands(xio* x);
     static std::string trace_connect_postfix_operands(xio* x);
 private:
 
@@ -259,7 +258,7 @@ private:
 
 #pragma endregion ARITHMETICS
 
-    //std::string attribute();
+    //std::string Attribute();
 };
 
 }
