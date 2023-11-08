@@ -186,9 +186,7 @@ bool Lexer::LexCursor::operator++()
     if (C >= E)
         return false;
     ++C;
-    while ((C < E) && (isspace(*C)))
-        ++C;
-    return true;
+    return SkipWS();
 }
 
 /*!
@@ -1002,7 +1000,7 @@ Book::Enums::Code Lexer::Lex()
             }
         }
     }
-    return Book::Enums::Code::Accepted;//book::codeInt::Ok;
+    return Book::Enums::Code::Success;//book::codeInt::Ok;
 }
 
 
