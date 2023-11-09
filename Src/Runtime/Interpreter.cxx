@@ -3,6 +3,7 @@
 //
 
 #include "Spp/Runtime/Interpreter.h"
+#include "Spp/Compiler/Lang/Grammar.h"
 
 namespace Spp
 {
@@ -45,6 +46,15 @@ Book::Result Interpreter::SourceFile(Core::Cmd::ArgumentData &Arg)
     AppBook::Out() << Color::White << "----------------------------------------------------------------------------------------";
     AppBook::Out() << Color::CornflowerBlue << _Source;
     AppBook::Out() << Color::White << "----------------------------------------------------------------------------------------";
+
+    AppBook::Info() << " Building embedded Spp Grammar...";
+    Lang::Grammar Gr;
+    if(R = Gr.Build(); R != Book::Result::Accepted)
+        throw AppBook::Exception()[AppBook::Except() << "Error building embedded Spp Grammar :" << R];
+
+    AppBook::Debug() << " Dump Grammar:";
+    Gr.Dump();
+
 
     return Book::Result::Notimplemented;
 }

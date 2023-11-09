@@ -28,6 +28,10 @@ Book::Enums::Code Unit::Compile()
         return Book::Enums::Code::Empty;
 
     Compiler CC(this, _Source);
+    if(auto R = CC.ExecuteLexer(); R != Book::Result::Success)
+        return Book::Result::Rejected;
+
+
     CC();
 
     return Book::Enums::Code::Ok;

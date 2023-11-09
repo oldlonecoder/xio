@@ -9,7 +9,7 @@
 
 void SigInt(int s )
 {
-    //rem::push_interrupted() << " dump messages stream and exit:";
+    //rem::push_interrupted() << " Dump messages stream and exit:";
     //rem::clear(nullptr);
     std::cerr << " sig interrupt caugh...\n";
     AppBook::Close();
@@ -18,7 +18,7 @@ void SigInt(int s )
 
 void SigFault(int s)
 {
-    //rem::push_segfault() << " dump messages stream and exit:";
+    //rem::push_segfault() << " Dump messages stream and exit:";
     //rem::clear(nullptr);
     std::cerr << " sigfault caught...\n";
     AppBook::Close();
@@ -27,7 +27,7 @@ void SigFault(int s)
 
 void SigAbort(int s)
 {
-    //rem::push_aborted() << " dump messages stream and exit:";
+    //rem::push_aborted() << " Dump messages stream and exit:";
     //rem::clear(nullptr);
     std::cerr << s << '\n';
     AppBook::Close();

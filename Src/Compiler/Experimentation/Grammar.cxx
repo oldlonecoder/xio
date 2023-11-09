@@ -2,7 +2,7 @@
 // Created by oldlonecoder on 21-12-12.
 //
 
-#include <Spp/Compiler/Experimentation/Grammar.h>
+#include <Spp/Compiler/Lang/Grammar.h>
 #include <AppBook/Core/ChAttr.h>
 #include <AppBook/Book/AppBook.h>
 
@@ -10,7 +10,7 @@
 using Core::Color;
 using Core::StrBreak;
 
-namespace Spp::Experimentation
+namespace Spp::Lang
 {
 //
 // Created by slussier on 19-08-25.
@@ -163,7 +163,7 @@ std::string Grammar::DebugDumpSequence(const ElementSeq& seq)
 }
 
 
-void Grammar::dump()
+void Grammar::Dump()
 {
 
     AppBook::Out() << Color::Red4 << "%-15s" << "rule" <<  Color::Black << " | terms sequence:";

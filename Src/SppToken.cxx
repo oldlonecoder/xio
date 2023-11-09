@@ -314,7 +314,7 @@ static SppToken::Array TokensTable =
         {Mnemonic::Else,                Type::Keyword,   Type::Keyword                                              ,Distance::Identifier, Lexem::Else,    0},
         {Mnemonic::Const,               Type::Keyword,   Type::Keyword|Type::Const                                  ,Distance::Identifier, Lexem::Const,   0},
         {Mnemonic::Include,             Type::Keyword,   Type::Keyword                                              ,Distance::Identifier, Lexem::Include, 0},
-        {Mnemonic::Module,              Type::Keyword,   Type::Keyword                                              ,Distance::Identifier, Lexem::Module, 0},
+        {Mnemonic::Unit,                Type::Keyword,   Type::Keyword                                              ,Distance::Identifier, Lexem::Unit, 0},
         {Mnemonic::At,                  Type::Prefix,    Type::Unary|Type::Prefix|Type::Operator                    ,Distance::Unary,      Lexem::At,      1},
         {Mnemonic::Prime,               Type::Prefix,    Type::Unary|Type::Prefix|Type::Operator                    ,Distance::Unary,      Lexem::Prime,   1},
         {Mnemonic::Do,                  Type::Keyword,   Type::Keyword                                              ,Distance::Noop_,      Lexem::Do,      0},

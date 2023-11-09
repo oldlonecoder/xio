@@ -20,7 +20,7 @@
 
 #include <stack>
 
-namespace Spp::Experimentation
+namespace Spp::Lang
 {
 
 
@@ -326,7 +326,7 @@ class SPP_EXPORT Grammar
 
     Book::Enums::Code Build();
 
-    void dump();
+    void Dump();
     std::string DebugDumpSequence(const ElementSeq& seq);
 
     private:

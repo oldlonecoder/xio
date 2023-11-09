@@ -25,7 +25,7 @@ My personal c++ not modern way to experiment coding a machineless scripting inte
 ---
 - <h5>Spp::Compiler</h5> The Spp xio intructions/trees producer.
 --- 
-- <h5>Spp::Experimentation::Grammar</h5>  put aside-experimentation of Spp (language) Grammar.
+- <h5>Spp::Lang::Grammar</h5>  put aside-experimentation of Spp (language) Grammar.
 ---
 - <h5>Spp::Interpreter</h5>  The Spp Interpreter ...
 - ...

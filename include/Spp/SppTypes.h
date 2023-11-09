@@ -166,7 +166,7 @@ enum class Mnemonic : uint16_t
     Else,
     Const,
     Include,
-    Module,
+    Unit,
     At,
     Prime,
     Do,
@@ -313,7 +313,7 @@ constexpr T Then          = "then";
 constexpr T Else          = "else";
 constexpr T Const         = "const";
 constexpr T Include       = "include";
-constexpr T Module        = "module";
+constexpr T Unit          = "Unit";
 constexpr T At            = "@";
 constexpr T Prime         = "`"; ///@todo change...
 constexpr T Do            = "do";

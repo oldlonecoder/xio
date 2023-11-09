@@ -142,7 +142,7 @@ std::map<Mnemonic, Color::code> MnemonicColors =
         {Mnemonic::Else,             Color::DodgerBlue2},
         {Mnemonic::Const,            Color::White},
         {Mnemonic::Include,          Color::White},
-        {Mnemonic::Module,           Color::White},
+        {Mnemonic::Unit,             Color::White},
         {Mnemonic::At,               Color::White},
         {Mnemonic::Prime,            Color::White},
         {Mnemonic::Do,               Color::DodgerBlue2},
