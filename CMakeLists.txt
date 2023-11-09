@@ -22,7 +22,7 @@ add_library(
         include/Spp/SppToken.h                          Src/SppToken.cxx
         include/Spp/Compiler/Lexer.h                    Src/Compiler/Lexer.cxx
         include/Spp/xio.h Src/xio.cxx
-        include/Spp/Compiler/Experimentation/Grammar.h  Src/Compiler/Experimentation/Grammar.cxx
+        include/Spp/Compiler/Lang/Grammar.h Src/Compiler/Experimentation/Grammar.cxx
         include/Spp/Stack.h Src/Stack.cxx
         include/Spp/Runtime/Variable.h Src/Runtime/Variable.cxx
         include/Spp/Runtime/RTBase.h                    Src/Runtime/RTBase.cxx
