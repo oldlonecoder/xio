@@ -16,7 +16,7 @@
 #include <Spp/Compiler/Lexer.h>
 #include "Spp/Stack.h"
 // ---- On Hold : Grammar::Rules
-#include "Spp/Compiler/Experimentation/Grammar.h"
+#include "Spp/Compiler/Lang/Grammar.h"
 //--------------------------------
 namespace Spp
 {
@@ -26,6 +26,9 @@ class SPP_EXPORT Compiler
 
     friend class Unit;
     friend class Interpreter;
+
+
+
 public:
     struct SPP_EXPORT ConfigData
     {
@@ -33,6 +36,7 @@ public:
         SppToken::Array  Tokens;
         Stack*           RootBloc;
     };
+
 
     Compiler() =default;
     Compiler(Stack* _RBloc, std::string_view _Src);
@@ -57,7 +61,7 @@ private:
         Type::T     CurType { Type::Null };
 
         SppToken& Token() { return *Cur; }
-        Experimentation::Grammar::Rule const* Rule;
+        Lang::Grammar::Rule const* Rule;
         ContextData() = default;
         ~ContextData() = default;
         ContextData(SppToken::Iterator BeginStream, SppToken::Iterator StartSeq, SppToken::Iterator EndStream, Stack *Bloc);
@@ -89,6 +93,10 @@ private:
     xio *ParseRightValueKeyword();
 
     [[maybe_unused]] xio *ParseExpression();
+
+    Book::Result EnterRule(Lang::Grammar::Rule const* Rule);
+    Book::Result EnterElementSequence(Lang::Grammar::ElementSeq::Iterator SeqIt);
+
 
 
 };

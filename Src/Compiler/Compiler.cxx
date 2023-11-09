@@ -28,14 +28,14 @@ Compiler::Compiler(Stack *_RBloc, std::string_view _Src)
  */
 Book::Result Compiler::operator()()
 {
-//    if(!Experimentation::Grammar::IsBuilt())
+//    if(!Lang::Grammar::IsBuilt())
 //    {
 //        AppBook::Error() << " Gammar rules not built yet!.";
 //        return Book::Result::Failed;
 //    }
 
     Ctx = {Data.Tokens.begin(), Data.Tokens.begin(), Data.Tokens.end(), Data.RootBloc};
-//    Ctx.Rule = Experimentation::Grammar()["Unit"];
+//    Ctx.Rule = Lang::Grammar()["Unit"];
 
     (void)CCUnit();
 
@@ -99,7 +99,7 @@ Book::Result Compiler::operator()()
 xio *Compiler::CCUnit()
 {
 
-    AppBook::Error() << " Compile Experimentation::Grammar::Rule[" << Core::Color::Yellow << Ctx.Rule->Id << Core::Color::Reset << "'] not implemented yet... ";
+    AppBook::Error() << " Compile Lang::Grammar::Rule[" << Core::Color::Yellow << Ctx.Rule->Id << Core::Color::Reset << "'] not implemented yet... ";
     return nullptr;
 }
 
@@ -176,6 +176,16 @@ Book::Result Compiler::ExecuteLexer()
         return R;
 
     return Book::Result::Accepted;
+}
+
+Book::Result Compiler::EnterRule(const Lang::Grammar::Rule *Rule)
+{
+    return Book::Result::Ok;
+}
+
+Book::Result Compiler::EnterElementSequence(Lang::Grammar::ElementSeq::Iterator SeqIt)
+{
+    return Book::Result::Ok;
 }
 
 
