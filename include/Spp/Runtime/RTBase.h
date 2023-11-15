@@ -82,7 +82,7 @@ public:
     {
         for (auto &a: params)
         {
-            AppBook::Debug() << "arg: [" << Core::Color::Yellow << a() << Core::Color::Reset << "]";
+            AppBook::Debug() << "arg: [" << Color::Yellow << a() << Color::Reset << "]";
             //...
         }
         return accumulate(params, std::index_sequence_for<Params_...>{});

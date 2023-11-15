@@ -8,7 +8,7 @@ namespace Spp
 {
 Variable::Variable(): xio(){}
 
-Variable::Variable(Core::Object *_Parent, SppToken *_Token, Alu *_A) : xio(_Parent, _Token, _A){}
+Variable::Variable(Util::Object *_Parent, SppToken *_Token, Alu *_A) : xio(_Parent, _Token, _A){}
 
 Variable::~Variable(){}
 

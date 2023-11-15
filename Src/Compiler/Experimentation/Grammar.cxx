@@ -3,12 +3,10 @@
 //
 
 #include <Spp/Compiler/Lang/Grammar.h>
-#include <AppBook/Core/ChAttr.h>
+#include <AppBook/Util/ChAttr.h>
 #include <AppBook/Book/AppBook.h>
 
 
-using Core::Color;
-using Core::StrBreak;
 
 namespace Spp::Lang
 {
@@ -17,7 +15,7 @@ namespace Spp::Lang
 //
 
 
-std::map<Grammar::Element::ElementType, Color::code> colours =
+std::map<Grammar::Element::ElementType, Color::Code> colours =
 {
     {Grammar::Element::ElementType::M, Color::LightSteelBlue3},
     {Grammar::Element::ElementType::R, Color::LightSalmon4},
@@ -137,7 +135,7 @@ Book::Enums::Code Grammar::Build()
 
     for (auto& [rule_name, rule_addr] : Rules)
     {
-        Core::StrAcc str;
+        StrAcc str;
         str << "'" << Color::Yellow << rule_name << Color::Reset << "' :";
         if (rule_addr->Empty())
         {
@@ -155,7 +153,7 @@ Book::Enums::Code Grammar::Build()
 
 std::string Grammar::DebugDumpSequence(const ElementSeq& seq)
 {
-    Core::StrAcc Out;
+    StrAcc Out;
     Out << Color::White << " | ";// << Ends;
     for(auto& t: seq.terms) Out << t() << ' ';// << Ends;
     Out << Color::Reset;
@@ -168,13 +166,13 @@ void Grammar::Dump()
 
     AppBook::Out() << Color::Red4 << "%-15s" << "rule" <<  Color::Black << " | terms sequence:";
     AppBook::Out() << "-----------------------------------------------------------------------------------";
-    Core::StrAcc Out;
+    StrAcc Out;
     for(const auto &rule: Rules)
     {
         Out << Color::Red4 << "%-15s" << rule.second->Id;
         for(auto const& seq: rule.second->Sequences)
         {
-            Core::StrAcc SeqStr;
+            StrAcc SeqStr;
             SeqStr << DebugDumpSequence(seq);
             Out << SeqStr;
         }
@@ -563,7 +561,7 @@ Grammar::Element::~Element()
 
 std::string Grammar::Element::operator()() const
 {
-    Core::StrAcc str;
+    StrAcc str;
     str << a() << colours[_type];
 
     switch(_type)
@@ -670,7 +668,7 @@ Grammar::ElementSeq & Grammar::ElementSeq::operator<<(Rule *a_t)
 
 std::string Grammar::Properties::operator()()
 {
-    Core::StrAcc str;
+    StrAcc str;
     if(Z)
         str << Color::LightCyan3 << '*';
     if(R)

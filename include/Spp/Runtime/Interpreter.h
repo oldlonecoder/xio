@@ -13,7 +13,7 @@
 #pragma once
 #include "Spp/Runtime/Unit.h"
 #include "Spp/Runtime/RTBase.h"
-#include <AppBook/Core/CArgs.h>
+#include <AppBook/Util/CArgs.h>
 
 
 
@@ -61,7 +61,7 @@ private:
 
 class SPP_EXPORT Interpreter : public Unit
 {
-    Core::Cmd::CArgs    Args;
+    Cmd::CArgs    Args;
     std::vector<std::string_view> CmdArgs;
 
     RTBase::Dictionary  RuntimeObjects;
@@ -82,10 +82,10 @@ public:
 
     Book::Result ProcessArgs();
 
-    Book::Result SourceFile(Core::Cmd::ArgumentData& Arg);
+    Book::Result SourceFile(Cmd::ArgumentData& Arg);
 
 
-    Book::Enums::Code Expression(Core::Cmd::ArgumentData &);
+    Book::Enums::Code Expression(Cmd::ArgumentData &);
 };
 
 } // Spp

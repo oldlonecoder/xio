@@ -21,8 +21,6 @@
 namespace Spp
 {
 
-using Core::Color;
-using Core::StrAcc;
 
 
 std::string  Alu::mNil = "";
@@ -311,7 +309,7 @@ Alu Alu::operator<<(const Alu& rhs) const
     Alu f;
     lrtext(rhs)
     {
-        Core::StrAcc str = text;
+        StrAcc str = text;
         str << rhs.text;
         return {str()};
     }
@@ -904,7 +902,7 @@ Alu& Alu::operator>>=(const Alu& rv)
 
 Alu::operator std::string() const
 {
-    Core::StrAcc str;
+    StrAcc str;
     if (T & Spp::Type::Bool)
         str << (v.u ? "true" : "false");
     else

@@ -99,7 +99,7 @@ Book::Result Compiler::operator()()
 xio *Compiler::CCUnit()
 {
 
-    AppBook::Error() << " Compile Lang::Grammar::Rule[" << Core::Color::Yellow << Ctx.Rule->Id << Core::Color::Reset << "'] not implemented yet... ";
+    AppBook::Error() << " Compile Lang::Grammar::Rule[" << Color::Yellow << Ctx.Rule->Id << Color::Reset << "'] not implemented yet... ";
     return nullptr;
 }
 
@@ -191,7 +191,7 @@ Book::Result Compiler::EnterRule(const Lang::Grammar::Rule *Rule)
 
 Book::Result Compiler::EnterElementSequence(Lang::Grammar::ElementSeq::Iterator SeqIt)
 {
-    for(auto const& Seq : SeqIt)
+    for(auto const& Seq : SeqIt->terms)
     {
 
     }

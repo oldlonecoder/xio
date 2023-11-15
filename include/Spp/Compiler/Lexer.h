@@ -15,8 +15,6 @@
 #include <AppBook/Book/BookEnums.h>
 #include "Spp/SppToken.h"
 
-using Core::Color;
-using Core::StrAcc;
 
 
 namespace Spp {

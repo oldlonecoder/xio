@@ -19,7 +19,7 @@
 #pragma once
 
 #include "Spp/SppTypes.h"
-#include <AppBook/Core/StrAcc.h>
+#include <AppBook/Util/StrAcc.h>
 
 //#include "logbook/expect.h"
 #include <vector>

@@ -46,7 +46,7 @@ public:
 
     Variable();
 
-    Variable(Core::Object* _Parent, SppToken* _Token=nullptr, Alu* A=nullptr);
+    Variable(Util::Object* _Parent, SppToken* _Token=nullptr, Alu* A=nullptr);
 
 
 

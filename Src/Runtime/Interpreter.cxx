@@ -32,7 +32,7 @@ Interpreter *Interpreter::Instance()
 
 
 
-Book::Result Interpreter::SourceFile(Core::Cmd::ArgumentData &Arg)
+Book::Result Interpreter::SourceFile(Cmd::ArgumentData &Arg)
 {
     AppBook::Debug() << "Command '" << Color::Yellow << Arg.Name << Color::Reset <<  "':" << Color::CadetBlue2 <<  Arg.Arguments[0] << Color::Reset << ":";
     _Filename = Arg.Arguments[0];
@@ -63,8 +63,8 @@ Book::Result Interpreter::SourceFile(Core::Cmd::ArgumentData &Arg)
 Book::Result Interpreter::ProcessArgs()
 {
     AppBook::Debug() << " Configuring command line arguments:";
-    (Args << Core::Cmd::ArgumentData{"Compile Source","-c","--compile","Compile given [s++] script source File.",1}).Connect(this, &Interpreter::SourceFile);
-    (Args << Core::Cmd::ArgumentData{"Eval Expression","-e","--eval","Evaluate Expression",1}).Connect(this, &Interpreter::Expression);
+    (Args << Cmd::ArgumentData{"Compile Source","-c","--compile","Compile given [s++] script source File.",1}).Connect(this, &Interpreter::SourceFile);
+    (Args << Cmd::ArgumentData{"Eval Expression","-e","--eval","Evaluate Expression",1}).Connect(this, &Interpreter::Expression);
     AppBook::Debug() << ":" << Book::Fn::Endl << Args.Usage();
     //auto& A = Args["Compile Source"];
     Args.ProcessStringArray(CmdArgs);
@@ -72,7 +72,7 @@ Book::Result Interpreter::ProcessArgs()
     return Args.Execute();
 }
 
-Book::Enums::Code Interpreter::Expression(Core::Cmd::ArgumentData &A)
+Book::Enums::Code Interpreter::Expression(Cmd::ArgumentData &A)
 {
     AppBook::Message() << Book::Result::Notimplemented;
     return Book::Result::Ok;

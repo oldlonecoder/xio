@@ -40,7 +40,7 @@ public:
 
     Stack();
     Stack(const std::string& _Id);
-    Stack(Core::Object* _Parent, const std::string& _Id);
+    Stack(Object* _Parent, const std::string& _Id);
     Stack(Stack* _Parent, SppToken* _Token = nullptr, Alu* A = nullptr);
 
 

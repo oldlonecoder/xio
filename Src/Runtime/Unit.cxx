@@ -17,7 +17,7 @@ Unit::~Unit()
 
 Unit::Unit(Stack *_Parent, std::string _Id): Stack(_Parent, nullptr,nullptr)
 {
-    AppBook::Debug() << " New Unit['" << Core::Color::Yellow << Id() << Core::Color::Reset << "'] Created.";
+    AppBook::Debug() << " New Unit['" << Color::Yellow << Id() << Color::Reset << "'] Created.";
     SetId(_Id);
 
 }
@@ -49,7 +49,7 @@ Book::Enums::Code Unit::LoadSource()
     in.open(_Filename);
     if (!in.is_open())
     {
-        AppBook::Error() << '\'' << Core::Color::Yellow << _Filename << Core::Color::White <<'\'' << Core::Color::White << " " << strerror(errno);
+        AppBook::Error() << '\'' << Color::Yellow << _Filename << Color::White <<'\'' << Color::White << " " << strerror(errno);
         return Book::Enums::Code::Failed;
     }
 

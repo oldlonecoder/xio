@@ -13,13 +13,11 @@
  ******************************************************************************************/
 
 #include "Spp/xio.h"
-#include <AppBook/Core/Geometry.h>
+#include <AppBook/Util/Geometry.h>
 #include <AppBook/Book/AppBook.h>
 
 //#include "xio/s++/spp.h"
 
-using Core::Color;
-using Core::StrAcc;
 
 namespace Spp
 {
@@ -117,12 +115,12 @@ xio::SioOperatorFnTable   xio::xio_operators_table{
 
 
 
-xio::xio(): Core::Object()
+xio::xio(): Util::Object()
 {
     A = new Alu(0.0f); // Shit!
 }
 
-xio::xio(xio* parent_bloc): Core::Object(parent_bloc, "xio")
+xio::xio(xio* parent_bloc): Util::Object(parent_bloc, "xio")
 {
     //token_info = new SppToken;
     A = new Alu;
@@ -134,7 +132,7 @@ xio::~xio()
     if (!Mem.Ref) delete A;
 }
 
-xio::xio(Core::Object* parent_bloc, SppToken* atoken, Alu* a_alu): Core::Object(parent_bloc, atoken ? atoken->Text() : "xio")
+xio::xio(Util::Object* parent_bloc, SppToken* atoken, Alu* a_alu): Util::Object(parent_bloc, atoken ? atoken->Text() : "xio")
 {
     SToken = atoken;
 
@@ -162,7 +160,7 @@ xio::xio(Core::Object* parent_bloc, SppToken* atoken, Alu* a_alu): Core::Object(
         if (SToken->S & Type::Number)
         {
             double d;
-            (Core::StrAcc(atoken->Text())) >> d;
+            (StrAcc(atoken->Text())) >> d;
             *A = d;
             AppBook::Debug() << " acc: " << Color::Yellow << (*A)();
         }
@@ -190,7 +188,7 @@ xio::xio(Core::Object* parent_bloc, SppToken* atoken, Alu* a_alu): Core::Object(
     //AppBook::Debug() << " acc: '" << Color::Yellow << (*acc)() << Color::White << "'";
 }
 
-//Core::Object::Iterator xio::GetChildIterator(xio* c)
+//Util::Object::Iterator xio::GetChildIterator(xio* c)
 //{
 //    auto It = _children.TreeBegin();
 //
@@ -1300,8 +1298,6 @@ void xio::dot_attr(StrAcc& a_out)
         Rhs->dot_attr(a_out);
 }
 
-using Core::Point;
-using Core::Rect;
 
 
 
@@ -1321,7 +1317,7 @@ std::string xio::TraceConnectBinaryOperands(xio* x)
     Point oper_xy = Point(static_cast<int>(m_lhs) + 1, 0);
     oper_xy.X -= ow % 2 == 0 ? 1 : 0;
 
-    Core::WinBuffer area;
+    WinBuffer area;
     area.SetGeometry(static_cast<int>(w), 3); // pour l'instant c'est hardcodé.
     area.GotoXY(oper_xy.X, 0);
     area << x->Attribute();
@@ -1352,7 +1348,7 @@ std::string xio::trace_connect_postfix_operands(xio* x)
     Point oper_xy = Point(static_cast<int>(m_lhs) + 1, 0);
     oper_xy.X -= ow % 2 == 0 ? 1 : 0;
 
-    Core::WinBuffer area;
+    WinBuffer area;
     area.SetGeometry(static_cast<int>(w), 3); // pour l'instant c'est hardcodé.
     area.GotoXY(oper_xy.X, 0);
     area << x->Attribute();

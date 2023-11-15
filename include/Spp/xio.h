@@ -24,7 +24,7 @@
 #include "Spp/Alu.h"
 #include "Spp/SppToken.h"
 //#include "logbook/expect.h"
-#include <AppBook/Core/Object.h>
+#include <AppBook/Util/Object.h>
 #include <AppBook/Book/BookEnums.h>
 
 
@@ -41,7 +41,7 @@ namespace Spp
     @author copy;2008-2023, oldlonecoder (Serge Lussier, lussier.serge@gmail.com)
 */
 
-class  SPP_EXPORT xio : public Core::Object
+class  SPP_EXPORT xio : public Util::Object
 {
     //friend class compiler;
 //    friend class ::Spp::spp::interpretr;
@@ -73,7 +73,7 @@ public:
     xio();
     explicit xio(xio* a_parent);
 
-    xio(Core::Object* a_parent, SppToken* a_token, Alu* a_alu = nullptr);
+    xio(Object* a_parent, SppToken* a_token, Alu* a_alu = nullptr);
 
     ~xio() override;
 
@@ -97,7 +97,7 @@ public:
     //static void illegal_rvalue(xio* x, SppToken* token);
     bool IsLeave() { return Mem.LF; }
 
-//    Core::Object::Iterator GetChildIterator(xio* c);
+//    Object::Iterator GetChildIterator(xio* c);
 
 //    Book::Enums::Code AppendChild(xio* c);
 //    virtual Book::Enums::Code Detach(xio* c);
@@ -175,12 +175,12 @@ public:
 
 #pragma region TRIGRAPH
 
-    static void dot_tree_start(Core::StrAcc& a_out, const Core::StrAcc& Title);
-    static void dot_node(xio* A, Core::StrAcc& a_out);
-    static void dot_null_node(xio*, int, Core::StrAcc&);
-    static void dot_tree(xio* a_root, Core::StrAcc& a_out);
-    static void dot_tree_close(Core::StrAcc& a_out);
-    void dot_attr(Core::StrAcc& a_out);
+    static void dot_tree_start(StrAcc& a_out, const StrAcc& Title);
+    static void dot_node(xio* A, StrAcc& a_out);
+    static void dot_null_node(xio*, int, StrAcc&);
+    static void dot_tree(xio* a_root, StrAcc& a_out);
+    static void dot_tree_close(StrAcc& a_out);
+    void dot_attr(StrAcc& a_out);
 
     //    static std::string trace_connect_binary_operands2(xio* x);
 

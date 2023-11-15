@@ -16,7 +16,7 @@
 
 #include <Spp/SppToken.h>
 #include <map>
-#include <AppBook/Core/StrBreak.h>
+#include <AppBook/Util/StrBreak.h>
 
 #include <stack>
 
@@ -322,7 +322,7 @@ class SPP_EXPORT Grammar
     Grammar();
 
     ~Grammar();
-    Core::StrAcc& Text() { return _text; }
+    StrAcc& Text() { return _text; }
 
     Book::Enums::Code Build();
 
@@ -350,10 +350,10 @@ class SPP_EXPORT Grammar
     Rule* _rule = nullptr;
     static Rule* QueryRule(const std::string& a_id);
 
-    using RuleScanner = Book::Enums::Code(Grammar::*)(Core::StrBreak::Word::Iterator&);
+    using RuleScanner = Book::Enums::Code(Grammar::*)(StrBreak::Word::Iterator&);
 
-    Core::StrAcc    _text;
-    Core::StrBreak  _words;
+    StrAcc    _text;
+    StrBreak  _words;
 
     using Dictionary = std::map<char, Grammar::RuleScanner>;
     static Dictionary GrammarDictionnary;
@@ -373,15 +373,15 @@ public:
 
     //--------------- Rules builders -------------------
 
-    Book::Enums::Code ParseIdentifier(Core::StrBreak::Word::Iterator& crs);
-    Book::Enums::Code EnterRuleDef(Core::StrBreak::Word::Iterator& crs);
-    Book::Enums::Code NewSequence(Core::StrBreak::Word::Iterator& crs);
-    Book::Enums::Code EndRule(Core::StrBreak::Word::Iterator& crs);
-    Book::Enums::Code SetRepeat(Core::StrBreak::Word::Iterator& crs);
-    Book::Enums::Code SetOptional(Core::StrBreak::Word::Iterator& crs);
-    Book::Enums::Code EnterLitteral(Core::StrBreak::Word::Iterator& crs);
-    Book::Enums::Code SetOneof(Core::StrBreak::Word::Iterator& crs);
-    Book::Enums::Code SetParserctrl(Core::StrBreak::Word::Iterator& crs);
+    Book::Enums::Code ParseIdentifier(StrBreak::Word::Iterator& crs);
+    Book::Enums::Code EnterRuleDef(StrBreak::Word::Iterator& crs);
+    Book::Enums::Code NewSequence(StrBreak::Word::Iterator& crs);
+    Book::Enums::Code EndRule(StrBreak::Word::Iterator& crs);
+    Book::Enums::Code SetRepeat(StrBreak::Word::Iterator& crs);
+    Book::Enums::Code SetOptional(StrBreak::Word::Iterator& crs);
+    Book::Enums::Code EnterLitteral(StrBreak::Word::Iterator& crs);
+    Book::Enums::Code SetOneof(StrBreak::Word::Iterator& crs);
+    Book::Enums::Code SetParserctrl(StrBreak::Word::Iterator& crs);
 };
 
 }

@@ -23,8 +23,6 @@
 
 //static const char* fmt = "'%s'(%D,%D) %s[%s]";
 
-using Core::StrAcc;
-using Core::Color;
 
 
 namespace Spp

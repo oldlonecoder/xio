@@ -34,7 +34,7 @@ namespace Spp {
 
 Lexer::ScanTbl ScanTable;
 
-std::map<Type::T, Color::code> PrimitiveTypesColors =
+std::map<Type::T, Color::Code> PrimitiveTypesColors =
 {
     {Type::Assign,      Color::CadetBlue},
     {Type::Number,      Color::Cyan2},
@@ -57,7 +57,7 @@ std::map<Type::T, Color::code> PrimitiveTypesColors =
 
 //};
 
-std::map<Mnemonic, Color::code> MnemonicColors =
+std::map<Mnemonic, Color::Code> MnemonicColors =
     {
         {Mnemonic::Null,             Color::White},
         {Mnemonic::LeftShift,        Color::SkyBlue1},

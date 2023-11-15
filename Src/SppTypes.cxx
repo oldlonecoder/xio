@@ -14,8 +14,8 @@
 
 
 #include "Spp/SppTypes.h"
-#include <AppBook/Core/StrBreak.h>
-#include <AppBook/Core/StrAcc.h>
+#include <AppBook/Util/StrBreak.h>
+#include <AppBook/Util/StrAcc.h>
 
 
 #include <map>
@@ -166,8 +166,8 @@ std::string Name(T T_)
 T FromStr(const std::string& Str )
 {
     T Types = 0;
-    Core::StrBreak Words;
-    Core::StrBreak::ConfigData Data = {Str, "/", Core::StrBreak::Discard};
+    StrBreak Words;
+    StrBreak::ConfigData Data = {Str, "/", StrBreak::Discard};
     auto count = Words(Data);
 
     for(auto I: Data.Words)

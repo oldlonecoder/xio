@@ -4,8 +4,6 @@
 
 #include "Spp/Stack.h"
 
-using Core::Object;
-using Core::Color;
 
 namespace Spp
 {
@@ -23,7 +21,7 @@ Stack::Stack(const std::string &_Id): xio(nullptr, nullptr, nullptr)
     SetId(_Id);
 }
 
-Stack::Stack(Core::Object *_Parent, const std::string &_Id) : xio(_Parent, nullptr, nullptr)
+Stack::Stack(Object *_Parent, const std::string &_Id) : xio(_Parent, nullptr, nullptr)
 {
     SetId(_Id);
 }
