@@ -96,6 +96,7 @@ private:
 
     Book::Result EnterRule(Lang::Grammar::Rule const* Rule);
     Book::Result EnterElementSequence(Lang::Grammar::ElementSeq::Iterator SeqIt);
+    Book::Result ParseElement(Lang::Grammar::Element::Iterator& EI);
 
 
 

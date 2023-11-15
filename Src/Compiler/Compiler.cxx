@@ -178,6 +178,12 @@ Book::Result Compiler::ExecuteLexer()
     return Book::Result::Accepted;
 }
 
+
+/*!
+ * @brief
+ * @param Rule
+ * @return
+ */
 Book::Result Compiler::EnterRule(const Lang::Grammar::Rule *Rule)
 {
     return Book::Result::Ok;
@@ -185,8 +191,20 @@ Book::Result Compiler::EnterRule(const Lang::Grammar::Rule *Rule)
 
 Book::Result Compiler::EnterElementSequence(Lang::Grammar::ElementSeq::Iterator SeqIt)
 {
+    for(auto const& Seq : SeqIt)
+    {
+
+    }
     return Book::Result::Ok;
 }
+
+Book::Result Compiler::ParseElement(Lang::Grammar::Element::Iterator &EI)
+{
+
+    return Book::Result::Rejected;
+}
+
+
 
 
 // ---------------- Compiler::Context: ----------------------------------------------
