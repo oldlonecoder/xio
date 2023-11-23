@@ -5,6 +5,11 @@ VisualStudioVersion = 17.7.34009.444
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xio", "xio.vcxproj", "{C1A521C8-F3C1-4D53-8E32-54C748A77D4E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XioDevTest", "XioDevTest\XioDevTest.vcxproj", "{A27CC440-8D91-41C3-A9E2-E96A8B03EBBA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C1A521C8-F3C1-4D53-8E32-54C748A77D4E} = {C1A521C8-F3C1-4D53-8E32-54C748A77D4E}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +26,14 @@ Global
 		{C1A521C8-F3C1-4D53-8E32-54C748A77D4E}.Release|x64.Build.0 = Release|x64
 		{C1A521C8-F3C1-4D53-8E32-54C748A77D4E}.Release|x86.ActiveCfg = Release|Win32
 		{C1A521C8-F3C1-4D53-8E32-54C748A77D4E}.Release|x86.Build.0 = Release|Win32
+		{A27CC440-8D91-41C3-A9E2-E96A8B03EBBA}.Debug|x64.ActiveCfg = Debug|x64
+		{A27CC440-8D91-41C3-A9E2-E96A8B03EBBA}.Debug|x64.Build.0 = Debug|x64
+		{A27CC440-8D91-41C3-A9E2-E96A8B03EBBA}.Debug|x86.ActiveCfg = Debug|Win32
+		{A27CC440-8D91-41C3-A9E2-E96A8B03EBBA}.Debug|x86.Build.0 = Debug|Win32
+		{A27CC440-8D91-41C3-A9E2-E96A8B03EBBA}.Release|x64.ActiveCfg = Release|x64
+		{A27CC440-8D91-41C3-A9E2-E96A8B03EBBA}.Release|x64.Build.0 = Release|x64
+		{A27CC440-8D91-41C3-A9E2-E96A8B03EBBA}.Release|x86.ActiveCfg = Release|Win32
+		{A27CC440-8D91-41C3-A9E2-E96A8B03EBBA}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

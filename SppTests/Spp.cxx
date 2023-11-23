@@ -69,7 +69,7 @@ auto main(int argc, char** argv) -> int
         AppBook::Out() << Book::Enums::Fn::Endl << head;
         Spp::Interpreter Interpreter("testing the SppTest and the interpreter...", argc, argv);
         auto R =  Interpreter.ProcessArgs();
-        if(R != Book::Result::Success)
+        if(R != Book::Action::Continue)
             AppBook::Message() << " Interpreter tests failed...";
 
     }
