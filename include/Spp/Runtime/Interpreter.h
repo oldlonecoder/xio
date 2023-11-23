@@ -80,12 +80,12 @@ public:
 
     Interpreter(std::string _Id, int argc, char** argv);
 
-    Book::Result ProcessArgs();
+    Book::Action ProcessArgs();
 
-    Book::Result SourceFile(Cmd::ArgumentData& Arg);
+    Book::Action SourceFile(Cmd::ArgumentData& Arg);
 
 
-    Book::Enums::Code Expression(Cmd::ArgumentData &);
+    Book::Action Expression(Cmd::ArgumentData &);
 };
 
 } // Spp

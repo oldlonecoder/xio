@@ -15,7 +15,7 @@
 #pragma once
 
 #include "Spp/Exports.h"
-
+#include <AppBook/Util/StrAcc.h>
 
 namespace Spp
 {

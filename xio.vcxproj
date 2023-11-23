@@ -27,13 +27,13 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -46,7 +46,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -72,46 +72,69 @@
   <PropertyGroup Label="UserMacros" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level1</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>SPP_EXPORTS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(HOMEDRIVE)\$(HOMEPATH)\libraries\include</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(HOMEDRIVE)\$(HOMEPATH)\libraries\binaries;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>AppBook.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy  $(TargetDir)\$(ProjectName).dll $(HOMEDRIVE)$(HOMEPATH)\libraries\binaries    /Y
+xcopy  $(TargetDir)\$(ProjectName).lib $(HOMEDRIVE)$(HOMEPATH)\libraries\binaries  /Y
+xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  /E
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>SPP_EXPORTS;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(HOMEDRIVE)\$(HOMEPATH)\libraries\include</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(HOMEDRIVE)\$(HOMEPATH)\libraries\binaries;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>AppBook.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy  $(TargetDir)\$(ProjectName).dll $(HOMEDRIVE)$(HOMEPATH)\libraries\binaries    /Y
+xcopy  $(TargetDir)\$(ProjectName).lib $(HOMEDRIVE)$(HOMEPATH)\libraries\binaries  /Y
+xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  /E
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>XIO_EXPORTS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level1</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>SPP_EXPORTS;XIO_EXPORTS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)include;$(HOMEDRIVE)$(HOMEPATH)\libraries\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(HOMEDRIVE)\$(HOMEPATH)\libraries\include</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(HOMEDRIVE)$(HOMEPATH)\libraries\binaries</AdditionalLibraryDirectories>
-      <AdditionalDependencies>chrtools.lib;logbook.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(HOMEDRIVE)\$(HOMEPATH)\libraries\binaries;$(HOMEDRIVE)$(HOMEPATH)\libraries\binaries</AdditionalLibraryDirectories>
+      <AdditionalDependencies>AppBook.lib;chrtools.lib;logbook.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy  $(TargetDir)\$(ProjectName).dll $(HOMEDRIVE)$(HOMEPATH)\libraries\binaries    /Y
@@ -122,46 +145,59 @@ xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>SPP_EXPORTS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(HOMEDRIVE)\$(HOMEPATH)\libraries\include</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(HOMEDRIVE)\$(HOMEPATH)\libraries\binaries;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>AppBook.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy  $(TargetDir)\$(ProjectName).dll $(HOMEDRIVE)$(HOMEPATH)\libraries\binaries    /Y
+xcopy  $(TargetDir)\$(ProjectName).lib $(HOMEDRIVE)$(HOMEPATH)\libraries\binaries  /Y
+xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  /E
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\xio\alu.h" />
-    <ClInclude Include="include\xio\compiler\compiler.h" />
-    <ClInclude Include="include\xio\compiler\grammar.h" />
-    <ClInclude Include="include\xio\compiler\lexer.h" />
-    <ClInclude Include="include\xio\public.h" />
-    <ClInclude Include="include\xio\s++\amu.h" />
-    <ClInclude Include="include\xio\s++\spp.h" />
-    <ClInclude Include="include\xio\tokendata.h" />
-    <ClInclude Include="include\xio\types.h" />
-    <ClInclude Include="include\xio\xio.h" />
-    <ClInclude Include="include\xio\xiobloc.h" />
-    <ClInclude Include="include\xio\xiovar.h" />
+    <ClInclude Include="include\Spp\Alu.h" />
+    <ClInclude Include="include\Spp\Compiler\Compiler.h" />
+    <ClInclude Include="include\Spp\Compiler\Lang\Grammar.h" />
+    <ClInclude Include="include\Spp\Compiler\Lexer.h" />
+    <ClInclude Include="include\Spp\Exports.h" />
+    <ClInclude Include="include\Spp\Runtime\Interpreter.h" />
+    <ClInclude Include="include\Spp\Runtime\RTBase.h" />
+    <ClInclude Include="include\Spp\Runtime\Unit.h" />
+    <ClInclude Include="include\Spp\Runtime\Variable.h" />
+    <ClInclude Include="include\Spp\SppToken.h" />
+    <ClInclude Include="include\Spp\SppTypes.h" />
+    <ClInclude Include="include\Spp\Stack.h" />
+    <ClInclude Include="include\Spp\xio.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\alu.cc" />
-    <ClCompile Include="src\compiler\compiler.cc" />
-    <ClCompile Include="src\compiler\grammar.cc" />
-    <ClCompile Include="src\compiler\lexer.cc" />
-    <ClCompile Include="src\s++\amu.cc" />
-    <ClCompile Include="src\s++\spp.cc" />
-    <ClCompile Include="src\tokendata.cc" />
-    <ClCompile Include="src\types.cc" />
-    <ClCompile Include="src\xio.cc" />
-    <ClCompile Include="src\xiobloc.cc" />
-    <ClCompile Include="src\xiovar.cc" />
+    <ClCompile Include="Src\Alu.cxx" />
+    <ClCompile Include="Src\Compiler\Compiler.cxx" />
+    <ClCompile Include="Src\Compiler\Lang\Grammar.cxx" />
+    <ClCompile Include="Src\Compiler\Lexer.cxx" />
+    <ClCompile Include="Src\Runtime\Interpreter.cxx" />
+    <ClCompile Include="Src\Runtime\RTBase.cxx" />
+    <ClCompile Include="Src\Runtime\Unit.cxx" />
+    <ClCompile Include="Src\Runtime\Variable.cxx" />
+    <ClCompile Include="Src\SppToken.cxx" />
+    <ClCompile Include="Src\SppTypes.cxx" />
+    <ClCompile Include="Src\Stack.cxx" />
+    <ClCompile Include="Src\xio.cxx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

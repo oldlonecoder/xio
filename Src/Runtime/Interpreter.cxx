@@ -32,7 +32,7 @@ Interpreter *Interpreter::Instance()
 
 
 
-Book::Result Interpreter::SourceFile(Cmd::ArgumentData &Arg)
+Book::Action Interpreter::SourceFile(Cmd::ArgumentData &Arg)
 {
     AppBook::Debug() << "Command '" << Color::Yellow << Arg.Name << Color::Reset <<  "':" << Color::CadetBlue2 <<  Arg.Arguments[0] << Color::Reset << ":";
     _Filename = Arg.Arguments[0];
@@ -40,7 +40,7 @@ Book::Result Interpreter::SourceFile(Cmd::ArgumentData &Arg)
     if(R != Book::Result::Accepted)
     {
         AppBook::Error() << " Failed to load source.";
-        return R;
+        return Book::Action::End;
     }
     AppBook::Message() << " Source Loaded :";
     AppBook::Out() << Color::White << "----------------------------------------------------------------------------------------";
@@ -56,11 +56,11 @@ Book::Result Interpreter::SourceFile(Cmd::ArgumentData &Arg)
     Gr.Dump();
 
 
-    return Book::Result::Notimplemented;
+    return Book::Action::End;
 }
 
 
-Book::Result Interpreter::ProcessArgs()
+Book::Action Interpreter::ProcessArgs()
 {
     AppBook::Debug() << " Configuring command line arguments:";
     (Args << Cmd::ArgumentData{"Compile Source","-c","--compile","Compile given [s++] script source File.",1}).Connect(this, &Interpreter::SourceFile);
@@ -72,10 +72,10 @@ Book::Result Interpreter::ProcessArgs()
     return Args.Execute();
 }
 
-Book::Enums::Code Interpreter::Expression(Cmd::ArgumentData &A)
+Book::Action Interpreter::Expression(Cmd::ArgumentData &A)
 {
     AppBook::Message() << Book::Result::Notimplemented;
-    return Book::Result::Ok;
+    return Book::Action::End;
 }
 
 
