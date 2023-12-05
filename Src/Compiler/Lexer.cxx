@@ -612,8 +612,8 @@ Book::Enums::Code Lexer::InputPunctuation(SppToken &Token)
         AppBook::Debug() << " not...checking if previous TokenPtr is number:";
         if (!_Config.Tokens->empty())
         {
-            AppBook::Out() << "Previous TokenPtr: " << Book::Enums::Fn::Endl
-                        << _Config.Tokens->back().Details() << ":";
+            AppBook::Out() << "Previous TokenPtr: " << Book::Enums::Fn::Endl << _Config.Tokens->back().Details() << ":";
+
             // La seule et unique condition est que le token precedant soit une valeur numerique litterale (ex.: '4').
             if (_Config.Tokens->back().IsNumber())
             {
@@ -801,7 +801,8 @@ void Lexer::InsertMultiply(SppToken &Token)
 
     if ((Token.Location.Colnum - i->Location.Colnum) >= 2)
     {
-        AppBook::Debug() << " Rejected because t must be no spaces between the involved tokens...";
+        AppBook::Debug() << " Rejected because there must be no spaces between the involved tokens...";
+        AppBook::Debug() << Book::Fn::Endl << Token.Details(true) << Book::Fn::Endl << i->Details(true);
         return;
     }
     ++i;
@@ -949,7 +950,10 @@ Book::Enums::Code Lexer::Lex()
 {
     //Book::Enums::Code R;
     if (!_Config)
+    {
+        AppBook::Error() << " No or wrong config";
         return Book::Enums::Code::Rejected; // Use logger::push_error to queu error message and code...
+    }
     //...
     if (ScanTable.empty())
     {
@@ -1000,6 +1004,15 @@ Book::Enums::Code Lexer::Lex()
             }
         }
     }
+    AppBook::Status() << Book::Result::Success;
+    StrAcc Code = Colorize();
+    AppBook::Out() << Code;
+    AppBook::Message() << "Dumping tokens stream details:";
+
+    DumpTokens([](SppToken const& T){
+        AppBook::Out() << ( (T.M != Mnemonic::CommentCpp) && (T.M != Mnemonic::BlocComment) ?  T.Details(true) : "Comment...");
+    });
+
     return Book::Enums::Code::Success;//book::codeInt::Ok;
 }
 

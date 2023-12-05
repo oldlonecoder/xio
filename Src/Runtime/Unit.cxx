@@ -29,7 +29,11 @@ Book::Enums::Code Unit::Compile()
 
     Compiler CC(this, _Source);
     if(auto R = CC.ExecuteLexer(); R != Book::Result::Success)
+    {
+        AppBook::Debug() << "Lex rejected";
+
         return Book::Result::Rejected;
+    }
 
 
     CC();

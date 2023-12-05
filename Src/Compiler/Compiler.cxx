@@ -35,9 +35,9 @@ Book::Result Compiler::operator()()
 //    }
 
     Ctx = {Data.Tokens.begin(), Data.Tokens.begin(), Data.Tokens.end(), Data.RootBloc};
-//    Ctx.Rule = Lang::Grammar()["Unit"];
-
-    (void)CCUnit();
+    Ctx.Rule = Lang::Grammar()["expression"];
+    AppBook::Error() << " Compile Unit: " << Book::Fn::Endl << (*Ctx.Cur).Details(true) << Book::Fn::Endl<< " is not implemented yet... ";
+    (void)ParseExpression();
 
     return Book::Result::Notimplemented;
 }
@@ -99,7 +99,7 @@ Book::Result Compiler::operator()()
 xio *Compiler::CCUnit()
 {
 
-    AppBook::Error() << " Compile Lang::Grammar::Rule[" << Color::Yellow << Ctx.Rule->Id << Color::Reset << "'] not implemented yet... ";
+    AppBook::Error() << " Compile Unit: " << Book::Fn::Endl << (*Ctx.Cur).Details(true) << Book::Fn::Endl<< " is not implemented yet... ";
     return nullptr;
 }
 
@@ -173,9 +173,14 @@ Book::Result Compiler::ExecuteLexer()
     Lexer Lex;
     Lex.Config() = {Data.SourceText.data(),&Data.Tokens};
     if(auto R = Lex.Lex(); R != Book::Result::Success)
+    {
+        AppBook::Error() << " Lexer failed:";
+        for(auto const& Token: Data.Tokens)
+            AppBook::Out() << Token.Mark();
         return R;
+    }
 
-    return Book::Result::Accepted;
+    return Book::Result::Success;
 }
 
 
@@ -248,7 +253,7 @@ void Compiler::ContextData::Reject()
 }
 
 Compiler::ContextData::ContextData(SppToken::Iterator BeginStream, SppToken::Iterator StartSeq, SppToken::Iterator EndStream, Stack *Bloc)
-    : BeginStream(BeginStream), StartSeq(StartSeq), EndStream(EndStream), Bloc(Bloc)
+    : BeginStream(BeginStream), StartSeq(StartSeq), Cur(StartSeq), EndSeq(StartSeq), EndStream(EndStream), Bloc(Bloc)
 {}
 
 

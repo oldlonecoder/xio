@@ -259,7 +259,7 @@ static SppToken::Array TokensTable =
         {Mnemonic::Add,                 Type::Binary,    Type::Operator|Type::Binary                                ,Distance::Addition,   Lexem::Addition,     1},
         {Mnemonic::Sub,                 Type::Binary,    Type::Operator|Type::Binary                                ,Distance::Addition,   Lexem::Sub,          1},
         {Mnemonic::Mul,                 Type::Binary,    Type::Operator|Type::Binary                                ,Distance::Product,    Lexem::Multiply,     1},
-        {Mnemonic::CommentCpp,          Type::LineComment, Type::LineComment                                        ,Distance::Noop_,      Lexem::CommentCpp,  0},
+        {Mnemonic::CommentCpp,          Type::LineComment, Type::LineComment|Type::Operator                                        ,Distance::Noop_,      Lexem::CommentCpp,  0},
         {Mnemonic::Modulo,              Type::Binary,    Type::Operator|Type::Binary                                ,Distance::Product,    Lexem::Modulo,       1},
         {Mnemonic::LessThan,            Type::Binary,    Type::Operator|Type::Binary|Type::Bool                     ,Distance::Equality,   Lexem::LessThan,    1},
         {Mnemonic::GreaterThan,         Type::Binary,    Type::Operator|Type::Binary|Type::Bool                     ,Distance::Equality,   Lexem::GreaterThan, 1},
@@ -277,8 +277,8 @@ static SppToken::Array TokensTable =
         {Mnemonic::Closeindex,          Type::ClosePair, Type::Operator|Type::Punc|Type::Binary|Type::ClosePair     ,Distance::Paranthese, Lexem::CloseIndex,   1},
         {Mnemonic::Openbrace,           Type::Binary,    Type::Operator|Type::Binary|Type::Punc|Type::OpenPair      ,Distance::Paranthese, Lexem::BraceBegin,  1},
         {Mnemonic::Closebrace,          Type::ClosePair, Type::Operator|Type::Binary|Type::Punc|Type::ClosePair     ,Distance::Paranthese, Lexem::BraceEnd,     1},
-        {Mnemonic::BeginComment,        Type::BlocComment, Type::BlocComment                                        ,Distance::Noop_,      Lexem::CommentBegin, 0},
-        {Mnemonic::EndComment,          Type::BlocComment, Type::BlocComment                                        ,Distance::Noop_,      Lexem::CommentEnd, 0},
+        {Mnemonic::BeginComment,        Type::BlocComment, Type::BlocComment|Type::Operator                         ,Distance::Noop_,      Lexem::CommentBegin, 0},
+        {Mnemonic::EndComment,          Type::BlocComment, Type::BlocComment|Type::Operator                         ,Distance::Noop_,      Lexem::CommentEnd, 0},
         {Mnemonic::Div,                 Type::Binary,    Type::Operator|Type::Binary                                ,Distance::Product,    Lexem::Division,  1},
         {Mnemonic::Comma,               Type::Punc,      Type::Operator|Type::Binary|Type::Punc                     ,Distance::Comma,      Lexem::Comma,     1},
         {Mnemonic::Scope,               Type::Punc,      Type::Operator|Type::Binary|Type::Punc                     ,Distance::Scope,      Lexem::Scope,     1},
@@ -408,8 +408,15 @@ std::string SppToken::Details(bool Mark_) const
 {
     StrAcc Str;
     Str << '\'' << Text() << '\'';
-    Str += "[%s]: offset: %D line:%D, col:%D, %s/{%s}";
-    Str << MnemonicName(M) << Location.Offset << Location.Linenum << Location.Colnum << TypeName() << SemanticText();
+    Str += "[%s]: offset: %d line:%d, col:%d, %s/{%s}";
+    Str
+    << MnemonicName(M)
+    << Location.Offset
+    << Location.Linenum
+    << Location.Colnum
+    << TypeName()
+    << SemanticText();
+
     if (Mark_)
         Str << '\n' << Mark();
     return Str();

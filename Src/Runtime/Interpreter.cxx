@@ -55,14 +55,21 @@ Book::Action Interpreter::SourceFile(Cmd::ArgumentData &Arg)
     AppBook::Debug() << " Dump Grammar:";
     Gr.Dump();
 
+    auto Code = Unit::Compile();
+    if(Code != Book::Result::Success)
+    {
+        AppBook::Error() << " Failed to Compile and execute the source";
+        return Book::Action::End;
+    }
 
-    return Book::Action::End;
+    return Book::Action::Continue;
 }
+
 
 
 Book::Action Interpreter::ProcessArgs()
 {
-    AppBook::Debug() << " Configuring command line arguments:";
+    AppBook::Debug() << " Processing/Executing command line arguments:";
     (Args << Cmd::ArgumentData{"Compile Source","-c","--compile","Compile given [s++] script source File.",1}).Connect(this, &Interpreter::SourceFile);
     (Args << Cmd::ArgumentData{"Eval Expression","-e","--eval","Evaluate Expression",1}).Connect(this, &Interpreter::Expression);
     AppBook::Debug() << ":" << Book::Fn::Endl << Args.Usage();

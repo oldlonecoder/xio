@@ -43,7 +43,7 @@ void SigAbort(int s)
 auto main(int argc, char** argv) -> int
 {
 
-    ::signal(SIGINT, SigInt);
+    //::signal(SIGINT, SigInt);
     ::signal(SIGSEGV, SigFault);
     ::signal(SIGABRT, SigAbort);
 
