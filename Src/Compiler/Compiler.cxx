@@ -37,8 +37,10 @@ Book::Result Compiler::operator()()
     Ctx = {Data.Tokens.begin(), Data.Tokens.begin(), Data.Tokens.end(), Data.RootBloc};
     Ctx.Rule = Lang::Grammar()["expression"];
     AppBook::Error() << " Compile Unit: " << Book::Fn::Endl << (*Ctx.Cur).Details(true) << Book::Fn::Endl<< " is not implemented yet... ";
-    (void)ParseExpression();
+    if(auto* x = ParseExpression(); x)
+    {
 
+    }
     return Book::Result::Notimplemented;
 }
 
@@ -51,8 +53,8 @@ Book::Result Compiler::operator()()
  * \note   Stop conditions are yet to be determined clearly. The current is
  *         1 - eof
  *         2 - eos ( end of statement mnemonic or simply the ';' mnemonic )
- *         3 - Expression ends on invalid relationanl token or invalid mnemonic when in condition expr context
- *         -- Other ways that are not yet explored/implemented: ( [condition] expr ) [expr] {expr} syntaxes.
+ *         3 - Expression ends on invalid relational token or invalid mnemonic when in condition expr context for ex.
+ *         -- Other ways that are not yet explored/implemented: ( [condition] expr ) [expr] {expr} syntax.
  */
 [[maybe_unused]] xio* Compiler::ParseExpression()
 {
