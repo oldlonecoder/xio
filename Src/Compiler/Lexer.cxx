@@ -1030,7 +1030,7 @@ Book::Enums::Code Lexer::ScanCppComment(SppToken &Token)
     Token.Location.end = _Cursor.C;
     Token.Location.Length = Token.Location.end - Token.Location.begin;
     _Cursor++;
-    _Config.Tokens->push_back(Token);
+    //_Config.Tokens->push_back(Token);
     _Cursor.Sync();
 
     return Book::Enums::Code::Accepted;
@@ -1049,7 +1049,7 @@ Book::Enums::Code Lexer::ScanCommentBloc(SppToken &Token)
     _Cursor++;
     //AppBook::Debug() << "cursor: " << cursor.location();
     _Cursor.Sync();
-    _Config.Tokens->push_back(Token);
+    //_Config.Tokens->push_back(Token);
     //AppBook::Debug() << Book::Enums::Fn::endl << Token.details() << Book::Enums::Fn::endl << Book::Enums::Fn::endl;
     if (_Cursor.EndOfFile())
         throw AppBook::Except() << Book::Enums::Code::Unexpected << Book::Enums::Code::Eof

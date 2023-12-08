@@ -1,6 +1,26 @@
 
 //Unit ::Test;
 
+/*
+           Idée de syntaxe ( alternative à switch-case ) pour l'interpreteur XIO :
+           ---------------------------------------------------------------------
+
+        Game::Init()->Success{
+
+        }->Warning[InvalidValue]{ // Specific warning
+
+        }->Error[NotFound]{
+
+        }->Error[Syntax]{
+
+        }->Error[]{  // All other errors
+
+        }->Fatal[SegFault,Abort,UserBreak]{
+
+        }->...
+
+           ---------------------------------------------------------------------
+*/
 
 /*******************************************************************
 *   Testing arithmetic expression.                                 *

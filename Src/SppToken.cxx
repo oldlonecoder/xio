@@ -21,7 +21,7 @@
 //#include "logbook/expect.h"
 
 
-//static const char* fmt = "'%s'(%D,%D) %s[%s]";
+//static const char* fmt = "'%s'(%d,%d) %s[%s]";
 
 
 
@@ -69,7 +69,7 @@ std::string SppToken::LocationData::Text() const
 
 std::string SppToken::LocationData::Position() const
 {
-    StrAcc Str = "%D,%D";
+    StrAcc Str = "%d,%d";
     Str << Linenum << Colnum;
     return Str();
 }
@@ -208,7 +208,7 @@ std::string SppToken::TextLine() const
 std::string SppToken::LocationText() const
 {
     if(Location.Linenum <= 0) return "[]";
-    StrAcc Str = "Line :%D, Col:%D";
+    StrAcc Str = "Line :%d, Col:%d";
     Str << Location.Linenum << Location.Colnum;
     return Str();
 }

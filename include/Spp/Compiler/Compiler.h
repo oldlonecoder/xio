@@ -33,13 +33,12 @@ public:
     struct SPP_EXPORT ConfigData
     {
         std::string_view SourceText;
-        SppToken::Array  Tokens;
+        SppToken::Array*  Tokens;
         Stack*           RootBloc;
     };
 
 
     Compiler() =default;
-    Compiler(Stack* _RBloc, std::string_view _Src);
 
     Compiler::ConfigData& Config() { return Data; }
 

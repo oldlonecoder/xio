@@ -87,22 +87,22 @@ Alu Stack::JSR()
     return *A;
 }
 
-Variable *Stack::NewVar(SppToken *_Token)
+Variable *Stack::NewVar(SppToken *Arg)
 {
-    AppBook::Debug() << ": ...NewVar(" << Color::Yellow << SToken->Text() << Color::Reset << "):";
-    auto* v = GetVariableById(SToken->Text());
+    AppBook::Debug() << ": ...NewVar(" << Color::Yellow << Arg->Text() << Color::Reset << "):";
+    auto* v = GetVariableById(Arg->Text());
     if(!v)
     {
-        AppBook::Info()  << ": NewVar(" << Color::Yellow << SToken->Text() << Color::Reset << ") new local variable.";
-        LocalVariables.push_back(new Variable(this, SToken));
+        AppBook::Info() << ": NewVar(" << Color::Yellow << Arg->Text() << Color::Reset << ") new local variable.";
+        LocalVariables.push_back(new Variable(this, Arg));
         Variable* xv = LocalVariables.back()->As<Variable>();
         xv->_StackIndex = LocalVariables.size()-1;
         return xv;
     }
-    Variable* var = new Variable(this, SToken, v->A);
+    Variable* var = new Variable(this, Arg, v->A);
     var->_StackIndex = v->_StackIndex;
 
-    AppBook::Debug() << "NewVar(" << Color::Yellow << SToken->Text() << Color::Reset << "): created new ref to variable.";
+    AppBook::Debug() << "NewVar(" << Color::Yellow << Arg->Text() << Color::Reset << "): created new ref to variable.";
     return var;
 }
 
@@ -156,6 +156,7 @@ Book::Enums::Code Stack::RemoveVariable(Variable *_Obj)
 
 Book::Enums::Code Stack::AppendInstruction(xio *_In)
 {
+    AppBook::Debug() << " Adding Instruction : " << Book::Fn::Endl << _In->TokenPtr()->Details(true);
     Instructions.push_back(_In);
     return Book::Enums::Code::Accepted;
 }

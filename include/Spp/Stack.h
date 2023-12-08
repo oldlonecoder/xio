@@ -57,7 +57,7 @@ public:
 
     Alu JSR() override;
 
-    Variable* NewVar(SppToken* _Token);
+    Variable* NewVar(SppToken* Arg);
     Variable* GetLocalVariableById(const std::string& _ID);
     Variable* GetVariableById(const std::string& _ID);
 

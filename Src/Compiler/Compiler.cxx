@@ -6,11 +6,7 @@
 
 namespace Spp
 {
-Compiler::Compiler(Stack *_RBloc, std::string_view _Src)
-{
-    Data.RootBloc = _RBloc;
-    Data.SourceText = _Src;
-}
+
 
 
 
@@ -34,14 +30,15 @@ Book::Result Compiler::operator()()
 //        return Book::Result::Failed;
 //    }
 
-    Ctx = {Data.Tokens.begin(), Data.Tokens.begin(), Data.Tokens.end(), Data.RootBloc};
+    Ctx = {Data.Tokens->begin(), Data.Tokens->begin(), Data.Tokens->end(), Data.RootBloc};
+    AppBook::Debug() << " Tokens sequence begins :'" << Book::Fn::Endl << Color::Yellow << Ctx.Token().Details(true);
     Ctx.Rule = Lang::Grammar()["expression"];
-    AppBook::Error() << " Compile Unit: " << Book::Fn::Endl << (*Ctx.Cur).Details(true) << Book::Fn::Endl<< " is not implemented yet... ";
+    //AppBook::Error() << " Compile Unit: " << Book::Fn::Endl << (*Ctx.Cur).Details(true) << Book::Fn::Endl<< " is not implemented yet... ";
     if(auto* x = ParseExpression(); x)
     {
-
+        return Book::Result::Success;
     }
-    return Book::Result::Notimplemented;
+    return Book::Result::Null_ptr;
 }
 
 
@@ -61,11 +58,11 @@ Book::Result Compiler::operator()()
     AppBook::Debug() << " ==> Entering on token:" << Book::Fn::Endl << Ctx.Token().Details (true);
     xio* x{nullptr};
 
-    if(SkipComments() == Book::Result::Eof)
-    {
-        AppBook::Message() << "eof on commented contents;  no expression; leaving";
-        return nullptr;
-    }
+    // if(SkipComments() == Book::Result::Eof)
+    // {
+    //     AppBook::Message() << "eof on commented contents;  no expression; leaving";
+    //     return nullptr;
+    // }
 
     if(!(x = xio::TreeBegin(Ctx.Bloc, &Ctx.Token(), [this](SppToken *T) -> xio * { return NewXio(T); })))
     {
@@ -74,7 +71,7 @@ Book::Result Compiler::operator()()
     }
 
     Ctx++;
-    while((Ctx.Cur < Data.Tokens.end()) && (Ctx.Cur->M != Mnemonic::Semicolon)){
+    while((Ctx.Cur < Data.Tokens->end()) && (Ctx.Cur->M != Mnemonic::Semicolon)){
         x = x->TreeInput(Ctx.Bloc, &Ctx.Token(), [this](SppToken* T)-> xio*{ return NewXio(T); });
         if(!x)
         {
@@ -173,11 +170,11 @@ Book::Result Compiler::ExecuteLexer()
     }
 
     Lexer Lex;
-    Lex.Config() = {Data.SourceText.data(),&Data.Tokens};
+    Lex.Config() = {Data.SourceText.data(),Data.Tokens};
     if(auto R = Lex.Lex(); R != Book::Result::Success)
     {
         AppBook::Error() << " Lexer failed:";
-        for(auto const& Token: Data.Tokens)
+        for(auto const& Token: *Data.Tokens)
             AppBook::Out() << Token.Mark();
         return R;
     }
@@ -237,6 +234,7 @@ void Compiler::ContextData::Accept()
     InstructionsSeq.clear();
     if(Instruction) Bloc->AppendInstruction(Instruction);
     CurType = Type::Null;
+    AppBook::Debug() << " New Instruction injected into Bloc:'" << Color::Yellow << Bloc->Id() << Color::Reset << "':" << Book::Fn::Endl << Instruction->TokenPtr()->Details(true);
 }
 
 

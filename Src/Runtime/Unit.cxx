@@ -27,7 +27,10 @@ Book::Enums::Code Unit::Compile()
     if(_Source.empty())
         return Book::Enums::Code::Empty;
 
-    Compiler CC(this, _Source);
+    Compiler CC;
+    CC.Config() = { _Source, &_Tokens, this };
+
+
     if(auto R = CC.ExecuteLexer(); R != Book::Result::Success)
     {
         AppBook::Debug() << "Lex rejected";
@@ -35,10 +38,7 @@ Book::Enums::Code Unit::Compile()
         return Book::Result::Rejected;
     }
 
-
-    CC();
-
-    return Book::Enums::Code::Ok;
+    return CC();
 }
 
 Alu Unit::JSR()

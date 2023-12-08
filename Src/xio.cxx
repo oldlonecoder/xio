@@ -222,6 +222,8 @@ Alu xio::JSR()
         else
             AppBook::Warning() << "operator xio [" << Color::Yellow << SToken->Text() << Color::Reset << "] has no implementation (yet?).:\n" << SToken->Mark() << Book::Enums::Fn::Endl ;
     }
+    else
+        AppBook::Warning() << " xio::" << SToken->Details(false) << " Was not an Operator - Returning the current Alu value ...";
     SToken->S |= A->T; ///< Why is that ?
     // It's because our actual token::type (xio::Type::T) has been changed by the type of the resulting operation Alu::T ( acc->T is put into t0->s )...
     // Ceci est le changement apporté au champs sémantique du token qui est modifié par le type résultant de l'opération.  ^       ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ...
@@ -1165,7 +1167,7 @@ xio* xio::TreeRoot(bool skip_syntax)
         p = p->Op;
     } while (p);
 
-    AppBook::Debug() << "Match tree ins returning node: " << x->SToken->Details() << Book::Enums::Fn::Endl << x->SToken->Mark() << Book::Enums::Fn::Endl ;
+    AppBook::Debug() << "Tree root instruction is set: " << x->SToken->Details() << Book::Enums::Fn::Endl << x->SToken->Mark();
     return  x;
 }
 

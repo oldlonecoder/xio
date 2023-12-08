@@ -61,7 +61,15 @@ Book::Action Interpreter::SourceFile(Cmd::ArgumentData &Arg)
         AppBook::Error() << " Failed to Compile and execute the source";
         return Book::Action::End;
     }
-
+    if(!Instructions.empty())
+    {
+        Alu A = Unit::JSR();
+        AppBook::Out() << A();
+    }
+    else
+    {
+        AppBook::Status() << Book::Class::Error;
+    }
     return Book::Action::Continue;
 }
 
