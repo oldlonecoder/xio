@@ -51,7 +51,8 @@ auto main(int argc, char** argv) -> int
     {
         AppBook& Livre = AppBook::Init("SppTests");
         AppBook::Open();
-        Livre.Descriptions = R"(
+        Livre.Descriptions = 
+R"(
 <Icon:School; fg:Yellow>This is the development of the <fg:White>[xio & interpreter API explorations]<fg/>
 ------------------------------------------------------------------------
 )";
