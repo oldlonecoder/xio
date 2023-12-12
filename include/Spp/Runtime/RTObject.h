@@ -21,20 +21,22 @@ namespace Spp
 
 
 
-class SPP_EXPORT RTBase : public xio
+class SPP_EXPORT RTObject : public xio
 {
-public:
-    using Dictionary = std::map<std::string, RTBase *>;
+    void* Obj{nullptr};
 
-    RTBase() : xio()
+public:
+    using Dictionary = std::map<std::string, RTObject *>;
+
+    RTObject() : xio()
     {}
 
-    RTBase(xio *a_parent, const std::string &a_id) : xio(a_parent, nullptr, nullptr)
+    RTObject(xio *a_parent, const std::string &a_id) : xio(a_parent, nullptr, nullptr)
     {
         SetId(a_id);
     }
 
-    ~RTBase() override;
+    ~RTObject() override;
 
     std::string Name(){ return Id(); }
 
@@ -43,7 +45,7 @@ public:
 
 
 
-template<typename Class, typename Ret, typename ...Params_> class RTFunction : public RTBase
+template<typename Class, typename Ret, typename ...Params_> class RTFunction : public RTObject
 {
     Class *rt_obj = nullptr;
 public:
@@ -54,7 +56,7 @@ public:
     RTFunction() = default;
 
     RTFunction(xio *a_parent, const std::string &a_name, Class &rt_inst, rtf_ptr_t a_fn)
-        : RTBase(a_parent, a_name), rt_obj(&rt_inst), rtf_ptr(a_fn)
+        : RTObject(a_parent, a_name), rt_obj(&rt_inst), rtf_ptr(a_fn)
     {}
 
     ~RTFunction() override = default;

@@ -12,7 +12,7 @@
 
 #pragma once
 #include "Spp/Runtime/Unit.h"
-#include "Spp/Runtime/RTBase.h"
+#include "Spp/Runtime/RTObject.h"
 #include <AppBook/Util/CArgs.h>
 
 
@@ -64,16 +64,32 @@ class SPP_EXPORT Interpreter : public Unit
     Cmd::CArgs    Args;
     std::vector<std::string_view> CmdArgs;
 
-    RTBase::Dictionary  RuntimeObjects;
-    RTBase::Dictionary  RuntimeFunctions; ///< No matter if function or class method;
+    RTObject::Dictionary  RuntimeObjects;
+    RTObject::Dictionary  RuntimeFunctions; ///< No matter if function or class method;
 
     Unit::Array         Units;
     static Interpreter* InterpreterInstance;
 
-public:
-    static Interpreter *Instance();
+
+    struct RuntimeObject: public Util::Object
+    {
+        using Map = std::map<std::string, RuntimeObject*>;
+
+        void *RTO{nullptr};
+        RuntimeObject(Interpreter* Inter, void* RTObj): Util::Object(Inter, Id() + "Node"), RTO(RTObj){}
+        virtual ~RuntimeObject() = default;
+
+    };
+
+    template<typename CType, typename ...Args> struct RuntimeFunction : RuntimeObject
+    {
+        using Function = Alu(CType::*)(Args...);
+        //...
+    };
+
 
 public:
+    static Interpreter *Instance();
 
     Interpreter() = default;
     ~Interpreter() override;

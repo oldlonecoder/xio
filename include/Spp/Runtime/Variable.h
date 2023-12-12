@@ -16,7 +16,7 @@
 
 #pragma once
 #include <Spp/xio.h>
-#include <Spp/Runtime/RTBase.h>
+#include <Spp/Runtime/RTObject.h>
 
 
 namespace Spp
@@ -35,7 +35,7 @@ class SPP_EXPORT Variable : public xio
 
 protected:
     xio* _OwnerBloc{nullptr};
-    RTBase* Obj{nullptr};
+    RTObject* Obj{nullptr};
 
     VarStack _Stack;
 
