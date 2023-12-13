@@ -1009,8 +1009,8 @@ Book::Enums::Code Lexer::Lex()
     AppBook::Out() << Code;
     AppBook::Message() << "Dumping tokens stream details:";
 
-    DumpTokens([](SppToken const& T){
-        AppBook::Out() << ( (T.M != Mnemonic::CommentCpp) && (T.M != Mnemonic::BlocComment) ?  T.Details(true) : "Comment...");
+    DumpTokens([this](SppToken const& T){
+        AppBook::Out() << MarkToken(T,true);
     });
 
     return Book::Enums::Code::Success;//book::codeInt::Ok;
@@ -1090,8 +1090,8 @@ std::string Lexer::MarkToken(const SppToken &Token, bool c)
     //AppBook::Debug() << " Marking token: " << token.details();
     std::string line = Token.TextLine();
 
-    SppToken::Array::iterator start_token = _Config.Tokens->begin();
-    SppToken::Iterator end_token = start_token;
+    auto start_token = _Config.Tokens->begin();
+    auto end_token = start_token;
     for (; start_token != _Config.Tokens->end(); start_token++)
     {
 //        AppBook::Debug() << "this token:" << start_token->text()  << Book::Enums::Fn::endl

@@ -200,7 +200,7 @@ std::string SppToken::TextLine() const
         while (*cc && (*cc != '\n') && (*cc != '\r'))
             str += *cc++;
     }
-    AppBook::Debug() << Book::Enums::Fn::Endl << str();
+    //AppBook::Debug() << Book::Enums::Fn::Endl << str();
     return str();
 }
 
