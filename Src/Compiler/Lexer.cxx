@@ -576,7 +576,7 @@ Book::Enums::Code Lexer::InputDefault(SppToken &Token)
     return Book::Enums::Code::Accepted; // return Book::Enums::Code::Rejected  --- duh?
 }
 
-Book::Enums::Code Lexer::InputUnaryOperator(SppToken &Token)
+[[maybe_unused]] Book::Enums::Code Lexer::InputUnaryOperator(SppToken &Token)
 {
 
     // Possible prefix and Postfix unary operators:

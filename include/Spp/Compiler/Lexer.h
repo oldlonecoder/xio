@@ -145,7 +145,7 @@ public:
     private:
     Book::Result InputBinaryOperator(SppToken&);
     Book::Result InputDefault(SppToken&);
-    Book::Result InputUnaryOperator(SppToken&);
+    [[maybe_unused]] Book::Result InputUnaryOperator(SppToken&);
     Book::Result InputPunctuation(SppToken&);
     Book::Result InputKeyword(SppToken&);
     Book::Result InputHex(SppToken&);
