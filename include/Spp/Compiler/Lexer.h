@@ -46,8 +46,8 @@ class SPP_EXPORT Lexer
         [[nodiscard]]std::string Mark(int nspc = 0) const;
         [[nodiscard]]std::string Location() const;
         bool _F = false; ///< Used as "state machine" for math factor notation syntax style
-        Book::Enums::Code ScanTo(const char *SubStr_);
-        Book::Enums::Code BlocComment();
+        Book::Result ScanTo(const char *SubStr_);
+        Book::Result BlocComment();
         std::string ScanString();
         std::string PrintLocation();
         LexCursor() = default;
@@ -88,18 +88,17 @@ class SPP_EXPORT Lexer
 
     struct LexicalColours
     {
-        std::string text;
+        std::string text{};
 
-        Color::Format format; // = Color::Format::ansi256; ///< Not used yet
+        [[maybe_unused]] Color::Format format{Color::Format::ansi256}; // = Color::Format::ansi256; ///< Not used yet
 
-        LexicalColours()
-        {}
+        LexicalColours() = default;
         ~LexicalColours();
 
-        //Book::Enums::Code operator << (const std::string& aSource);
-        //Book::Enums::Code operator << (const lexer::config_data& cfg);
+        //Book::Result operator << (const std::string& aSource);
+        //Book::Result operator << (const lexer::config_data& cfg);
 
-        Book::Enums::Code Process(SppToken::Array const &tokens);
+        //Book::Result Process(SppToken::Array const &tokens);
         StrAcc Colorize(SppToken::Array *tokens);
     };
 
@@ -108,7 +107,7 @@ public:
     {
         const char *Source = nullptr;
         SppToken::Array *Tokens = nullptr;
-        operator bool() const { return Source && Tokens; }
+        explicit  operator bool() const { return Source && Tokens; }
     };
 
 
@@ -120,8 +119,8 @@ public:
 
     Lexer::ConfigData &Config() { return _Config; }
 
-    Book::Enums::Code Lex();
-    Book::Enums::Code operator()();
+    Book::Result Lex();
+    Book::Result operator()();
 
     [[maybe_unused]][[nodiscard]] bool Empty() const
     {
@@ -132,11 +131,11 @@ public:
     private:
     ConfigData _Config;
 
-    Book::Enums::Code Accept(SppToken &Token_);
+    Book::Result Accept(SppToken &Token_);
 
 #pragma region Scanners
 public:
-    using ScanPtr = Book::Enums::Code (Lexer::*)(SppToken &);
+    using ScanPtr = Book::Result (Lexer::*)(SppToken &);
     using InputAssociation = std::pair<Type::T, Lexer::ScanPtr>;
     using ScanTbl = std::vector<Lexer::InputAssociation>;
     using ScannerFn = Lexer::ScanPtr;
@@ -144,21 +143,21 @@ public:
     static ScannerFn GetScanner(SppToken &token);
     std::string MarkToken(const SppToken& token, bool c);
     private:
-    Book::Enums::Code InputBinaryOperator(SppToken&);
-    Book::Enums::Code InputDefault(SppToken&);
-    Book::Enums::Code InputUnaryOperator(SppToken&);
-    Book::Enums::Code InputPunctuation(SppToken&);
-    Book::Enums::Code InputKeyword(SppToken&);
-    Book::Enums::Code InputHex(SppToken&);
-    Book::Enums::Code InputText(SppToken&);
-    Book::Enums::Code ScanNumber(SppToken&);
-    Book::Enums::Code ScanIdentifier(SppToken&);
-    //Book::Enums::Code ScanFactorNotation(SppToken&);
-    Book::Enums::Code ScanSignPrefix(SppToken&);
-    Book::Enums::Code ScanPrefix(SppToken&);
-    Book::Enums::Code ScanPostfix(SppToken&);
-    Book::Enums::Code ScanCppComment(SppToken& atoken);
-    Book::Enums::Code ScanCommentBloc(SppToken& atoken);
+    Book::Result InputBinaryOperator(SppToken&);
+    Book::Result InputDefault(SppToken&);
+    Book::Result InputUnaryOperator(SppToken&);
+    Book::Result InputPunctuation(SppToken&);
+    Book::Result InputKeyword(SppToken&);
+    Book::Result InputHex(SppToken&);
+    Book::Result InputText(SppToken&);
+    Book::Result ScanNumber(SppToken&);
+    Book::Result ScanIdentifier(SppToken&);
+    //Book::Result ScanFactorNotation(SppToken&);
+    Book::Result ScanSignPrefix(SppToken&);
+    Book::Result ScanPrefix(SppToken&);
+    Book::Result ScanPostfix(SppToken&);
+    Book::Result ScanCppComment(SppToken& atoken);
+    Book::Result ScanCommentBloc(SppToken& atoken);
 #pragma endregion Scanners
 
     void InsertMultiply(SppToken&);
