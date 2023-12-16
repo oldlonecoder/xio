@@ -412,14 +412,14 @@ std::string Lexer::LexCursor::ScanString()
     Str += *be;
     ++be;
 
-    Constinue:
+    Continue:
     while ((be <= E) && (*be != '\\') && (*be != Quote_))
         Str += *be++;
     if (*be == '\\')
     {
         Str += *be++;
         Str += *be++; // Assume no terminal escape sequence !!!!! PLEASE be a quote!!!
-        goto Constinue;
+        goto Continue;
     }
 
     if ((*be != Quote_) && (be > E))
