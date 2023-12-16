@@ -6,11 +6,8 @@
  *   academic stadards are not To be expexted.                              *
  *   Unless otherwise specified, all code in this project is written        *
  *   by the author (Serge Lussier)                                          *
- *   and no one else then not even {copilot, chatgpt, or any other AI}      *
  *   ---------------------------------------------------------------------  *
- *   Copyrights from authors other than the author also apply           *
- *   This project is under the GPL (general public license_                 *
- *   The GPL is available everyw open source gpl projects are published *
+ *   This project is under the GPL.                                         *
  ****************************************************************************/
 
 #include "Spp/Compiler/Lexer.h"
@@ -19,21 +16,21 @@
 
 #include <map>
 #include <AppBook/Book/AppBook.h>
-/** temporary copy-paste'd  **/
-/*!
- * @brief  Scans for std maths factor notation, RESTRICTED (limited) syntax style:
- *
- * @note   Required that the Left hand side token is a Const|Number and that the Input TokenPtr is contiguous and of unknown Type (Spp::Type::Null) To be scanned as an identifier.
- *         4ac => 4 * a * c
- *         4(ac...) => 4 * ( a * c...)
- * *******************************************************************************
- */
 
 
 namespace Spp {
 
+
+/*!
+ * @brief Static local scanners table:
+ */
 Lexer::ScanTbl ScanTable;
 
+
+
+/*!
+ * @brief Type::Colors pairs.
+ */
 std::map<Type::T, Color::Code> PrimitiveTypesColors =
 {
     {Type::Assign,      Color::CadetBlue},
@@ -51,12 +48,10 @@ std::map<Type::T, Color::Code> PrimitiveTypesColors =
 };
 
 
-////Affined particular Lexem:
-//std::map<Mnemonic, Color::Type> LexerColor::Mnemonics =
-//{
-
-//};
-
+/*!
+ * @brief Affined Mnemonic-Color pairs.
+ * @note : The "Affined" is a Work in progress ;)
+ */
 std::map<Mnemonic, Color::Code> MnemonicColors =
     {
         {Mnemonic::Null,             Color::White},
@@ -178,7 +173,7 @@ std::map<Mnemonic, Color::Code> MnemonicColors =
 /*!
  * @brief Skips white spaces character, advancing(/consuming) source pointer
  *
- * prefix inc//Rement operator
+ * prefix increment operator
  * @return true if source pointer is not on EOF, false otherwise.
  */
 bool Lexer::LexCursor::operator++()
@@ -192,7 +187,7 @@ bool Lexer::LexCursor::operator++()
 /*!
  * @brief Skips white spaces character, advancing(/consuming) source pointer
  *
- * Postfix inc//Rement operator, just calls the prefix inc//Rement operator.
+ * Postfix increment operator, just calls the prefix increment operator.
  * @return true if source pointer is not on EOF, false otherwise.
  */
 bool Lexer::LexCursor::operator++(int)
@@ -227,7 +222,7 @@ bool Lexer::LexCursor::operator++(int)
 
 /*!
  * @brief Tests if P or source pointer is on or past EOF.
- * @param P nullptr if the source pointer is To be used.
+ * @param P nullptr if the actual source pointer is to be used.
  * @return true if P or source pointer is EOF, false otherwise.
  */
 bool Lexer::LexCursor::EndOfFile(const char *P) const
@@ -238,7 +233,7 @@ bool Lexer::LexCursor::EndOfFile(const char *P) const
 }
 
 /*!
- * @brief Synchronize the Location data from the  pointer.
+ * @brief Synchronize the Location data from the actual source pointer.
  *
  * @return none.
  */
@@ -258,8 +253,6 @@ void Lexer::LexCursor::Sync()
             ++col;
         ++C_;
     }
-
-    //book::codeDebug(__PRETTY_FUNCTION__) << ": " << Location();
 }
 
 /*!
@@ -289,9 +282,18 @@ std::ptrdiff_t Lexer::LexCursor::Index() const
  * @param SubStr_
  * @return Expect code.
  */
-[[maybe_unused]] Book::Enums::Code Lexer::LexCursor::ScanTo(const char *SubStr_)
+[[maybe_unused]] Book::Result Lexer::LexCursor::ScanTo(const char *SubStr_)
 {
-    return Book::Enums::Code::Notimplemented;
+    // Start from the current position in a temporary string:
+    std::string Str = C;
+    // use its find utility and skip to the position if SubStr_ is found:
+    auto Pos = Str.find(SubStr_,0);
+    if(Pos != std::string::npos)
+    {
+        C += Pos;
+        return Book::Result::Accepted;
+    }
+    return Book::Result::Rejected;
 }
 
 
@@ -336,15 +338,14 @@ Book::Enums::Code Lexer::LexCursor::BlocComment()
         ++C;
         bloc << *C;
     }
-    throw AppBook::Except() << Book::Enums::Code::Eof << " Lexer: unmatched bloc comment End SeqIt.";
-    return Book::Enums::Code::Eof; // book::codeInt::Ok;
+    throw AppBook::Exception() [ AppBook::Error() << Book::Result::Eof << " Lexer: unmatched bloc comment End." ];
 }
 
 /*!
  * @brief Get a std::string copy of the current line from the source pointer
- * @return string.
+ * @return std::string.
  */
-std::string Lexer::LexCursor::LineNumber() const
+[[maybe_unused]] std::string Lexer::LexCursor::ExtractTextLine() const
 {
     std::string Str;
     Str.clear();
@@ -363,12 +364,12 @@ std::string Lexer::LexCursor::LineNumber() const
 }
 
 /*!
- * @brief Build a line StrAcc from the current Position then Mark at the current columns.
-  * @return std::string
-  * @note : Must be Sync()'ed before calling Mark();
-
+ * @brief Extract line from the current position and then put "Mark" at the current column number.
+ * @return std::string
+ * @param  nspc : not used anymore.
+ * @note : Must be Sync()'ed before calling Mark();
+ * @todo Remove parameter nspc.
  */
-
 std::string Lexer::LexCursor::Mark(int nspc) const
 {
     StrAcc Str;

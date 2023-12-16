@@ -41,7 +41,8 @@ class SPP_EXPORT Lexer
         int col = -1;
         void Sync();
         std::string ScanToEol();
-        [[nodiscard]]std::string LineNumber() const;
+
+        [[maybe_unused]] [[nodiscard]]std::string ExtractTextLine() const;
         [[nodiscard]]std::string Mark(int nspc = 0) const;
         [[nodiscard]]std::string Location() const;
         bool _F = false; ///< Used as "state machine" for math factor notation syntax style
