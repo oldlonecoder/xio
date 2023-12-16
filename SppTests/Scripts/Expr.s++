@@ -6,17 +6,22 @@
            ---------------------------------------------------------------------
 
         Game::Init()->Success{
-
+            Success code
+            //...
         }->Warning[InvalidValue]{ // Specific warning
-
+            Develop ->[Result] message/Analyse
+            //...
         }->Error[NotFound]{
-
+            Develop ->[Result] message/Analyse
+            //...
         }->Error[Syntax]{
-
+            Develop ->[Result] message/Analyse
+            //...
         }->Error[]{  // All other errors
-
+            Develop ->[Result] message/Analyse
+            //...
         }->Fatal[SegFault,Abort,UserBreak]{
-
+            Develop ->[Result] message/Analyse
         }->...
 
            ---------------------------------------------------------------------
@@ -32,7 +37,7 @@
 // At global scope it is ok to evaluate an expression; Therefore no instruction
 // and control flow are allowed at the global/Unit scope/context.
 /*----------------Bloc  comment ... --------------------------------*/
-x = 42/4 + 5(3+4*3/5+34) - 42 d = 12;
+x = 42/4 + 5(3+4*3/5+34) - 42 d = 12; // This is the actual code source! lol
 //---------------------------^---------------------------------------
 //                           |
 //                           --- > Intentionally Invalidate syntax in arithmetic expression ( context ).
