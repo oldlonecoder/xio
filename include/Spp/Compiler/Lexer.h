@@ -1,11 +1,10 @@
 /***************************************************************************
 *   Copyright (C) 1965/1987/2023 by Serge Lussier                         *
-    *   serge.lussier@oldlonecoder.club                                       *
-    *                                                                         *
-    *                                                                         *
-    *   Unless otherwise specified, all code in this project is written       *
-    *   by the author (Serge Lussier)                                         *
-*   and no one else then not even {copilot, chatgpt, or any other AI}     *
+*   serge.lussier@oldlonecoder.club                                       *
+*                                                                         *
+*                                                                         *
+*   Unless otherwise specified, all code in this project is written       *
+*   by the author (Serge Lussier)                                         *
 *   --------------------------------------------------------------------- *
 *   Copyrights from authors other than Serge Lussier also apply here      *
 ***************************************************************************/
@@ -23,7 +22,7 @@ namespace Spp {
  *
  * @author &copy; 2020, Serge Lussier(Bretzelus; bretzel; lonesomecoder; LordVorace...),  lussier.serge@gmail.com;
  *
- * @note Re-write of my lexical scanners; offset shall dissociate lexer from Lsc::String and only use std::string.
+ * @note Re-write of my lexical scanners; dissociate this Lexer from StrAcc and only use std::string.
  */
 class SPP_EXPORT Lexer
 {
