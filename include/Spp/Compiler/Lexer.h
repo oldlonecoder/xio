@@ -28,15 +28,14 @@ class SPP_EXPORT Lexer
 {
     struct LexCursor {
         const char *B = nullptr; ///> Absolute Beginning of the source Text.
-        const char *E = nullptr; ///> Absolute End of the soure Text.
-        const char *C = nullptr; ///> Absolute of the Index/Position of the
-        /// cursor int the source Text.
+        const char *E = nullptr; ///> Absolute End of the source Text.
+        const char *C = nullptr; ///> Index/Position of the cursor int the source Text.
 
         bool operator++();
         bool operator++(int);
         [[maybe_unused]] bool SkipWS();
         bool EndOfFile(const char *P = nullptr) const;
-        [[nodiscard]] std::ptrdiff_t Index() const;
+        [[maybe_unused]] [[nodiscard]] std::ptrdiff_t Index() const;
         int line = -1;
         int col = -1;
         void Sync();
@@ -46,14 +45,20 @@ class SPP_EXPORT Lexer
         [[nodiscard]]std::string Mark(int nspc = 0) const;
         [[nodiscard]]std::string Location() const;
         bool _F = false; ///< Used as "state machine" for math factor notation syntax style
-        Book::Result ScanTo(const char *SubStr_);
+        [[maybe_unused]] Book::Result ScanTo(const char *SubStr_);
         Book::Result BlocComment();
         std::string ScanString();
-        std::string PrintLocation();
+
+        //[[maybe_unused]] std::string PrintLocation();
         LexCursor() = default;
         explicit LexCursor(const char *Source_);
     } _Cursor;
 
+
+    /*!
+     * @brief scan litteral numbers in source atr the current position.
+     * @note I make it so complicated...
+     */
     struct NumScanner
     {
         const char *B = nullptr;
@@ -86,6 +91,10 @@ class SPP_EXPORT Lexer
         Type::T operator()() const;
     };
 
+    /*!
+     * @brief Colourize the source...
+     * @note And this, is so much easier than I thought.
+     */
     struct LexicalColours
     {
         std::string text{};
@@ -126,8 +135,8 @@ public:
     {
         return _Config.Tokens == nullptr || _Config.Tokens->empty();
     }
-    void DumpTokens(std::function<void(const SppToken&)> callback_);
-    StrAcc Colorize();
+    void DumpTokens(std::function<void(const SppToken&)> callback_) const;
+    StrAcc Colorize() const;
     private:
     ConfigData _Config;
 
@@ -141,8 +150,10 @@ public:
     using ScannerFn = Lexer::ScanPtr;
 
     static ScannerFn GetScanner(SppToken &token);
-    std::string MarkToken(const SppToken& token, bool c);
-    private:
+    std::string MarkToken(const SppToken& token, bool c) const;
+private:
+
+    ///@note I must cleanup and remove unused functions.
     Book::Result InputBinaryOperator(SppToken&);
     Book::Result InputDefault(SppToken&);
     [[maybe_unused]] Book::Result InputUnaryOperator(SppToken&);
@@ -160,7 +171,7 @@ public:
     Book::Result ScanCommentBloc(SppToken& atoken);
 #pragma endregion Scanners
 
-    void InsertMultiply(SppToken&);
+    void InsertMultiply(SppToken&) const;
 
 
 };

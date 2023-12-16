@@ -259,7 +259,7 @@ void Lexer::LexCursor::Sync()
  * @brief Get the ptrdiff between the source pointer and the beginning of the source Text (B pointer).
  * @return int.
  */
-std::ptrdiff_t Lexer::LexCursor::Index() const
+[[maybe_unused]] std::ptrdiff_t Lexer::LexCursor::Index() const
 {
     return (std::ptrdiff_t) (C - B);
 }
@@ -282,7 +282,7 @@ std::ptrdiff_t Lexer::LexCursor::Index() const
  * @param SubStr_
  * @return Expect code.
  */
-[[maybe_unused]] Book::Result Lexer::LexCursor::ScanTo(const char *SubStr_)
+[[maybe_unused]] [[maybe_unused]] Book::Result Lexer::LexCursor::ScanTo(const char *SubStr_)
 {
     // Start from the current position in a temporary string:
     std::string Str = C;
@@ -297,7 +297,7 @@ std::ptrdiff_t Lexer::LexCursor::Index() const
 }
 
 
-Book::Enums::Code Lexer::LexCursor::BlocComment()
+Book::Result Lexer::LexCursor::BlocComment()
 {
     StrAcc str;
     StrAcc bloc;
@@ -327,11 +327,11 @@ Book::Enums::Code Lexer::LexCursor::BlocComment()
                 Sync();
 //                AppBook::Debug() << "Leaving lex_cursor::bloc_comment():" << Book::Enums::Fn::endl
 //                                 ;
-//                Book::Enums::Code::out() << "w *C = '" << Color::Yellow << *C
+//                Book::Result::out() << "w *C = '" << Color::Yellow << *C
 //                           << Color::Reset << "', column " << Color::Yellow
 //                           << col << Color::Reset << ", Line " << Color::Yellow
 //                           << line;
-                return Book::Enums::Code::Accepted;
+                return Book::Result::Accepted;
             }
             continue;
         }
@@ -432,10 +432,10 @@ std::string Lexer::LexCursor::ScanString()
     return Str;
 }
 
-std::string Lexer::LexCursor::PrintLocation()
-{
-    return Location();
-}
+//[[maybe_unused]] std::string Lexer::LexCursor::PrintLocation()
+//{
+//    return Location();
+//}
 
 Lexer::LexCursor::LexCursor(const char *Source_)
 {
@@ -544,40 +544,40 @@ Lexer::ScannerFn Lexer::GetScanner(SppToken &Token)
     return nullptr;
 }
 
-Book::Enums::Code Lexer::InputBinaryOperator(SppToken &Token)
+Book::Result Lexer::InputBinaryOperator(SppToken &Token)
 {
     //logger::debug() << __PRETTY_FUNCTION__ << ":\n";
     if (Token.M == Mnemonic::Sub || Token.M == Mnemonic::Add)
     {
-        if (ScanSignPrefix(Token) == Book::Enums::Code::Accepted)
-            return Book::Enums::Code::Accepted;
+        if (ScanSignPrefix(Token) == Book::Result::Accepted)
+            return Book::Result::Accepted;
     }
     Accept(Token);
     _Cursor._F = false;
-    return Book::Enums::Code::Accepted;
+    return Book::Result::Accepted;
 }
 
 /*!
  * @brief Unknown Input Token (Either Number litteral or identifier).
  * @return Expect<>
  */
-Book::Enums::Code Lexer::InputDefault(SppToken &Token)
+Book::Result Lexer::InputDefault(SppToken &Token)
 {
     //logger::debug() << __PRETTY_FUNCTION__ << ":\n";
-    if (ScanNumber(Token) != Book::Enums::Code::Accepted)
+    if (ScanNumber(Token) != Book::Result::Accepted)
     {
         //book::codeDebug() << " Not a Number Trying scan_identifier:";
-        if (ScanIdentifier(Token) != Book::Enums::Code::Accepted)
+        if (ScanIdentifier(Token) != Book::Result::Accepted)
         {
             //book::codePush() << mCursor.mark() << ":";
-            return Book::Enums::Code::Rejected;//book::codePush() << //book::codexio::Type::Fatal << ": " << //book::codeInt::UnExpected << " Token Type " << Token.Type_name();
+            return Book::Result::Rejected;//book::codePush() << //book::codexio::Type::Fatal << ": " << //book::codeInt::UnExpected << " Token Type " << Token.Type_name();
         }
     }
 
-    return Book::Enums::Code::Accepted; // return Book::Enums::Code::Rejected  --- duh?
+    return Book::Result::Accepted; // return Book::Result::Rejected  --- duh?
 }
 
-[[maybe_unused]] Book::Enums::Code Lexer::InputUnaryOperator(SppToken &Token)
+[[maybe_unused]] Book::Result Lexer::InputUnaryOperator(SppToken &Token)
 {
 
     // Possible prefix and Postfix unary operators:
@@ -594,9 +594,9 @@ Book::Enums::Code Lexer::InputDefault(SppToken &Token)
     return ScanPostfix(Token);
 }
 
-Book::Enums::Code Lexer::InputPunctuation(SppToken &Token)
+Book::Result Lexer::InputPunctuation(SppToken &Token)
 {
-    //AppBook::Debug(F) << Token.Mark() << " @ " << cursor.location();
+    //AppBook::Debug() << Token.Mark() << " @ " << _Cursor.Location();
     if (Token.M == Mnemonic::OpenPar)
     {
         AppBook::Debug() << Token.Text() << " - Openpar: check for mul insertion:";
@@ -607,20 +607,20 @@ Book::Enums::Code Lexer::InputPunctuation(SppToken &Token)
             {
                 Accept(Token);
                 InsertMultiply(Token);
-                return Book::Enums::Code::Accepted;
+                return Book::Result::Accepted;
             }
         }
-        AppBook::Debug() << " not...checking if previous TokenPtr is number:";
+        AppBook::Debug() << " not...Then checking if previous TokenPtr is number:";
         if (!_Config.Tokens->empty())
         {
-            AppBook::Out() << "Previous TokenPtr: " << Book::Enums::Fn::Endl << _Config.Tokens->back().Details() << ":";
+            AppBook::Out() << "Previous TokenPtr: " << Book::Enums::Fn::Endl << _Config.Tokens->back().Details(true) << ":";
 
             // La seule et unique condition est que le token precedant soit une valeur numerique litterale (ex.: '4').
             if (_Config.Tokens->back().IsNumber())
             {
                 Accept(Token);
                 InsertMultiply(Token);
-                return Book::Enums::Code::Accepted;
+                return Book::Result::Accepted;
             }
         }
         AppBook::Debug() << "not...proceeding To the Next TokenPtr ... ";
@@ -629,28 +629,26 @@ Book::Enums::Code Lexer::InputPunctuation(SppToken &Token)
     // ... A = .0123 :
     if (Token.M == Mnemonic::Dot)
     {
-        if (Book::Enums::Code r; (r = ScanNumber(Token)) == Book::Enums::Code::Accepted)
+        if (Book::Result r; (r = ScanNumber(Token)) == Book::Result::Accepted)
             return r;
     }
 
     return Accept(Token);
 }
 
-Book::Enums::Code Lexer::InputKeyword(SppToken &Token)
+Book::Result Lexer::InputKeyword(SppToken &Token)
 {
-    //logger::debug() << __PRETTY_FUNCTION__ << ":\n";
     return Accept(Token);
 }
 
-Book::Enums::Code Lexer::InputHex(SppToken &Token)
+Book::Result Lexer::InputHex(SppToken &Token)
 {
-    //logger::debug() << __PRETTY_FUNCTION__ << ":\n";
-    //book::codeDebug(__PRETTY_FUNCTION__) << ":\n";
+    AppBook::Debug() << ':';
     const char *C_ = _Cursor.C;
     C_ += Token.Text().length();
     const char *E_ = C_;
     if (isspace(*E_))
-        return Book::Enums::Code::Rejected;
+        return Book::Result::Rejected;
 
     while (*E_ && !isspace(*E_) &&
            (((*E_ >= '0') && (*E_ <= '9')) || ((*E_ >= 'A') && (*E_ <= 'F')) || ((*E_ >= 'a') && (*E_ <= 'f'))))
@@ -667,10 +665,10 @@ Book::Enums::Code Lexer::InputHex(SppToken &Token)
 /*!
  * @brief Scans const numeric constrtuct
  * @param Token
- * @return Book::Enums::Code::Accepted;
+ * @return Book::Result::Accepted;
  * @todo Scan Scientific Notation!!!
  */
-Book::Enums::Code Lexer::ScanNumber(SppToken &Token)
+Book::Result Lexer::ScanNumber(SppToken &Token)
 {
 
     //logger::debug() << __PRETTY_FUNCTION__ << ":\n";
@@ -679,7 +677,7 @@ Book::Enums::Code Lexer::ScanNumber(SppToken &Token)
     { ;
     }
     if (!Num)
-        return Book::Enums::Code::Rejected;
+        return Book::Result::Rejected;
 
     if (_Cursor._F)
         _Cursor._F = false;
@@ -743,12 +741,12 @@ Book::Enums::Code Lexer::ScanNumber(SppToken &Token)
     //return book::codeAccepted;
 }
 
-Book::Enums::Code Lexer::ScanIdentifier(SppToken &Token)
+Book::Result Lexer::ScanIdentifier(SppToken &Token)
 {
 
     //book::codeDebug(__PRETTY_FUNCTION__);
     const char *C = _Cursor.C;
-    if ((!isalpha(*C)) && (*C != '_')) return Book::Enums::Code::Rejected;
+    if ((!isalpha(*C)) && (*C != '_')) return Book::Result::Rejected;
 
     if (!_Cursor._F)
     {
@@ -786,10 +784,10 @@ Book::Enums::Code Lexer::ScanIdentifier(SppToken &Token)
             // 2023-07-sept oldlonecoder).
             InsertMultiply(Token);
 
-    return Book::Enums::Code::Accepted;
+    return Book::Result::Accepted;
 }
 
-void Lexer::InsertMultiply(SppToken &Token)
+void Lexer::InsertMultiply(SppToken &Token) const
 {
 
     auto i = --_Config.Tokens->end();
@@ -820,13 +818,13 @@ void Lexer::InsertMultiply(SppToken &Token)
 }
 
 
-Book::Enums::Code Lexer::ScanSignPrefix(SppToken &Token)
+Book::Result Lexer::ScanSignPrefix(SppToken &Token)
 {
     if (!_Config.Tokens->empty() &&
         (_Config.Tokens->back().S & Spp::Type::ClosePair))
     {
         //logger::comment() << "Lexer::scan_sign_prefix:\n" << Token.Mark() << "\n" << " Rejected...\n";
-        return Book::Enums::Code::Rejected;
+        return Book::Result::Rejected;
     }
 
     if (_Config.Tokens->empty() || _Config.Tokens->back().IsBinary() ||
@@ -838,7 +836,7 @@ Book::Enums::Code Lexer::ScanSignPrefix(SppToken &Token)
                    Spp::Type::Prefix; // Spp::Type::Operator bit already set
         return Accept(Token);
     }
-    return Book::Enums::Code::Rejected;
+    return Book::Result::Rejected;
 }
 
 /*!
@@ -846,7 +844,7 @@ Book::Enums::Code Lexer::ScanSignPrefix(SppToken &Token)
  *
  * @return
  */
-Book::Enums::Code Lexer::ScanPrefix(SppToken &Token)
+Book::Result Lexer::ScanPrefix(SppToken &Token)
 {
     // Possible prefix and Postfix unary operators:
     if ((Token.M == Mnemonic::BinaryNot) || (Token.M == Mnemonic::Decr) ||
@@ -865,11 +863,11 @@ Book::Enums::Code Lexer::ScanPrefix(SppToken &Token)
  *
  * @return
  */
-Book::Enums::Code Lexer::ScanPostfix(SppToken &Token)
+Book::Result Lexer::ScanPostfix(SppToken &Token)
 {
     if (!((Token.M == Mnemonic::Decr) || (Token.M == Mnemonic::Incr) ||
           (Token.M == Mnemonic::BinaryNot)))
-        return Book::Enums::Code::Rejected;
+        return Book::Result::Rejected;
 
     Token.T = Spp::Type::Postfix;
     Token.S = (Token.S & ~Spp::Type::Prefix) | Spp::Type::Postfix; // unary/Operator ...  already set.
@@ -881,10 +879,10 @@ Book::Enums::Code Lexer::ScanPostfix(SppToken &Token)
 
 #pragma endregion Scanners
 
-Book::Enums::Code Lexer::Accept(SppToken &Token_)
+Book::Result Lexer::Accept(SppToken &Token_)
 {
     if (!Token_)
-        return Book::Enums::Code::Rejected;
+        return Book::Result::Rejected;
 
     Token_.Location.Linenum = _Cursor.line;
     Token_.Location.Colnum = _Cursor.col;
@@ -900,16 +898,16 @@ Book::Enums::Code Lexer::Accept(SppToken &Token_)
 
     _Config.Tokens->push_back(Token_);
     _Cursor.SkipWS();
-    return Book::Enums::Code::Accepted;
+    return Book::Result::Accepted;
 }
 
 
-Book::Enums::Code Lexer::operator()()
+Book::Result Lexer::operator()()
 {
     return Lex();
 }
 
-void Lexer::DumpTokens(std::function<void(const SppToken &)> callback_)
+void Lexer::DumpTokens(std::function<void(const SppToken &)> callback_) const
 {
     if (!callback_)
         return;
@@ -917,7 +915,7 @@ void Lexer::DumpTokens(std::function<void(const SppToken &)> callback_)
         callback_(token);
 }
 
-Book::Enums::Code Lexer::InputText(SppToken &Token)
+Book::Result Lexer::InputText(SppToken &Token)
 {
     //logger::debug() << __PRETTY_FUNCTION__ << ":\n";
 
@@ -925,7 +923,7 @@ Book::Enums::Code Lexer::InputText(SppToken &Token)
     //@todo Separate this token into three : {quote, text, quote}
 
     if (R.empty())
-        return Book::Enums::Code::Rejected;
+        return Book::Result::Rejected;
 
     // We separate tokens  ...
     Accept(Token);
@@ -944,16 +942,16 @@ Book::Enums::Code Lexer::InputText(SppToken &Token)
     Token.M = *e == '\'' ? Mnemonic::Squote : Mnemonic::Dquote;
 
     Accept(Token);
-    return Book::Enums::Code::Accepted;
+    return Book::Result::Accepted;
 }
 
-Book::Enums::Code Lexer::Lex()
+Book::Result Lexer::Lex()
 {
-    //Book::Enums::Code R;
+    //Book::Result R;
     if (!_Config)
     {
-        AppBook::Error() << " No or wrong config";
-        return Book::Enums::Code::Rejected; // Use logger::push_error to queu error message and code...
+        AppBook::Error() << " None or wrong config";
+        return Book::Result::Rejected; // Use logger::push_error to queu error message and code...
     }
     //...
     if (ScanTable.empty())
@@ -986,7 +984,7 @@ Book::Enums::Code Lexer::Lex()
             AppBook::Error()
                 << "Lexer: internal infinite loop! cursor at:" << Book::Enums::Fn::Endl
                 << _Cursor.Mark();
-            return Book::Enums::Code::Rejected;
+            return Book::Result::Rejected;
         }
 
         C = _Cursor.C;
@@ -997,11 +995,11 @@ Book::Enums::Code Lexer::Lex()
         if (S)
         {
 
-            if ((this->*S)(Token) != Book::Enums::Code::Accepted)
+            if ((this->*S)(Token) != Book::Result::Accepted)
             {
                 AppBook::Aborted()
                     << "Lexer: unexpected Rejected at Position:" << _Cursor.Mark();
-                return Book::Enums::Code::Rejected;
+                return Book::Result::Rejected;
             }
         }
     }
@@ -1014,11 +1012,11 @@ Book::Enums::Code Lexer::Lex()
         AppBook::Out() << MarkToken(T,true);
     });
 
-    return Book::Enums::Code::Success;//book::codeInt::Ok;
+    return Book::Result::Success;//book::codeInt::Ok;
 }
 
 
-Book::Enums::Code Lexer::ScanCppComment(SppToken &Token)
+Book::Result Lexer::ScanCppComment(SppToken &Token)
 {
     //AppBook::Debug(F) << Mnemonic_name(Token.M) << " :@ " << cursor.location();
     Token.Location.begin = _Cursor.C;
@@ -1034,10 +1032,10 @@ Book::Enums::Code Lexer::ScanCppComment(SppToken &Token)
     //_Config.Tokens->push_back(Token);
     _Cursor.Sync();
 
-    return Book::Enums::Code::Accepted;
+    return Book::Result::Accepted;
 }
 
-Book::Enums::Code Lexer::ScanCommentBloc(SppToken &Token)
+Book::Result Lexer::ScanCommentBloc(SppToken &Token)
 {
     Token.Location.begin = _Cursor.C;
     Token.Location.Linenum = _Cursor.line;
@@ -1050,13 +1048,10 @@ Book::Enums::Code Lexer::ScanCommentBloc(SppToken &Token)
     _Cursor++;
     //AppBook::Debug() << "cursor: " << cursor.location();
     _Cursor.Sync();
-    //_Config.Tokens->push_back(Token);
-    //AppBook::Debug() << Book::Enums::Fn::endl << Token.details() << Book::Enums::Fn::endl << Book::Enums::Fn::endl;
     if (_Cursor.EndOfFile())
-        throw AppBook::Except() << Book::Enums::Code::Unexpected << Book::Enums::Code::Eof
-                             << " unterminated bloc comment.";
+        throw AppBook::Exception() [AppBook::Error() << Book::Result::Unexpected << Book::Result::Eof << " unterminated bloc comment." ];
 
-    return Book::Enums::Code::Accepted;
+    return Book::Result::Accepted;
 }
 
 
@@ -1081,12 +1076,11 @@ StrAcc Lexer::LexicalColours::Colorize(SppToken::Array *tokens)
             text.insert(Token.Location.Offset + offset, _color);
             offset += _color.length();
         }
-        //Book::Enums::Code::out() << line;
     }
     return text;
 }
 
-std::string Lexer::MarkToken(const SppToken &Token, bool c)
+std::string Lexer::MarkToken(const SppToken &Token, bool c) const
 {
     //AppBook::Debug() << " Marking token: " << token.details();
     std::string line = Token.TextLine();
@@ -1141,7 +1135,7 @@ std::string Lexer::MarkToken(const SppToken &Token, bool c)
 }
 
 
-StrAcc Lexer::Colorize()
+StrAcc Lexer::Colorize() const
 {
     LexicalColours lc;
     lc.text = _Config.Source;
