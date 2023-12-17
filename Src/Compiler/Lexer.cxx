@@ -1009,7 +1009,8 @@ Book::Result Lexer::Lex()
     AppBook::Message() << "Dumping tokens stream details:";
 
     DumpTokens([this](SppToken const& T){
-        AppBook::Out() << MarkToken(T,true);
+        if(!T.IsComment())
+            AppBook::Out() << MarkToken(T,true);
     });
 
     return Book::Result::Success;//book::codeInt::Ok;
@@ -1029,7 +1030,7 @@ Book::Result Lexer::ScanCppComment(SppToken &Token)
     Token.Location.end = _Cursor.C;
     Token.Location.Length = Token.Location.end - Token.Location.begin;
     _Cursor++;
-    //_Config.Tokens->push_back(Token);
+    _Config.Tokens->push_back(Token);
     _Cursor.Sync();
 
     return Book::Result::Accepted;
@@ -1047,6 +1048,7 @@ Book::Result Lexer::ScanCommentBloc(SppToken &Token)
     Token.Location.Length = Token.Location.end - Token.Location.begin;
     _Cursor++;
     //AppBook::Debug() << "cursor: " << cursor.location();
+    _Config.Tokens->push_back(Token);
     _Cursor.Sync();
     if (_Cursor.EndOfFile())
         throw AppBook::Exception() [AppBook::Error() << Book::Result::Unexpected << Book::Result::Eof << " unterminated bloc comment." ];

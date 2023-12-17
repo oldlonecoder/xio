@@ -17,18 +17,19 @@ add_library(
     ${TargetName}
     SHARED
     include/${TargetName}/Exports.h              #global framework-wide macros definitions and dll export and import macros for MSVC.
-    include/Spp/SppTypes.h Src/SppTypes.cxx
-    include/Spp/Alu.h Src/Alu.cxx
-    include/Spp/SppToken.h Src/SppToken.cxx
-    include/Spp/Compiler/Lexer.h Src/Compiler/Lexer.cxx
-    include/Spp/xio.h Src/xio.cxx
-    include/Spp/Compiler/Lang/Grammar.h Src/Compiler/Lang/Grammar.cxx
-    include/Spp/Stack.h Src/Stack.cxx
-    include/Spp/Runtime/Variable.h Src/Runtime/Variable.cxx
-    include/Spp/Runtime/RTObject.h Src/Runtime/RTObject.cxx
-    include/Spp/Runtime/Interpreter.h Src/Runtime/Interpreter.cxx
-    include/Spp/Compiler/Compiler.h Src/Compiler/Compiler.cxx
-    include/Spp/Runtime/Unit.h Src/Runtime/Unit.cxx
+    include/Spp/SppTypes.h                  Src/SppTypes.cxx
+    include/Spp/Alu.h                       Src/Alu.cxx
+    include/Spp/SppToken.h                  Src/SppToken.cxx
+    include/Spp/Compiler/Lexer.h            Src/Compiler/Lexer.cxx
+    include/Spp/xio.h                       Src/xio.cxx
+    include/Spp/Compiler/Lang/Grammar.h     Src/Compiler/Lang/Grammar.cxx
+    include/Spp/Stack.h                     Src/Stack.cxx
+    include/Spp/Runtime/Variable.h          Src/Runtime/Variable.cxx
+    include/Spp/Runtime/RTObject.h          Src/Runtime/RTObject.cxx
+    include/Spp/Runtime/Interpreter.h       Src/Runtime/Interpreter.cxx
+    include/Spp/Compiler/Compiler.h         Src/Compiler/Compiler.cxx
+    include/Spp/Runtime/Unit.h              Src/Runtime/Unit.cxx
+    include/Spp/Styles/ColorScheme.h        Src/Styles/ColorScheme.cxx
 
     # ...Will grow...
 )

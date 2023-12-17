@@ -156,7 +156,7 @@ Book::Enums::Code Stack::RemoveVariable(Variable *_Obj)
 
 Book::Enums::Code Stack::AppendInstruction(xio *_In)
 {
-    AppBook::Debug() << " Adding Instruction : " << Book::Fn::Endl << _In->TokenPtr()->Details(true);
+    //AppBook::Debug() << " Adding Instruction : " << Book::Fn::Endl << _In->TokenPtr()->Details(true);
     Instructions.push_back(_In);
     return Book::Enums::Code::Accepted;
 }

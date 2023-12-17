@@ -163,7 +163,10 @@ struct SPP_EXPORT SppToken
     {
         return Flags.V;
     }
-
+    [[nodiscard]] bool IsComment() const
+    {
+        return (T == Type::LineComment) || (T == Type::BlocComment);
+    }
     static Type::T TypeOf(Mnemonic m);
     };
 }

@@ -19,7 +19,7 @@ Interpreter::~Interpreter()
 Interpreter::Interpreter(std::string _Id, int argc, char **argv): Unit(nullptr, std::move(_Id))
 {
     AppBook::Message() ;
-    if(Interpreter::Instance()) throw AppBook::Exception("Cannot instantiate more than on Interpreter which is a singleton class.");
+    if(Interpreter::Instance()) throw AppBook::Exception("Cannot instantiate more than one Interpreter.");
     for(int c = 1; c<argc; c++) CmdArgs.emplace_back(argv[c]);
 
     Interpreter::InterpreterInstance = this;

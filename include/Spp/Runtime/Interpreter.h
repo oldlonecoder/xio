@@ -97,11 +97,11 @@ public:
     Interpreter(std::string _Id, int argc, char** argv);
 
     Book::Action ProcessArgs();
-
     Book::Action SourceFile(Cmd::ArgumentData& Arg);
-
-
     Book::Action Expression(Cmd::ArgumentData &);
+
+    static std::string DrawLineOfText(std::pair<SppToken::Iterator, SppToken::Iterator> const& LinePair, bool MarkIt=false);
+
 };
 
 } // Spp

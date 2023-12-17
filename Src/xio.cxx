@@ -208,11 +208,11 @@ Alu xio::JSR()
 {
     //...
 
-    AppBook::Debug() << Color::White << Attribute() << " Value:" << Color::Yellow << A->number<uint64_t>() << Book::Enums::Fn::Endl << SToken->Details(true) ;
+    //AppBook::Debug() << Color::White << Attribute() << " Value:" << Color::Yellow << A->number<uint64_t>() << Book::Enums::Fn::Endl << SToken->Details(true) ;
     if(SToken->IsOperator())
     {
         if(SToken->IsBinary())
-            AppBook::Out() << xio::TraceConnectBinaryOperands(this) << Book::Enums::Fn::Endl ;
+            //AppBook::Out() << xio::TraceConnectBinaryOperands(this) << Book::Enums::Fn::Endl ;
 
         if (Lhs) *A = Lhs->JSR(); // Always catch the lhs value so we return that one if t is no rhs operand.
         if (Rhs) *A = Rhs->JSR(); // Always catch the rhs value because it is the value to be returned after being applied to the lhs (if applicable).
@@ -222,8 +222,8 @@ Alu xio::JSR()
         else
             AppBook::Warning() << "operator xio [" << Color::Yellow << SToken->Text() << Color::Reset << "] has no implementation (yet?).:\n" << SToken->Mark() << Book::Enums::Fn::Endl ;
     }
-    else
-        AppBook::Warning() << " xio::" << SToken->Details(false) << " Was not an Operator - Returning the current Alu value ...";
+    //else
+    //    AppBook::Warning() << " xio::" << SToken->Details(false) << " Was not an Operator - Returning the current Alu value ...";
     SToken->S |= A->T; ///< Why is that ?
     // It's because our actual token::type (xio::Type::T) has been changed by the type of the resulting operation Alu::T ( acc->T is put into t0->s )...
     // Ceci est le changement apporté au champs sémantique du token qui est modifié par le type résultant de l'opération.  ^       ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ...
@@ -1128,7 +1128,7 @@ xio* xio::CloseTree()
 
 xio* xio::TreeRoot(bool skip_syntax)
 {
-    AppBook::Debug() << "Match tree ins from xio node:" << Book::Enums::Fn::Endl << SToken->Mark() << Book::Enums::Fn::Endl ;
+    //AppBook::Debug() << "Match tree ins from xio node:" << Book::Enums::Fn::Endl << SToken->Mark() << Book::Enums::Fn::Endl ;
     xio* x = this;
     xio* p = x;
     do {
@@ -1166,8 +1166,6 @@ xio* xio::TreeRoot(bool skip_syntax)
         }
         p = p->Op;
     } while (p);
-
-    AppBook::Debug() << "Tree root instruction is set: " << x->SToken->Details() << Book::Enums::Fn::Endl << x->SToken->Mark();
     return  x;
 }
 

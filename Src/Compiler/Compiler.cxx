@@ -58,11 +58,11 @@ Book::Result Compiler::operator()()
     AppBook::Debug() << " ==> Entering on token:" << Book::Fn::Endl << Ctx.Token().Details (true);
     xio* x{nullptr};
 
-    // if(SkipComments() == Book::Result::Eof)
-    // {
-    //     AppBook::Message() << "eof on commented contents;  no expression; leaving";
-    //     return nullptr;
-    // }
+    if(SkipComments() == Book::Result::Eof)
+    {
+        AppBook::Message() << "eof on commented contents;  no expression; leaving";
+        return nullptr;
+    }
 
     if(!(x = xio::TreeBegin(Ctx.Bloc, &Ctx.Token(), [this](SppToken *T) -> xio * { return NewXio(T); })))
     {
@@ -71,7 +71,9 @@ Book::Result Compiler::operator()()
     }
 
     Ctx++;
+
     while((Ctx.Cur < Data.Tokens->end()) && (Ctx.Cur->M != Mnemonic::Semicolon)){
+        (void)SkipComments();
         x = x->TreeInput(Ctx.Bloc, &Ctx.Token(), [this](SppToken* T)-> xio*{ return NewXio(T); });
         if(!x)
         {
@@ -93,6 +95,19 @@ Book::Result Compiler::operator()()
     return nullptr;
 }
 
+std::pair<SppToken::Iterator, SppToken::Iterator> Compiler::ExtractLineFrom(SppToken::Iterator Token)
+{
+
+    // Seek beginning of the line:
+    auto Start = Token;
+    while((Start > Config().Tokens->begin()) && (Start->Location.Linenum == Token->Location.Linenum)) --Start;
+
+    auto End = Token;
+    while((End != Config().Tokens->end()) && (End->Location.Linenum == Token->Location.Linenum)) ++End;
+    --End;
+
+    return {Start, End};
+}
 
 
 xio *Compiler::CCUnit()
@@ -142,13 +157,14 @@ xio* Compiler::NewXio(SppToken* Token)
 
 Book::Result Compiler::SkipComments()
 {
-    AppBook::Debug() << "Entering with token: " << Book::Fn::Endl << Ctx.Token().Details(true);
+    while(!Ctx.Eof() && Ctx.Token().IsComment())
+        ++Ctx;
+    if(Ctx.Eof())
+        return Book::Result::Eof;
 
-    while(!Ctx.Eof() && (((Ctx.Token().M == Mnemonic::BlocComment)) || ((Ctx.Token().M == Mnemonic::CommentCpp)))) ++Ctx;
-    if(Ctx.Eof()) return Book::Result::Eof;
-    AppBook::Message() << " accepting skip comment.";
-    Ctx.Accept();
-    return Book::Result::Ok;
+    //AppBook::Debug() << "skipped to:" << Book::Fn::Endl << Ctx.Token().Text();
+    Ctx.StartSeq = Ctx.EndSeq = Ctx.Cur;
+    return Book::Result::Accepted;
 }
 
 xio *Compiler::ParseRightValueKeyword()
@@ -232,9 +248,11 @@ void Compiler::ContextData::Accept()
 {
     StartSeq = EndSeq = Cur;
     InstructionsSeq.clear();
-    if(Instruction) Bloc->AppendInstruction(Instruction);
-    CurType = Type::Null;
-    AppBook::Debug() << " New Instruction injected into Bloc:'" << Color::Yellow << Bloc->Id() << Color::Reset << "':" << Book::Fn::Endl << Instruction->TokenPtr()->Details(true);
+    if(Instruction){
+        Bloc->AppendInstruction(Instruction);
+        CurType = Type::Null;
+        //AppBook::Debug() << " New Instruction injected into Bloc:'" << Color::Yellow << Bloc->Id() << Color::Reset << "':" << Book::Fn::Endl << Instruction->TokenPtr()->Details(true);
+    }
 }
 
 
