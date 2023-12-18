@@ -80,10 +80,9 @@ Book::Action Interpreter::ProcessArgs()
     AppBook::Debug() << " Processing/Executing command line arguments:";
     (Args << Cmd::ArgumentData{"Compile Source","-c","--compile","Compile given [s++] script source File.",1}).Connect(this, &Interpreter::SourceFile);
     (Args << Cmd::ArgumentData{"Eval Expression","-e","--eval","Evaluate Expression",1}).Connect(this, &Interpreter::Expression);
-    AppBook::Debug() << ":" << Book::Fn::Endl << Args.Usage();
     //auto& A = Args["Compile Source"];
     Args.ProcessStringArray(CmdArgs);
-
+    AppBook::Debug() << ":" << Book::Fn::Endl << Args.Usage();
     return Args.Execute();
 }
 
