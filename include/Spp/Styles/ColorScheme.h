@@ -27,13 +27,38 @@
 namespace Spp
 {
 
+/*!
+ * @brief Aggregation of centralized, globally callable, colours styles DB, for Token Types/Mnemonics-Colorization,
+ * And later also for Syntax/Semantic colors.
+ */
 struct SPP_EXPORT  ColorScheme
 {
-    using Element = std::pair<Spp::Mnemonic, Color::Code>;
-    using RGBElement = std::pair<Spp::Mnemonic, Color::Data>;
+    //using MnemonicsElement      = std::vector<Color::Code>;
+    using RGBMnemonicsElement   = std::vector<Color::Data>;
+    using TypesElements         = std::vector<Color::Code>;
+    using RGBTypesElements      = std::vector<Color::Data>;
 
-    using ElementsDictionary = std::map<std::string, ColorScheme::Element>;
-    using RGBElementsDictionary = std::map<std::string, ColorScheme::RGBElement>;
+    using Scheme = std::pair<TypesElements, TypesElements>;
+    using Schemes = std::map<std::string, ColorScheme::Scheme>;
+
+
+    std::string operator[](Mnemonic M);
+    std::string operator[](Spp::Type::T T);
+
+// ---------------- Not there yet; ----------------------------------------
+//    std::string RGB(Mnemonic M);
+//    std::string RGB(Type::T T);
+// ------------------------------------------------------------------------
+
+    static TypesElements AffinedMnemonics, TypeElements;
+
+    ColorScheme::Schemes Themes; ///< Database of Schemes;
+    ColorScheme::Scheme* CurrentTheme{nullptr};
+
+    ColorScheme();
+    ~ColorScheme() = default;
+
+
 
 
 };

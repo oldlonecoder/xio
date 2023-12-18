@@ -92,5 +92,19 @@ Book::Action Interpreter::Expression(Cmd::ArgumentData &A)
     return Book::Action::End;
 }
 
+std::string Interpreter::DrawLineOfText(const std::pair<SppToken::Iterator, SppToken::Iterator> &LinePair, bool MarkIt)
+{
+
+    return "NOT IMPL!!!!! Go Away!!!!!!! Leave me ALONE!!!";
+}
+
+ColorScheme &Interpreter::ColorsStyle()
+{
+    auto* Ins = Instance();
+    if(!Ins)
+        throw AppBook::Exception() [AppBook::Fatal() << Book::Result::Null_ptr << "[Interpreter instance is null]"];
+    return Ins->Styles;
+}
+
 
 } // Spp

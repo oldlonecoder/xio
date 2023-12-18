@@ -17,6 +17,7 @@
 #include <map>
 #include <AppBook/Book/AppBook.h>
 
+#include "Spp/Runtime/Interpreter.h"
 
 namespace Spp {
 
@@ -1108,14 +1109,16 @@ std::string Lexer::MarkToken(const SppToken &Token, bool c) const
 
     //AppBook::Debug() << "end_token: '" << end_token->details();
 
-    int offset = 0;
+    size_t offset = 0;
     std::string _color;
 
+    auto& Scheme = Interpreter::ColorsStyle();
     for (; start_token != end_token; start_token++)
     {
-        _color = start_token->M == Mnemonic::Noop ? Color::Ansi(PrimitiveTypesColors[start_token->T]) :
-            _color = Color::Ansi(MnemonicColors[start_token->M]);
-
+//        _color = start_token->M == Mnemonic::Noop ? Color::Ansi(PrimitiveTypesColors[start_token->T]) :
+//            _color = Color::Ansi(MnemonicColors[start_token->M]);
+        _color = start_token->M == Mnemonic::Noop ? Scheme[start_token->T] : Scheme[start_token->M];
+//
         if (!_color.empty())
         {
             line.insert(start_token->Location.Colnum - 1 + offset, _color);

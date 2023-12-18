@@ -14,7 +14,7 @@
 #include "Spp/Runtime/Unit.h"
 #include "Spp/Runtime/RTObject.h"
 #include <AppBook/Util/CArgs.h>
-
+#include "Spp/Styles/ColorScheme.h"
 
 
 namespace Spp
@@ -87,10 +87,10 @@ class SPP_EXPORT Interpreter : public Unit
         //...
     };
 
-
+    ColorScheme Styles;
 public:
     static Interpreter *Instance();
-
+    static ColorScheme& ColorsStyle();
     Interpreter() = default;
     ~Interpreter() override;
 
