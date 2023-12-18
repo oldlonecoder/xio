@@ -20,6 +20,7 @@
 #pragma once
 
 #include "Spp/Compiler/Lexer.h"
+#include <map>
 
 
 
@@ -31,6 +32,8 @@ struct SPP_EXPORT  ColorScheme
     using Element = std::pair<Spp::Mnemonic, Color::Code>;
     using RGBElement = std::pair<Spp::Mnemonic, Color::Data>;
 
+    using ElementsDictionary = std::map<std::string, ColorScheme::Element>;
+    using RGBElementsDictionary = std::map<std::string, ColorScheme::RGBElement>;
 
 
 };
