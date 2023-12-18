@@ -101,6 +101,7 @@ std::pair<SppToken::Iterator, SppToken::Iterator> Compiler::ExtractLineFrom(SppT
     // Seek beginning of the line:
     auto Start = Token;
     while((Start > Config().Tokens->begin()) && (Start->Location.Linenum == Token->Location.Linenum)) --Start;
+    if(Start->Location.Linenum != Token->Location.Linenum) ++Start;
 
     auto End = Token;
     while((End != Config().Tokens->end()) && (End->Location.Linenum == Token->Location.Linenum)) ++End;
@@ -162,7 +163,6 @@ Book::Result Compiler::SkipComments()
     if(Ctx.Eof())
         return Book::Result::Eof;
 
-    //AppBook::Debug() << "skipped to:" << Book::Fn::Endl << Ctx.Token().Text();
     Ctx.StartSeq = Ctx.EndSeq = Ctx.Cur;
     return Book::Result::Accepted;
 }
@@ -244,20 +244,25 @@ bool Compiler::ContextData::operator++(int)
     return Cur < EndStream;
 }
 
+
+
+/*!
+ * @brief --
+ */
 void Compiler::ContextData::Accept()
 {
     StartSeq = EndSeq = Cur;
     InstructionsSeq.clear();
-    if(Instruction){
-        Bloc->AppendInstruction(Instruction);
-        CurType = Type::Null;
-        //AppBook::Debug() << " New Instruction injected into Bloc:'" << Color::Yellow << Bloc->Id() << Color::Reset << "':" << Book::Fn::Endl << Instruction->TokenPtr()->Details(true);
-    }
+    if(! Instruction) return;
+
+    Bloc->AppendInstruction(Instruction);
+    CurType = Type::Null;
 }
 
 
-
-
+/*!
+ * @brief --
+ */
 void Compiler::ContextData::Reject()
 {
     Cur = EndSeq = StartSeq; // No forward sequence ????
