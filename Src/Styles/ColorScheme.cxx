@@ -161,60 +161,62 @@ ColorScheme::TypesElements ColorScheme::TypeElements =
     {Type::BlocComment, Color::Grey63}
 
 
-
-                Keyword,
-                Binary,
-                Prefix,
-                OpenPair,
-                ClosePair,
-                Unary,
-                Assign,
-                LineComment
-                Unary,
-                OpenPair,
-                ClosePair,
-                BlocComment
-                Punc,
-                Postfix,
-                Text,
-                Keyword,
-                Number,
-                VoidPtr
-                Any
-                Sign
-                I8
-                I16
-                I32
-                I64
-                U8
-                U16
-                U32
-                U64
-                Float
-                Var
-                Bloc
-                Pipe
-                Operator
-                Function
-                FunctionPtr
-                Object
-                Pointer
-                Type
-                Id
-                Ref
-                Bool
-                Hex
-                Const
-                Static
-                F32
-                F64
-                F128
-                OctalFormat
-                BinFormat
-                LineComment
-                BlocComment
-                Integer
-                Unsigned
+ColorScheme::TypePairArray ColorScheme::TypesColorData =
+ {
+    {Keyword,       Color::Reset},
+    {Binary,        Color::Reset},
+    {Prefix,        Color::Reset},
+    {OpenPair,      Color::Reset},
+    {ClosePair,     Color::Reset},
+    {Unary,         Color::Reset},
+    {Assign,        Color::Reset},
+    {LineComment,   Color::Reset},
+    {Unary,         Color::Reset},
+    {OpenPair,      Color::Reset},
+    {ClosePair,     Color::Reset},
+    {BlocComment,   Color::Reset},
+    {Punc,          Color::Reset},
+    {Postfix,       Color::Reset},
+    {Text,          Color::Reset},
+    {Keyword,       Color::Reset},
+    {Number,        Color::Reset},
+    {VoidPtr,       Color::Reset},
+    {Any,           Color::Reset},
+    {Sign,          Color::Reset},
+    {I8,            Color::Reset},
+    {I16,           Color::Reset},
+    {I32,           Color::Reset},
+    {I64,           Color::Reset},
+    {U8,            Color::Reset},
+    {U16,           Color::Reset},
+    {U32,           Color::Reset},
+    {U64,           Color::Reset},
+    {Float,         Color::Reset},
+    {Var,           Color::Reset},
+    {Bloc,          Color::Reset},
+    {Pipe,          Color::Reset},
+    {Operator,      Color::Reset},
+    {Function,      Color::Reset},
+    {FunctionPtr,   Color::Reset},
+    {Object,        Color::Reset},
+    {Pointer,       Color::Reset},
+    {Type,          Color::Reset},
+    {Id,            Color::Reset},
+    {Ref,           Color::Reset},
+    {Bool,          Color::Reset},
+    {Hex,           Color::Reset},
+    {Const,         Color::Reset},
+    {Static,        Color::Reset},
+    {F32,           Color::Reset},
+    {F64,           Color::Reset},
+    {F128,          Color::Reset},
+    {OctalFormat,   Color::Reset},
+    {BinFormat,     Color::Reset},
+    {LineComment,   Color::Reset},
+    {BlocComment,   Color::Reset},
+    {Integer,       Color::Reset},
+    {Unsigned,      Color::Reset}
+};
  */
 
 

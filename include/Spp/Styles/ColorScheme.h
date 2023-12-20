@@ -42,6 +42,12 @@ struct SPP_EXPORT  ColorScheme
     using Schemes = std::map<std::string, ColorScheme::Scheme>;
 
 
+    //--------------- Spp::Type -> Color::Code -----------------------------------------
+    using TypePair          = std::pair<Type::T, Color::Code>;
+    using TypePairArray     = std::vector<ColorScheme::TypePair>;
+    static ColorScheme::TypePairArray TypesColorData;
+    //----------------------------------------------------------------------------------
+
     std::string operator[](Mnemonic M);
     std::string operator[](Spp::Type::T T);
 
