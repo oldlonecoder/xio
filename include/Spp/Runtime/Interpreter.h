@@ -71,21 +71,6 @@ class SPP_EXPORT Interpreter : public Unit
     static Interpreter* InterpreterInstance;
 
 
-    struct RuntimeObject: public Util::Object
-    {
-        using Map = std::map<std::string, RuntimeObject*>;
-
-        void *RTO{nullptr};
-        RuntimeObject(Interpreter* Inter, void* RTObj): Util::Object(Inter, Id() + "Node"), RTO(RTObj){}
-        virtual ~RuntimeObject() = default;
-
-    };
-
-    template<typename CType, typename ...Args> struct RuntimeFunction : RuntimeObject
-    {
-        using Function = Alu(CType::*)(Args...);
-        //...
-    };
 
     ColorScheme Styles;
 public:
@@ -100,7 +85,116 @@ public:
     Book::Action SourceFile(Cmd::ArgumentData& Arg);
     Book::Action Expression(Cmd::ArgumentData &);
 
-    static std::string DrawLineOfText(std::pair<SppToken::Iterator, SppToken::Iterator> const& LinePair, bool MarkIt=false);
+    static std::string LineOfText(std::pair<SppToken::Iterator, SppToken::Iterator> const& LinePair, bool MarkIt= false);
+
+//    template<typename T> RTVariable<T>& Assign(T& V, const std::string& VarID)
+//    {
+//        if(GetLocalVariableById(VarID))
+//            throw AppBook::Exception() [ AppBook::Except() << " Variable '" << VarID << "' already exists."];
+//
+//        LocalVariables.emplace_back(new Variable(this,nullptr,nullptr));
+//        LocalVariables.back()->SetId(VarID);
+//
+//    }
+
+
+    /*!
+     * @brief Base runtime object;
+     *
+     * //...
+     */
+    class SPP_EXPORT RTBase : public Object
+    {
+        void *ClassInstance{nullptr};
+        void *RTObject{nullptr};
+
+    public:
+        RTBase() = default;
+
+        RTBase(Stack* Scope, const std::string& ID);
+        RTBase(Stack* Scope, const std::string& ID, void* Inst, void* Obj);
+
+        ~RTBase() override = default;
+        virtual Alu Invoke(std::vector<Alu> Args) = 0;
+    };
+
+
+    /*!
+     * @brief Runtime Function.
+     * @tparam Class
+     */
+    template<typename Class> class RTFunction : RTBase
+    {
+    public:
+        using Dictionary = std::map<std::string, RTBase*>;
+        using ParamType = Alu::Array;
+        using RTFunctionPtr = Alu(Class::*)(typename RTFunction::ParamType);
+        typename RTFunction::RTFunctionPtr FunctionPtr{nullptr};
+
+        RTFunction() = default;
+
+        RTFunction(Stack* Scope, const std::string& ID, Class* ObjInst, RTFunction::ParamType FPtr)
+            : RTBase(Scope, ID,ObjInst, FPtr){}
+
+        ~RTFunction() override = default;
+
+
+        Alu Invoke(std::vector<Alu> Args) override
+        {
+
+            return {};
+        }
+
+
+        Alu operator << (std::vector<Alu> Args)
+        {
+            return {};
+        }
+
+        Alu operator >> (std::vector<Alu>& Args)
+        {
+            return {};
+        }
+
+
+
+        /*!
+            @brief rt calls interpreter script source function.
+
+        Ret operator()(const Params_ &...args)
+        {
+            auto param = [](auto A) {
+                return Alu(A);
+            };
+            Alu::Array Params = {param(args)...};
+            // alu a = call_script_function(_name, params);
+            // return a.value<R>();
+            return Ret();
+        }
+
+        template<std::size_t ... Is> Alu Accumulate(Alu::Array const &params, std::index_sequence<Is...> const &)
+        {
+            return (RTInstance->*FunctionPtr)(params[Is].value<Params_>()...);
+        }
+
+        Alu operator()(const Alu::Array &params) override
+        {
+            for (auto &a: params)
+            {
+                AppBook::Debug() << "arg: [" << Color::Yellow << a() << Color::Reset << "]";
+                //...
+            }
+            return Accumulate(params, std::index_sequence_for<Params_...>{});
+        }
+
+        template<std::size_t ... Is> Alu Accumulate(Alu::Array &params, std::index_sequence<Is...> const &)
+        {
+            return (RTInstance->*FunctionPtr)(params[Is].value<Params_>()...);
+        }
+    */
+    };
+
+
 
 };
 

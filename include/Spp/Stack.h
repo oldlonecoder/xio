@@ -61,8 +61,9 @@ public:
     Variable* GetLocalVariableById(const std::string& _ID);
     Variable* GetVariableById(const std::string& _ID);
 
-    Book::Enums::Code RemoveInstruction(xio* _Obj);
-    Book::Enums::Code RemoveVariable   (Variable* _Obj);
+    [[maybe_unused]] Book::Enums::Code RemoveInstruction(xio* _Obj);
+    [[maybe_unused]] Book::Enums::Code RemoveVariable   (Variable* _Obj);
+
     //Book::Enums::Code RemoveFunction(xio* _Obj);
     // Book::Enums::Code RemoveBloc(xio* _Obj); on hold....
 

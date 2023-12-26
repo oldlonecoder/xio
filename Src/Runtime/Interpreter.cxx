@@ -92,7 +92,7 @@ Book::Action Interpreter::Expression(Cmd::ArgumentData &A)
     return Book::Action::End;
 }
 
-std::string Interpreter::DrawLineOfText(const std::pair<SppToken::Iterator, SppToken::Iterator> &LinePair, bool MarkIt)
+std::string Interpreter::LineOfText(const std::pair<SppToken::Iterator, SppToken::Iterator> &LinePair, bool MarkIt)
 {
 
     return "NOT IMPL!!!!! Go Away!!!!!!! Leave me ALONE!!!";
@@ -105,6 +105,15 @@ ColorScheme &Interpreter::ColorsStyle()
         throw AppBook::Exception() [AppBook::Fatal() << Book::Result::Null_ptr << "[Interpreter instance is null]"];
     return Ins->Styles;
 }
+
+
+Interpreter::RTBase::RTBase(Stack *Scope, const string &ID)
+    : Object(Scope, ID){}
+
+Interpreter::RTBase::RTBase(Stack *Scope, const string &ID, void *Inst, void *Obj)
+    : Object(Scope, ID), ClassInstance(Inst),RTObject(Obj){}
+
+
 
 
 } // Spp

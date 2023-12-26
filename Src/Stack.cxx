@@ -127,7 +127,7 @@ Variable *Stack::GetVariableById(const std::string &_ID)
     return nullptr;
 }
 
-Book::Enums::Code Stack::RemoveInstruction(xio *_Obj)
+[[maybe_unused]] Book::Enums::Code Stack::RemoveInstruction(xio *_Obj)
 {
     if(Instructions.empty()) return Book::Enums::Code::Rejected;
 
@@ -136,7 +136,7 @@ Book::Enums::Code Stack::RemoveInstruction(xio *_Obj)
     return Book::Enums::Code::Accepted;
 }
 
-Book::Enums::Code Stack::RemoveVariable(Variable *_Obj)
+[[maybe_unused]] Book::Enums::Code Stack::RemoveVariable(Variable *_Obj)
 {
     if(LocalVariables.empty()) return Book::Enums::Code::Rejected;
 
@@ -161,7 +161,7 @@ Book::Enums::Code Stack::AppendInstruction(xio *_In)
     return Book::Enums::Code::Accepted;
 }
 
-Stack::Stack(const Stack & Rhs): xio(nullptr, Rhs.SToken, Rhs.A)
+Stack::Stack(const Stack & Rhs): xio(nullptr, Rhs.Tk, Rhs.A)
 {
     if(!Rhs.LocalVariables.empty())
     {

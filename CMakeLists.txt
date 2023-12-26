@@ -25,7 +25,6 @@ add_library(
     include/Spp/Compiler/Lang/Grammar.h     Src/Compiler/Lang/Grammar.cxx
     include/Spp/Stack.h                     Src/Stack.cxx
     include/Spp/Runtime/Variable.h          Src/Runtime/Variable.cxx
-    include/Spp/Runtime/RTObject.h          Src/Runtime/RTObject.cxx
     include/Spp/Runtime/Interpreter.h       Src/Runtime/Interpreter.cxx
     include/Spp/Compiler/Compiler.h         Src/Compiler/Compiler.cxx
     include/Spp/Runtime/Unit.h              Src/Runtime/Unit.cxx

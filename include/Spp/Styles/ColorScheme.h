@@ -3,7 +3,7 @@
 //
 
 /******************************************************************************************
- *   Copyright (C) 1965/1987/2023 by Serge Lussier                                        *
+ *   Copyright (C) 2023 by Serge Lussier                                                  *
  *   serge.lussier@oldlonecoder.club                                                      *
  *                                                                                        *
  *                                                                                        *

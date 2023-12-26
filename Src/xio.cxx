@@ -134,7 +134,7 @@ xio::~xio()
 
 xio::xio(Util::Object* parent_bloc, SppToken* atoken, Alu* a_alu): Util::Object(parent_bloc, atoken ? atoken->Text() : "xio")
 {
-    SToken = atoken;
+    Tk = atoken;
 
     //AppBook::Debug() << "xio::xio => token details:[" << (t0 ? t0->Details() : "nullptr") << "]"<< Book::Enums::Fn::Endl ;
 
@@ -147,17 +147,17 @@ xio::xio(Util::Object* parent_bloc, SppToken* atoken, Alu* a_alu): Util::Object(
 
     A = new Alu(0.0f);
 
-    if (!SToken)
+    if (!Tk)
         return;
 
-    switch (SToken->T) {
+    switch (Tk->T) {
     case Type::Text:
         *A = atoken->Text();
         return;
     case Type::Number:
     {
         ///@todo Attention enlever le court-circuit du type-size!!!
-        if (SToken->S & Type::Number)
+        if (Tk->S & Type::Number)
         {
             double d;
             (StrAcc(atoken->Text())) >> d;
@@ -207,29 +207,27 @@ xio::xio(Util::Object* parent_bloc, SppToken* atoken, Alu* a_alu): Util::Object(
 Alu xio::JSR()
 {
     //...
+    try {
+        //AppBook::Debug() << Color::White << Attribute() << " Value:" << Color::Yellow << A->number<uint64_t>() << Book::Enums::Fn::Endl << Tk->Details(true) ;
+        if (Tk->IsOperator())
+        {
+            if (Lhs) *A = Lhs->JSR(); // Always catch the lhs value so we return that one if t is no rhs operand.
+            if (Rhs) *A = Rhs->JSR(); // Always catch the rhs value because it is the value to be returned after being applied to the lhs (if applicable).
 
-    //AppBook::Debug() << Color::White << Attribute() << " Value:" << Color::Yellow << A->number<uint64_t>() << Book::Enums::Fn::Endl << SToken->Details(true) ;
-    if(SToken->IsOperator())
-    {
-        if(SToken->IsBinary())
-            //AppBook::Out() << xio::TraceConnectBinaryOperands(this) << Book::Enums::Fn::Endl ;
-
-        if (Lhs) *A = Lhs->JSR(); // Always catch the lhs value so we return that one if t is no rhs operand.
-        if (Rhs) *A = Rhs->JSR(); // Always catch the rhs value because it is the value to be returned after being applied to the lhs (if applicable).
-
-        if (xio_fn)
-            return (this->*xio_fn)();// All operators assign acc.
-        else
-            AppBook::Warning() << "operator xio [" << Color::Yellow << SToken->Text() << Color::Reset << "] has no implementation (yet?).:\n" << SToken->Mark() << Book::Enums::Fn::Endl ;
+            if (xio_fn)
+                return (this->*xio_fn)();// All operators assign acc.
+            else
+                AppBook::Warning() << "operator xio [" << Color::Yellow << Tk->Text() << Color::Reset << "] has no implementation (yet?).:\n" << Tk->Mark() << Book::Enums::Fn::Endl;
+        }
+        Tk->S |= A->T;
     }
-    //else
-    //    AppBook::Warning() << " xio::" << SToken->Details(false) << " Was not an Operator - Returning the current Alu value ...";
-    SToken->S |= A->T; ///< Why is that ?
-    // It's because our actual token::type (xio::Type::T) has been changed by the type of the resulting operation Alu::T ( acc->T is put into t0->s )...
-    // Ceci est le changement apporté au champs sémantique du token qui est modifié par le type résultant de l'opération.  ^       ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ...
-
+    catch(AppBook::Exception& e)
+    {
+        AppBook::Except() << e.what();
+    }
     return *A;
 }
+
 
 //Book::Enums::Code xio::AppendChild(xio*c)
 //{
@@ -268,10 +266,10 @@ Alu xio::JSR()
 
 Alu xio::LeftShift()
 {
-    if((Lhs->SToken->S & Type::Float) || (Rhs->SToken->S & Type::Float))
+    if((Lhs->Tk->S & Type::Float) || (Rhs->Tk->S & Type::Float))
     {
         *A = 0.f;
-        AppBook::Warning() << Lhs->SToken->TypeName() << " " << SToken->Text() << " " << Rhs->SToken->TypeName() << " are incompatible" ;
+        AppBook::Warning() << Lhs->Tk->TypeName() << " " << Tk->Text() << " " << Rhs->Tk->TypeName() << " are incompatible" ;
     }
 
     *A = Lhs->A->number<uint64_t>() << Rhs->A->number<uint64_t>();
@@ -303,7 +301,7 @@ Alu xio::RightShift()
 
 Alu xio::Decr()
 {
-    *A = SToken->IsPrefix() ? --(*Rhs->A) : (*Lhs->A)--;
+    *A = Tk->IsPrefix() ? --(*Rhs->A) : (*Lhs->A)--;
     AppBook::Out() << Color::CornflowerBlue << " = " << Color::Lime << (*A)();
     return *A;
 }
@@ -311,7 +309,7 @@ Alu xio::Decr()
 
 Alu xio::Incr()
 {
-    *A = SToken->IsPrefix() ? ++(*Rhs->A) : (*Lhs->A)++;
+    *A = Tk->IsPrefix() ? ++(*Rhs->A) : (*Lhs->A)++;
     AppBook::Out() << Color::CornflowerBlue << " = " << Color::Lime << (*A)();
     return *A;
 }
@@ -438,7 +436,7 @@ Alu xio::Add()
 Alu xio::Sub()
 {
     // hack... en attendant :
-    if (SToken->S & Type::Sign)
+    if (Tk->S & Type::Sign)
         return Negative();
     AppBook::Debug() << Color::Lime
                      << Color::Yellow << Lhs->Value()() << " " << Color::CornflowerBlue << Attribute() << " " << Color::Yellow << Rhs->Value()() << ":";
@@ -703,7 +701,7 @@ Alu xio::KI8()
 
 Alu xio::KI16()
 {
-    AppBook::Debug() << Rhs->SToken->Text();
+    AppBook::Debug() << Rhs->Tk->Text();
     *A = (int16_t)(Rhs->A->number<uint64_t>() & 0xFFFF);
     return *A;
 }
@@ -736,7 +734,7 @@ Alu xio::KString()
 
 [[maybe_unused]] std::string xio::TypeName()
 {
-    return Type::Name(SToken->T);
+    return Type::Name(Tk->T);
 }
 
 
@@ -745,7 +743,7 @@ auto xio::Match(xio* in_lhs, xio* in_rhs)
     for (auto [lr, fn] : xio::move_tbl)
     {
         auto [l, r] = lr;
-        if ((in_lhs->SToken->T & l) && (in_rhs->SToken->T & r)) return fn;
+        if ((in_lhs->Tk->T & l) && (in_rhs->Tk->T & r)) return fn;
     }
     return static_cast<xio * (xio::*)(xio*)> (nullptr);
 }
@@ -787,7 +785,7 @@ xio::input_table_t xio::input_tbl =
 
 void xio::syntax_error(xio* e)
 {
-    throw AppBook::Syntax() << "at " << e->SToken->LocationText() << Book::Enums::Fn::Endl << e->SToken->Mark() << Book::Enums::Fn::Endl ;
+    throw AppBook::Syntax() << "at " << e->Tk->LocationText() << Book::Enums::Fn::Endl << e->Tk->Mark() << Book::Enums::Fn::Endl ;
 }
 
 xio *xio::Warning(xio*)
@@ -801,7 +799,7 @@ void xio::make_error(Book::Enums::Code ErrCode, xio* source_node, xio* input_nod
         << ErrCode
         << input_node->Attribute()
         << Book::Enums::Fn::Endl
-        << input_node->SToken->Mark()
+        << input_node->Tk->Mark()
         << Book::Enums::Fn::Endl ;
 }
 
@@ -818,9 +816,9 @@ void xio::make_error(Book::Enums::Code ErrCode, xio* source_node, SppToken* inpu
 
 void xio::Header(xio* input_node, std::source_location&& Loc)
 {
-    AppBook::Debug(Loc) << Color::Yellow << SToken->Text() << Color::White << "<-" <<
-                        Color::Yellow << input_node->SToken->Text() <<
-                        Book::Enums::Fn::Endl << input_node->SToken->Mark() << Book::Enums::Fn::Endl ;
+    AppBook::Debug(Loc) << Color::Yellow << Tk->Text() << Color::White << "<-" <<
+                        Color::Yellow << input_node->Tk->Text() <<
+                        Book::Enums::Fn::Endl << input_node->Tk->Mark() << Book::Enums::Fn::Endl ;
 }
 
 
@@ -841,9 +839,9 @@ xio* xio::TreeInput(xio* parent_bloc, SppToken* token, xio::maker mk)
     for (auto& [lr, fntext] : xio::input_tbl)
     {
         auto [l, r] = lr;
-        if ((SToken->T & l) && (token->T & r))
+        if ((Tk->T & l) && (token->T & r))
         {
-            AppBook::Debug() << Color::Yellow << SToken->Text() << " <- " << Color::Yellow << token->Text() << Color::Reset << " Input TokenPtr validated: '" << Color::Yellow << fntext << Color::Reset << "'";
+            AppBook::Debug() << Color::Yellow << Tk->Text() << " <- " << Color::Yellow << token->Text() << Color::Reset << " Input TokenPtr validated: '" << Color::Yellow << fntext << Color::Reset << "'";
             ///@todo Check id tokens for function_call and other id-constructs before calling xio::TreeInput(...).
 
             xio* a;
@@ -861,17 +859,17 @@ xio* xio::TreeInput(xio* parent_bloc, SppToken* token, xio::maker mk)
                 AppBook::Syntax() << " invalid relational operands at " << token->LocationText() << " - unexpected TokenPtr:" << Book::Enums::Fn::Endl << token->Mark() << Book::Enums::Fn::Endl ;
                 return nullptr;
             }
-            AppBook::Debug() << SToken->Text() << "::TreeInput(" << token->Text() << "):" << Book::Enums::Fn::Endl << token->Mark() << Book::Enums::Fn::Endl ;
+            AppBook::Debug() << Tk->Text() << "::TreeInput(" << token->Text() << "):" << Book::Enums::Fn::Endl << token->Mark() << Book::Enums::Fn::Endl ;
 
             return (this->*fn)(a);
         }
     }
 
-    AppBook::Info() << Color::White << "'" << Color::Yellow << SToken->Text() << Color::White << "'" << Color::Reset
+    AppBook::Info() << Color::White << "'" << Color::Yellow << Tk->Text() << Color::White << "'" << Color::Reset
                     << "::TreeInput(" << Color::Yellow << token->Text() << Color::Reset << ") => invalid relational operands at "
                     << token->LocationText() << " - unexpected TokenPtr."
                     << Book::Enums::Fn::Endl << token->Mark() << Book::Enums::Fn::Endl ;
-    AppBook::Out() << SToken->Details() << " || " << token->Details() << Book::Enums::Fn::Endl << "Returning nullptr" ;
+    AppBook::Out() << Tk->Details() << " || " << token->Details() << Book::Enums::Fn::Endl << "Returning nullptr" ;
 
     return nullptr;
 }
@@ -880,20 +878,20 @@ xio* xio::TreeInputBinary(xio* a)
 {
     Header(a);
 
-    if (SToken->IsLeaf())
+    if (Tk->IsLeaf())
     {
-        if (a->SToken->M == Mnemonic::OpenPar)
+        if (a->Tk->M == Mnemonic::OpenPar)
             syntax_error(a);
     }
 
-    if (SToken->M == Mnemonic::OpenPar)
+    if (Tk->M == Mnemonic::OpenPar)
         return ToLeft(a);
 
-    if (SToken->IsBinary())
+    if (Tk->IsBinary())
     {
         //if (!rhs) syntax_error(a);
 
-        if (a->SToken->D < SToken->D)
+        if (a->Tk->D < Tk->D)
             return ToRight(a);
         if (Op)
         {
@@ -927,7 +925,7 @@ xio* xio::_close_pair(xio* a)
     xio* x = xio::PopPar();
     if (!x)
     {
-        AppBook::Error() << "Unmatched left paranthese:" << Book::Enums::Fn::Endl << a->SToken->Mark() << Book::Enums::Fn::Endl ;
+        AppBook::Error() << "Unmatched left paranthese:" << Book::Enums::Fn::Endl << a->Tk->Mark() << Book::Enums::Fn::Endl ;
         return nullptr;
     }
     a->Op = x->Op;
@@ -943,10 +941,10 @@ xio* xio::_close_pair(xio* a)
     AppBook::Debug()
         << "new TreeInput vertex:["
         << Color::Yellow
-        << a->SToken->Text()
+        << a->Tk->Text()
         << Color::Reset
         << "]" << Book::Enums::Fn::Endl
-        << a->SToken->Mark() << Book::Enums::Fn::Endl ;
+        << a->Tk->Mark() << Book::Enums::Fn::Endl ;
 
     return a;
 }
@@ -958,7 +956,7 @@ xio* xio::_close_par(xio* a)
     xio* x = xio::PopPar();
     if (!x)
     {
-        AppBook::Error() << "Unmatched left paranthese." << a->SToken->Mark() << Book::Enums::Fn::Endl ;
+        AppBook::Error() << "Unmatched left paranthese." << a->Tk->Mark() << Book::Enums::Fn::Endl ;
         return nullptr;
     }
     a->Op = x->Op;
@@ -974,10 +972,10 @@ xio* xio::_close_par(xio* a)
     AppBook::Out()
         << "new TreeInput vertex:["
         << Color::Yellow
-        << a->SToken->Text()
+        << a->Tk->Text()
         << Color::Reset
         << "]" << Book::Enums::Fn::Endl
-        << a->SToken->Mark() << Book::Enums::Fn::Endl ;
+        << a->Tk->Mark() << Book::Enums::Fn::Endl ;
 
     return a;
 }
@@ -1011,7 +1009,7 @@ xio* xio::collapse_par_pair(xio* a)
     if (Op)
     {
         Op->Rhs = Lhs;
-        if(a->SToken->D < Op->SToken->D)
+        if(a->Tk->D < Op->Tk->D)
         {
             return Op->ToRight(a);
         }
@@ -1080,7 +1078,7 @@ xio* xio::TreeBegin(xio* ParentObj, SppToken* Token, const xio::maker& Maker)
     if(!a)
         return nullptr;
 
-    if (a->SToken->M == Mnemonic::OpenPar) PushPar(a);
+    if (a->Tk->M == Mnemonic::OpenPar) PushPar(a);
     return a;
 }
 
@@ -1089,7 +1087,7 @@ xio* xio::CloseTree()
 {
     Header(this);
 
-    if (SToken->M == Mnemonic::OpenPar)
+    if (Tk->M == Mnemonic::OpenPar)
     {
         AppBook::Error() << " unexpected End of file." ;
         return nullptr;
@@ -1099,17 +1097,17 @@ xio* xio::CloseTree()
     {
         xio* x = xio::pars.top();
         xio::pars.pop();
-        AppBook::Error() << " umatched closing parenthese from:" << Book::Enums::Fn::Endl << x->SToken->Mark() << Book::Enums::Fn::Endl ;
+        AppBook::Error() << " umatched closing parenthese from:" << Book::Enums::Fn::Endl << x->Tk->Mark() << Book::Enums::Fn::Endl ;
         return nullptr;
     }
 
 
-    if (SToken->M == Mnemonic::ClosePar) {
+    if (Tk->M == Mnemonic::ClosePar) {
         AppBook::Debug() << "Closing the tree on close parenthese:";
         if (Lhs)
         {
             xio* x = Lhs;
-            AppBook::Debug() << "left hand side operand: " << Lhs->SToken->Details() << ":" << Book::Enums::Fn::Endl << Lhs->SToken->Mark() << Book::Enums::Fn::Endl ;
+            AppBook::Debug() << "left hand side operand: " << Lhs->Tk->Details() << ":" << Book::Enums::Fn::Endl << Lhs->Tk->Mark() << Book::Enums::Fn::Endl ;
 
             Lhs->Op = Op;
 
@@ -1128,37 +1126,37 @@ xio* xio::CloseTree()
 
 xio* xio::TreeRoot(bool skip_syntax)
 {
-    //AppBook::Debug() << "Match tree ins from xio node:" << Book::Enums::Fn::Endl << SToken->Mark() << Book::Enums::Fn::Endl ;
+    //AppBook::Debug() << "Match tree ins from xio node:" << Book::Enums::Fn::Endl << Tk->Mark() << Book::Enums::Fn::Endl ;
     xio* x = this;
     xio* p = x;
     do {
         x = p;
         if (!skip_syntax)
         {
-            switch (x->SToken->T) {
+            switch (x->Tk->T) {
             case Type::Assign:
             case Type::Binary:
                 if (!x->Lhs)
                 {
-                    AppBook::Error() << "Syntax error: binary operator has no left operand." << Book::Enums::Fn::Endl << x->SToken->Mark() << Book::Enums::Fn::Endl ;
+                    AppBook::Error() << "Syntax error: binary operator has no left operand." << Book::Enums::Fn::Endl << x->Tk->Mark() << Book::Enums::Fn::Endl ;
                     return nullptr;
                 }
                 if (!x->Rhs)
                 {
-                    AppBook::Error() << "Syntax error: binary operator has no right operand." << Book::Enums::Fn::Endl << x->SToken->Mark() << Book::Enums::Fn::Endl ;
+                    AppBook::Error() << "Syntax error: binary operator has no right operand." << Book::Enums::Fn::Endl << x->Tk->Mark() << Book::Enums::Fn::Endl ;
                     return nullptr;
                 }
             case Type::Prefix:
                 if (!x->Rhs)
                 {
-                    AppBook::Error() << "Syntax error: prefix unary operator has no (right) operand." << Book::Enums::Fn::Endl << x->SToken->Mark() << Book::Enums::Fn::Endl ;
+                    AppBook::Error() << "Syntax error: prefix unary operator has no (right) operand." << Book::Enums::Fn::Endl << x->Tk->Mark() << Book::Enums::Fn::Endl ;
                     return nullptr;
                 }
                 break;
             case Type::Postfix:
                 if (!x->Lhs)
                 {
-                    AppBook::Error() << "Syntax error: postfix unary operator has no (left) operand." << Book::Enums::Fn::Endl << x->SToken->Mark() << Book::Enums::Fn::Endl ;
+                    AppBook::Error() << "Syntax error: postfix unary operator has no (left) operand." << Book::Enums::Fn::Endl << x->Tk->Mark() << Book::Enums::Fn::Endl ;
                     return nullptr;
                 }
                 break;
@@ -1174,7 +1172,7 @@ xio* xio::ToRight(xio* in_rhs)
     Header(in_rhs);
 
     // Temporary hack....
-    if (in_rhs->SToken->M == Mnemonic::OpenPar)
+    if (in_rhs->Tk->M == Mnemonic::OpenPar)
         xio::PushPar(in_rhs);
 
     if (Rhs) {
@@ -1185,16 +1183,16 @@ xio* xio::ToRight(xio* in_rhs)
               /
             rhs
         */
-        AppBook::Debug() << SToken->Text() << " -> " << Rhs->SToken->Text()
+        AppBook::Debug() << Tk->Text() << " -> " << Rhs->Tk->Text()
                          << Color::Lime << "tree_set_right "
                          << Color::White << " <- "
-                         << Color::Yellow << in_rhs->SToken->Text();
+                         << Color::Yellow << in_rhs->Tk->Text();
         Rhs->Op = in_rhs;
         in_rhs->Lhs = Rhs;
     }
     Rhs = in_rhs;
     in_rhs->Op = this;
-    if (SToken->IsBinary())
+    if (Tk->IsBinary())
     {
         AppBook::Debug() << xio::TraceConnectBinaryOperands(this);
     }
@@ -1279,12 +1277,12 @@ void xio::dot_tree_close(StrAcc& a_out)
 void xio::dot_attr(StrAcc& a_out)
 {
     StrAcc attr;
-    attr << SToken->Text();
+    attr << Tk->Text();
     StrAcc Shape;
-    if (SToken->T & Type::Text)
+    if (Tk->T & Type::Text)
         Shape << "none";
     else
-        if (SToken->T & Type::Assign)
+        if (Tk->T & Type::Assign)
             Shape << "none";
         else
             Shape << "none";

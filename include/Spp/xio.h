@@ -50,7 +50,7 @@ protected:
     xio* Lhs = nullptr; ///< Left Hand Side Operand.
     xio* Rhs = nullptr; ///< Right Hand Size Operand
 
-    SppToken* SToken = nullptr; ///< Token informations.
+    SppToken* Tk = nullptr; ///< Token informations.
 
     Alu* A = nullptr; ///< Arithmetic Logical Unit, or Accumulator, or whatever!
     struct SPP_EXPORT storage_attr {
@@ -91,7 +91,7 @@ public:
     [[maybe_unused]] virtual std::string TypeName();
 
     xio* Operator() { return Op; }
-    SppToken* TokenPtr() { return SToken; }
+    SppToken* TokenPtr() { return Tk; }
 
 //    template<class T> T* To() { return dynamic_cast<T*>(this); }
     //static void illegal_rvalue(xio* x, SppToken* token);
@@ -162,7 +162,7 @@ public:
 
 #pragma endregion MOVE
 
-    std::string Attribute() { return SToken ? SToken->Text() : "no Attribute"; }
+    std::string Attribute() { return Tk ? Tk->Text() : "no Attribute"; }
 
     static auto Match(xio* in_lhs, xio* in_rhs);
 

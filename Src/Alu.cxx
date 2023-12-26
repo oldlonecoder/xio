@@ -409,7 +409,7 @@ Alu& Alu::operator-=(const Alu& rv)
         return *this;
     }
 
-    throw AppBook::Except() << "cannot execute assign substraction between " << Type::Name(T) << " and " << Type::Name(rv.T) << "." ;;
+    throw AppBook::Except() << "cannot execute assign substraction between " << Type::Name(T) << " and " << Type::Name(rv.T) << "." ;
     return *this;
 }
 

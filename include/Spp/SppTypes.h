@@ -77,6 +77,23 @@ constexpr T        Unsigned     = Type::U8|Type::U16|Type::U32|Type::U64;
 
 std::string SPP_EXPORT Name(T T_);
 T           FromStr(const std::string& TName);
+//
+//struct Text;
+//
+//struct Integer;
+//struct Uint8;
+//struct Uint16;
+//struct Uint32;
+//struct Uint64;
+//struct Int8;
+//struct Int16;
+//struct Int32;
+//struct Int64;
+//struct Float;
+//struct Double;
+//struct String;
+//struct Pointer;
+
 
 } // namespace Type
 
@@ -345,4 +362,5 @@ Mnemonic SPP_EXPORT  FromStr(const std::string &M_);
 
 } // namespace Lexem
 } // namespece Spp
+
 
