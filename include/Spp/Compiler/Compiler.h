@@ -17,6 +17,9 @@
 #include "Spp/Stack.h"
 // ---- On Hold : Grammar::Rules
 #include "Spp/Compiler/Lang/Grammar.h"
+
+#include <stack>
+
 //--------------------------------
 namespace Spp
 {
@@ -62,6 +65,13 @@ private:
         SppToken& Token() { return *Cur; }
         Lang::Grammar::Rule const* Rule;
         ContextData() = default;
+        ContextData(const ContextData& CD);
+        ContextData(ContextData&& CD) noexcept;
+
+        ContextData& operator = (const ContextData& CD);
+        ContextData& operator = (ContextData&& CD);
+
+
         ~ContextData() = default;
         ContextData(SppToken::Iterator BeginStream, SppToken::Iterator StartSeq, SppToken::Iterator EndStream, Stack *Bloc);
 
@@ -69,7 +79,9 @@ private:
         bool operator ++(int);
         void Accept();
         void Reject();
-        bool Eof() { return Cur >= EndStream; };
+        [[nodiscard]] bool Eof() const { return Cur >= EndStream; };
+
+        using CTXStack = std::stack<ContextData>;
 
     };
 
@@ -98,6 +110,7 @@ private:
     Book::Result ParseElement(Lang::Grammar::Element::Iterator& EI);
 
     std::pair<SppToken::Iterator, SppToken::Iterator> ExtractLineFrom(SppToken::Iterator Token);
+    Compiler::ContextData::CTXStack CStack;
 
 
 };

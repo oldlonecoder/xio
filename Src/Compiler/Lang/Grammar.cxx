@@ -42,7 +42,7 @@ Grammar::Dictionary Grammar::GrammarDictionnary = {
 Grammar::Rule::Array Grammar::Rules;
 
 std::string grammar_text = R"(
-unit               : 'Unit' Id ';'.
+unit               : 'Unit' *Id '::' Id ';' | 'Unit' Id ';'.
 stmts              : +statement.
 statement          : ';' | instruction | assignstmt ';'| declvar ';'| #expression ';'| #var_id ';'.
 assignstmt         : declvar Assign #expression | #var_id Assign #expression.
@@ -58,7 +58,7 @@ arg                : objcarg | #expression.
 argseq             : ',' arg.
 Args               : arg *+argseq.
 typename           : *'static' ?'i8' ?'u8' ?'i16' ?'u16' ?'i32' ?'u32' ?'i64' ?'u64' ?'real' ?'number' ?'string' ?#objectid.
-instruction        : ?'if' ?'then'  ?'switch' ?'case' ?'for' ?'while' ?'repeat' ?'until' ?'do' ?'return'.
+instruction        : ?'if' ?'switch'  ?'for' ?'while' ?'repeat' ?'until' ?'do' ?'return'.
 if                 : 'if' condexpr ifbody | 'if' '(' condexpr ')' ifbody.
 bloc               :  '{' stmts '}'.
 truebloc           : *'then' bloc | *'then' statement.

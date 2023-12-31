@@ -82,10 +82,24 @@ SppToken::SppToken(Mnemonic aCode, Type::T aType, Type::T aSem, Distance::T aDel
     T = aType;
     S = aSem;
     D = aDelta;
-    Location = { aLexem, nullptr, 0, 0, -1 };
-    Flags = { V_Flag, 0, 0 };
+    Location = { aLexem, nullptr, 0, 0, -1,0 };
+    Flags = { V_Flag, 0, 0, 0 };
 
 }
+
+
+SppToken::SppToken(Mnemonic aCode, Type::T aType, Type::T aSem, Distance::T aDelta, Lexem::T aLexem, uint8_t V_Flag, uint8_t UTF)
+{
+    M = aCode;
+    T = aType;
+    S = aSem;
+    D = aDelta;
+    Location = { aLexem, nullptr, 0, 0, -1,0 };
+    Flags = { V_Flag, 0, 0,1 };
+
+}
+
+
 
 SppToken::SppToken(Mnemonic aCode, Type::T aType, Type::T aSem, Spp::Distance::T aDelta, SppToken::LocationData aLoc, SppToken::FlagsBit aFlag, void* aPtr)
 {
@@ -237,6 +251,7 @@ static SppToken::Array TokensTable =
         {Mnemonic::Exponent,            Type::Binary,    Type::Operator|Type::Binary                                ,Distance::Exponent,   Lexem::Exponent,    1},
         {Mnemonic::RightShift,          Type::Binary,    Type::Operator|Type::Binary                                ,Distance::Shift,      Lexem::RightShift, 1},
         {Mnemonic::BinaryXor,           Type::Binary,    Type::Operator|Type::Binary                                ,Distance::Bits,       Lexem::Xor,         1},
+        {Mnemonic::Deref,               Type::Prefix,    Type::Unary|Type::Prefix|Type::Operator                    ,Distance::Deref,      Lexem::Deref       , 1},
         {Mnemonic::Decr,                Type::Unary,     Type::Unary|Type::Prefix|Type::Operator                    ,Distance::Unary,      Lexem::Decr,        1},
         {Mnemonic::Incr,                Type::Unary,     Type::Unary|Type::Prefix|Type::Operator                    ,Distance::Unary,      Lexem::Incr,        1},
         {Mnemonic::AssignAdd,           Type::Assign,    Type::Keyword|Type::Operator|Type::Binary|Type::Assign     ,Distance::Assign,     Lexem::AssignAdd,  1},
@@ -250,7 +265,6 @@ static SppToken::Array TokensTable =
         {Mnemonic::AssignC1,            Type::Assign,    Type::Keyword|Type::Operator|Type::Binary|Type::Assign     ,Distance::Assign,     Lexem::AssignC1,     1},
         {Mnemonic::AssignLeftShift,     Type::Assign,    Type::Keyword|Type::Operator|Type::Binary|Type::Assign     ,Distance::Assign,     Lexem::AssignLshift, 1},
         {Mnemonic::AssignRightShift,    Type::Assign,    Type::Keyword|Type::Operator|Type::Binary|Type::Assign     ,Distance::Assign,     Lexem::AssignRshift, 1},
-        {Mnemonic::Deref,               Type::Prefix,    Type::Unary|Type::Prefix|Type::Operator                    ,Distance::Deref,      Lexem::Deref        , 1},
         {Mnemonic::LessEq,              Type::Binary,    Type::Operator|Type::Binary|Type::Bool                     ,Distance::Equality,   Lexem::LessEqual,    1},
         {Mnemonic::GreaterEq,           Type::Binary,    Type::Operator|Type::Binary|Type::Bool                     ,Distance::Equality,   Lexem::GreaterEqual, 1},
         {Mnemonic::Equal,               Type::Binary,    Type::Operator|Type::Binary|Type::Bool                     ,Distance::Equality,   Lexem::Equal,        1},
@@ -297,6 +311,7 @@ static SppToken::Array TokensTable =
         {Mnemonic::Return,              Type::Keyword,   Type::Keyword                                              ,Distance::Identifier, Lexem::Return, 0},
         {Mnemonic::If,                  Type::Keyword,   Type::Keyword                                              ,Distance::Identifier, Lexem::If,     0},
         {Mnemonic::Pi,                  Type::Number,    Type::Number|Type::Leaf|Type::Float|Type::Keyword|Type::Const ,Distance::Identifier, Lexem::Pi,     1},
+        {Mnemonic::Pi,                  Type::Number,    Type::Number|Type::Leaf|Type::Float|Type::Keyword|Type::Const ,Distance::Identifier, "π",     1,0},
         {Mnemonic::Number,              Type::Prefix,    Type::Number|Type::Unary|Type::Keyword|Type::Prefix|Type::Operator     ,Distance::Identifier, Lexem::Number, 1},
         {Mnemonic::U8,                  Type::Prefix,    Type::U8|Type::Keyword|Type::Prefix|Type::Operator         ,Distance::Identifier, Lexem::U8,     1},
         {Mnemonic::U16,                 Type::Prefix,    Type::U16|Type::Unary|Type::Keyword|Type::Prefix|Type::Operator        ,Distance::Identifier, Lexem::U16,    1},

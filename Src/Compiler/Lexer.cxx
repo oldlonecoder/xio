@@ -40,7 +40,7 @@ std::map<Type::T, Color::Code> PrimitiveTypesColors =
     {Type::Operator,    Color::LightCoral},
     {Type::Binary,      Color::Cornsilk1},
     {Type::Text,        Color::DarkSlateGray3},
-    {Type::Id,          Color::White},
+    {Type::Id,          Color::LightSteelBlue},
     {Type::Punc,        Color::Yellow},
     {Type::Prefix,      Color::CadetBlue},
     {Type::LineComment, Color::Grey66},
@@ -60,6 +60,7 @@ std::map<Mnemonic, Color::Code> MnemonicColors =
         {Mnemonic::Radical,          Color::DeepSkyBlue7},
         {Mnemonic::Exponent,         Color::DeepSkyBlue7},
         {Mnemonic::RightShift,       Color::SkyBlue1},
+        {Mnemonic::Deref,            Color::Yellow},
         {Mnemonic::Decr,             Color::DodgerBlue1},
         {Mnemonic::Incr,             Color::DodgerBlue1},
         {Mnemonic::AssignAdd,        Color::Salmon1},
@@ -81,12 +82,12 @@ std::map<Mnemonic, Color::Code> MnemonicColors =
         {Mnemonic::Add,              Color::DarkOrange3},
         {Mnemonic::Sub,              Color::DarkOrange3},
         {Mnemonic::Mul,              Color::LighcoreateBlue},
-        {Mnemonic::Indirection,      Color::White},
+        {Mnemonic::Indirection,      Color::Yellow},
         {Mnemonic::CommentCpp,       Color::White},
         {Mnemonic::Modulo,           Color::LighcoreateBlue},
         {Mnemonic::LessThan,         Color::LighcoreateBlue},
         {Mnemonic::GreaterThan,      Color::LighcoreateBlue},
-        {Mnemonic::Assign,           Color::Salmon1},
+        {Mnemonic::Assign,           Color::LightSalmon4},
         {Mnemonic::BinaryAnd,        Color::SkyBlue1},
         {Mnemonic::BinaryOr,         Color::SkyBlue1},
         {Mnemonic::BinaryXor,        Color::SkyBlue1},
@@ -101,13 +102,13 @@ std::map<Mnemonic, Color::Code> MnemonicColors =
         {Mnemonic::ClosePar,         Color::Gold4},
         {Mnemonic::Openindex,        Color::DarkOliveGreen2},
         {Mnemonic::Closeindex,       Color::DarkOliveGreen2},
-        {Mnemonic::Openbrace,        Color::Grey69},
-        {Mnemonic::Closebrace,       Color::Grey69},
+        {Mnemonic::Openbrace,        Color::HotPink4},
+        {Mnemonic::Closebrace,       Color::HotPink4},
         {Mnemonic::BeginComment,     Color::Grey53},
         {Mnemonic::EndComment,       Color::Grey54},
         {Mnemonic::Div,              Color::DeepSkyBlue7},
         {Mnemonic::Comma,            Color::Violet},
-        {Mnemonic::Scope,            Color::Violet},
+        {Mnemonic::Scope,            Color::PaleVioletRed1},
         {Mnemonic::Semicolon,        Color::Violet},
         {Mnemonic::Colon,            Color::Violet},
         {Mnemonic::Range,            Color::Violet},
@@ -1072,8 +1073,8 @@ StrAcc Lexer::LexicalColours::Colorize(SppToken::Array *tokens)
     {
 
         _color = Token.M == Mnemonic::Noop ? Color::Ansi(PrimitiveTypesColors[Token.T]) :
-            _color = Color::Ansi(MnemonicColors[Token.M]);
-
+                                             Color::Ansi(MnemonicColors[Token.M]);
+        //_color = Color::Ansi(MnemonicColors[Token.M]);
         if (!_color.empty())
         {
             text.insert(Token.Location.Offset + offset, _color);
@@ -1088,14 +1089,12 @@ std::string Lexer::MarkToken(const SppToken &Token, bool c) const
     //AppBook::Debug() << " Marking token: " << token.details();
     std::string line = Token.TextLine();
 
-    auto start_token = _Config.Tokens->begin();
+    SppToken::Iterator BeginToken;
+    auto start_token = BeginToken = _Config.Tokens->begin();
+
     auto end_token = start_token;
     for (; start_token != _Config.Tokens->end(); start_token++)
     {
-//        AppBook::Debug() << "this token:" << start_token->text()  << Book::Enums::Fn::endl
-//                           << " == " <<  Book::Enums::Fn::endl
-//                           << Token.Text() << " ?" << Book::Enums::Fn::endl;
-
         if (start_token->Location.Linenum == Token.Location.Linenum) break;
     }
     end_token = start_token;
@@ -1111,13 +1110,15 @@ std::string Lexer::MarkToken(const SppToken &Token, bool c) const
 
     size_t offset = 0;
     std::string _color;
-
+    uint8_t U=0;
     auto& Scheme = Interpreter::ColorsStyle();
     for (; start_token != end_token; start_token++)
     {
-//        _color = start_token->M == Mnemonic::Noop ? Color::Ansi(PrimitiveTypesColors[start_token->T]) :
-//            _color = Color::Ansi(MnemonicColors[start_token->M]);
-        _color = start_token->M == Mnemonic::Noop ? Scheme[start_token->T] : Scheme[start_token->M];
+        if(start_token->Flags.U && (start_token->Location.Colnum < Token.Location.Colnum)) ++U;
+        _color = start_token->M == Mnemonic::Noop ? Color::Ansi(PrimitiveTypesColors[start_token->T]) :
+                                                    Color::Ansi(MnemonicColors[start_token->M]);
+
+//        _color = start_token->M == Mnemonic::Noop ? Scheme[start_token->T] : Scheme[start_token->M];
 //
         if (!_color.empty())
         {
@@ -1134,7 +1135,7 @@ std::string Lexer::MarkToken(const SppToken &Token, bool c) const
         << Token.TypeName() << " ; "
         << Token.SemanticText() << "]";
     txt << '\n';
-    txt.fill(0x20, Token.Location.Colnum - 1);
+    txt.fill(0x20, Token.Location.Colnum - 1 - U);
     txt << Utf::Glyph::ArrowUp;
     return txt();
 }

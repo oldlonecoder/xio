@@ -151,34 +151,41 @@ xio::xio(Util::Object* parent_bloc, SppToken* atoken, Alu* a_alu): Util::Object(
         return;
 
     switch (Tk->T) {
-    case Type::Text:
-        *A = atoken->Text();
-        return;
-    case Type::Number:
-    {
-        ///@todo Attention enlever le court-circuit du type-size!!!
-        if (Tk->S & Type::Number)
+        case Type::Text:
+            *A = atoken->Text();
+            return;
+        case Type::Number:
         {
-            double d;
-            (StrAcc(atoken->Text())) >> d;
-            *A = d;
-            AppBook::Debug() << " acc: " << Color::Yellow << (*A)();
+            if(Tk->S & Type::Keyword)
+            {
+                auto i = xio::xio_operators_table.find(atoken->M);
+                xio_fn = i != xio::xio_operators_table.end() ? i->second : nullptr;
+                if(!xio_fn)
+                    throw AppBook::Exception() [ AppBook::Fatal() << Tk->Mark() << Book::Fn::Endl << "as no implementation!" ];
+                return;
+            }
+            if (Tk->S & Type::Const)
+            {
+                double d;
+                (StrAcc(atoken->Text())) >> d;
+                *A = d;
+                AppBook::Debug() << " acc: " << Color::Yellow << (*A)();
+            }
         }
-    }
-    return;
-    case Type::Hex:
-    {
-        uint64_t d;
-        StrAcc(atoken->Text()).Hex(d);
-        *A = d;
         return;
-    }
-    return;
-    case Type::Any:
-    case Type::VoidPtr:
-        *A = (void*)nullptr;
+        case Type::Hex:
+        {
+            uint64_t d;
+            StrAcc(atoken->Text()).Hex(d);
+            *A = d;
+            return;
+        }
         return;
-    default:
+        case Type::Any:
+        case Type::VoidPtr:
+            *A = (void*)nullptr;
+            return;
+        default:
 
         break;
     }
@@ -218,6 +225,15 @@ Alu xio::JSR()
                 return (this->*xio_fn)();// All operators assign acc.
             else
                 AppBook::Warning() << "operator xio [" << Color::Yellow << Tk->Text() << Color::Reset << "] has no implementation (yet?).:\n" << Tk->Mark() << Book::Enums::Fn::Endl;
+        }
+        else
+        {
+            if(xio_fn)
+            {
+                AppBook::Debug() << " Non operator call: " << Book::Fn::Endl << Tk->Mark();
+                return (this->*xio_fn)();
+            }
+
         }
         Tk->S |= A->T;
     }
@@ -1126,6 +1142,7 @@ xio* xio::CloseTree()
 
 xio* xio::TreeRoot(bool skip_syntax)
 {
+    Header(this);
     //AppBook::Debug() << "Match tree ins from xio node:" << Book::Enums::Fn::Endl << Tk->Mark() << Book::Enums::Fn::Endl ;
     xio* x = this;
     xio* p = x;

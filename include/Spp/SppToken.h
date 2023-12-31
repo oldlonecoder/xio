@@ -67,6 +67,7 @@ struct SPP_EXPORT SppToken
         uint8_t V : 1; ///< Pre-parsed as a Value Token;
         uint8_t S : 1; ///< Post parsed as assignable
         uint8_t M : 1; ///< Virtual multiplication operator. (...4ac...)
+        uint8_t U : 1; ///< UTF-8 identifier.
     }   Flags = { 0, 0, 0 };
 
     static SppToken NullToken;
@@ -75,6 +76,7 @@ struct SPP_EXPORT SppToken
     ~SppToken() = default;
 
     SppToken(Mnemonic Code_, Type::T Type_, Type::T Sem_, Spp::Distance::T Delta_, Lexem::T aLexem, uint8_t V);
+    SppToken(Mnemonic aCode, Type::T aType, Type::T aSem, Distance::T aDelta, Lexem::T aLexem, uint8_t V_Flag, uint8_t UTF);
     SppToken(Mnemonic Code_, Type::T Type_, Type::T Sem_, Spp::Distance::T Delta_, SppToken::LocationData LocationData_, SppToken::FlagsBit Flags_, void* Ptr_ = nullptr);
     SppToken(const SppToken& Token_);
     SppToken(SppToken&& Token_) noexcept;

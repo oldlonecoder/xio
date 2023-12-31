@@ -200,12 +200,15 @@ Book::Result Compiler::ExecuteLexer()
 
 
 /*!
- * @brief
+ * @brief Recursive; Initiate a parsing rule then iterate its sequences list.
  * @param Rule
- * @return
+ * @return Result: Accepted or Rejected or any other error Result values.
+ *
+ * @note   Ctx.Rule = Rule;
  */
 Book::Result Compiler::EnterRule(const Lang::Grammar::Rule *Rule)
 {
+
     return Book::Result::Ok;
 }
 
@@ -278,6 +281,75 @@ void Compiler::ContextData::Reject()
 Compiler::ContextData::ContextData(SppToken::Iterator BeginStream, SppToken::Iterator StartSeq, SppToken::Iterator EndStream, Stack *Bloc)
     : BeginStream(BeginStream), StartSeq(StartSeq), Cur(StartSeq), EndSeq(StartSeq), EndStream(EndStream), Bloc(Bloc)
 {}
+
+
+
+
+/*
+ * SppToken::Iterator  BeginStream,
+                            StartSeq,
+                            Cur,
+                            EndSeq,
+                            EndStream;
+        Stack*      Bloc;
+        xio*        Instruction;
+        xio::Array  InstructionsSeq;
+        SppToken::Array TokensSeq;
+
+        Type::T     CurType { Type::Null };
+
+ */
+Compiler::ContextData::ContextData(const Compiler::ContextData &CD)
+{
+    BeginStream = CD.BeginStream;
+    StartSeq    = CD.StartSeq;
+    Cur         = CD.Cur;
+    EndSeq      = CD.EndSeq;
+    EndStream   = CD.EndStream;
+    Bloc        = CD.Bloc;
+    Instruction = CD.Instruction;
+    InstructionsSeq = CD.InstructionsSeq;
+
+}
+
+Compiler::ContextData::ContextData(Compiler::ContextData &&CD) noexcept
+{
+    BeginStream     = CD.BeginStream;
+    StartSeq        = CD.StartSeq;
+    Cur             = CD.Cur;
+    EndSeq          = CD.EndSeq;
+    EndStream       = CD.EndStream;
+    Bloc            = CD.Bloc;
+    Instruction     = CD.Instruction;
+    InstructionsSeq = std::move(CD.InstructionsSeq);
+}
+
+Compiler::ContextData &Compiler::ContextData::operator=(const Compiler::ContextData &CD)
+{
+    BeginStream     = CD.BeginStream;
+    StartSeq        = CD.StartSeq;
+    Cur             = CD.Cur;
+    EndSeq          = CD.EndSeq;
+    EndStream       = CD.EndStream;
+    Bloc            = CD.Bloc;
+    Instruction     = CD.Instruction;
+    InstructionsSeq = CD.InstructionsSeq;
+    return *this;
+}
+
+
+Compiler::ContextData &Compiler::ContextData::operator=(Compiler::ContextData &&CD)
+{
+    BeginStream     = CD.BeginStream;
+    StartSeq        = CD.StartSeq;
+    Cur             = CD.Cur;
+    EndSeq          = CD.EndSeq;
+    EndStream       = CD.EndStream;
+    Bloc            = CD.Bloc;
+    Instruction     = CD.Instruction;
+    InstructionsSeq = std::move(CD.InstructionsSeq);
+    return *this;
+}
 
 
 #pragma endregion Context
