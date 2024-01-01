@@ -109,7 +109,7 @@ private:
     Book::Result EnterElementSequence(Lang::Grammar::ElementSeq::Iterator SeqIt);
     Book::Result ParseElement(Lang::Grammar::Element::Iterator& EI);
 
-    std::pair<SppToken::Iterator, SppToken::Iterator> ExtractLineFrom(SppToken::Iterator Token);
+    std::pair<SppToken::Iterator, SppToken::Iterator> GetLineText(SppToken::Iterator Token);
     Compiler::ContextData::CTXStack CStack;
 
 

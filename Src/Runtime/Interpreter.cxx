@@ -92,10 +92,40 @@ Book::Action Interpreter::Expression(Cmd::ArgumentData &A)
     return Book::Action::End;
 }
 
-std::string Interpreter::LineOfText(const std::pair<SppToken::Iterator, SppToken::Iterator> &LinePair, bool MarkIt)
+std::string Interpreter::MarkToken(const std::pair<SppToken::Iterator, SppToken::Iterator> &BE, const SppToken& Token)
 {
+    auto It = BE.first;
+    size_t offset = 0;
+    std::string Line = Token.TextLine();
+    std::string _color;
+    uint8_t U=0;
+    auto& Scheme = Interpreter::ColorsStyle();
+    for (; It != BE.second; It++)
+    {
+        if(It->Flags.U && (It->Location.Colnum < Token.Location.Colnum)) ++U;
+        _color = It->M == Mnemonic::Noop ? Color::Ansi(Lexer::PrimitiveTypesColors[It->T]) :
+                 Color::Ansi(Lexer::MnemonicColors[It->M]);
 
-    return "NOT IMPL!!!!! Go Away!!!!!!! Leave me ALONE!!!";
+//        _color = start_token->M == Mnemonic::Noop ? Scheme[start_token->T] : Scheme[start_token->M];
+//
+        if (!_color.empty())
+        {
+            Line.insert(It->Location.Colnum - 1 + offset, _color);
+            offset += _color.length();
+        }
+    }
+    StrAcc txt = Line;
+
+    Line.clear();
+    txt << Color::Reset << " ["
+        << Spp::MnemonicName(Token.M) << "; "
+        << Token.LocationText() << " ; "
+        << Token.TypeName() << " ; "
+        << Token.SemanticText() << "]";
+    txt << '\n';
+    txt.fill(0x20, Token.Location.Colnum - 1 - U);
+    txt << Utf::Glyph::ArrowUp;
+    return txt();
 }
 
 ColorScheme &Interpreter::ColorsStyle()

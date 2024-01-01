@@ -32,7 +32,7 @@ Lexer::ScanTbl ScanTable;
 /*!
  * @brief Type::Colors pairs.
  */
-std::map<Type::T, Color::Code> PrimitiveTypesColors =
+std::map<Type::T, Color::Code> Lexer::PrimitiveTypesColors =
 {
     {Type::Assign,      Color::CadetBlue},
     {Type::Number,      Color::Cyan2},
@@ -53,7 +53,7 @@ std::map<Type::T, Color::Code> PrimitiveTypesColors =
  * @brief Affined Mnemonic-Color pairs.
  * @note : The "Affined" is a Work in progress ;)
  */
-std::map<Mnemonic, Color::Code> MnemonicColors =
+std::map<Mnemonic, Color::Code> Lexer::MnemonicColors =
     {
         {Mnemonic::Null,             Color::White},
         {Mnemonic::LeftShift,        Color::SkyBlue1},

@@ -85,7 +85,7 @@ public:
     Book::Action SourceFile(Cmd::ArgumentData& Arg);
     Book::Action Expression(Cmd::ArgumentData &);
 
-    static std::string LineOfText(std::pair<SppToken::Iterator, SppToken::Iterator> const& LinePair, bool MarkIt= false);
+    static std::string MarkToken(std::pair<SppToken::Iterator, SppToken::Iterator> const& BE, const SppToken& Token);
 
 //    template<typename T> RTVariable<T>& Assign(T& V, const std::string& VarID)
 //    {

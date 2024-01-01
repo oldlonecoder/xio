@@ -95,7 +95,7 @@ Book::Result Compiler::operator()()
     return nullptr;
 }
 
-std::pair<SppToken::Iterator, SppToken::Iterator> Compiler::ExtractLineFrom(SppToken::Iterator Token)
+std::pair<SppToken::Iterator, SppToken::Iterator> Compiler::GetLineText(SppToken::Iterator Token)
 {
 
     // Seek beginning of the line:
@@ -104,6 +104,7 @@ std::pair<SppToken::Iterator, SppToken::Iterator> Compiler::ExtractLineFrom(SppT
     if(Start->Location.Linenum != Token->Location.Linenum) ++Start;
 
     auto End = Token;
+    // Seek end of the line:
     while((End != Config().Tokens->end()) && (End->Location.Linenum == Token->Location.Linenum)) ++End;
     --End;
 

@@ -13,7 +13,7 @@
 
 #include <AppBook/Book/BookEnums.h>
 #include "Spp/SppToken.h"
-
+#include <map>
 
 
 namespace Spp {
@@ -26,6 +26,12 @@ namespace Spp {
  */
 class SPP_EXPORT Lexer
 {
+
+public:
+    static std::map<Type::T, Color::Code> PrimitiveTypesColors;
+    static std::map<Mnemonic, Color::Code> MnemonicColors;
+private:
+    
     struct LexCursor {
         const char *B = nullptr; ///> Absolute Beginning of the source Text.
         const char *E = nullptr; ///> Absolute End of the source Text.
