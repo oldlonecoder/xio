@@ -14,7 +14,7 @@ namespace Spp
 /*!
  * @brief Execute compilation. Main entry.
  *
- * Soon, we will have to TreeBegin Parsing Unit scope bloc and descend into sibling bloc/stacks.
+ * Soon, we will have to TreeBegin Parsing Amu scope bloc and descend into sibling bloc/stacks.
  *
  * @return  Book::Result::Success or Book::Result::Failed.
  * @author &copy; 2023/2024 oldlonecoder (serge.lussier@oldlonecoder.club)
@@ -32,8 +32,8 @@ Book::Result Compiler::operator()()
 
     Ctx = {Data.Tokens->begin(), Data.Tokens->begin(), Data.Tokens->end(), Data.RootBloc};
     AppBook::Debug() << " Tokens sequence begins :'" << Book::Fn::Endl << Color::Yellow << Ctx.Token().Details(true);
-    Ctx.Rule = Lang::Grammar()["expression"];
-    //AppBook::Error() << " Compile Unit: " << Book::Fn::Endl << (*Ctx.Cur).Details(true) << Book::Fn::Endl<< " is not implemented yet... ";
+    Ctx.Rule = Lang::Grammar()["expression"]; // Ctx.Rule = Lang::Grammar()["amu"];
+    //AppBook::Error() << " Compile Amu: " << Book::Fn::Endl << (*Ctx.Cur).Details(true) << Book::Fn::Endl<< " is not implemented yet... ";
     if(auto* x = ParseExpression(); x)
     {
         return Book::Result::Success;
@@ -64,7 +64,7 @@ Book::Result Compiler::operator()()
         return nullptr;
     }
 
-    if(!(x = xio::TreeBegin(Ctx.Bloc, &Ctx.Token(), [this](SppToken *T) -> xio * { return NewXio(T); })))
+    if(!(x = xio::TreeBegin(Ctx.Bloc, &Ctx.Token(), [this](SppToken *T) -> xio * { return NewExprNode(T); })))
     {
         AppBook::Status() << Color::Yellow << " : seems not an expression at all at " << Book::Fn::Endl << Ctx.Token().Details(true) ;
         return nullptr;
@@ -74,7 +74,7 @@ Book::Result Compiler::operator()()
 
     while((Ctx.Cur < Data.Tokens->end()) && (Ctx.Cur->M != Mnemonic::Semicolon)){
         (void)SkipComments();
-        x = x->TreeInput(Ctx.Bloc, &Ctx.Token(), [this](SppToken* T)-> xio*{ return NewXio(T); });
+        x = x->TreeInput(Ctx.Bloc, &Ctx.Token(), [this](SppToken* T)-> xio*{ return NewExprNode(T); });
         if(!x)
         {
             AppBook::Out() << Color::Yellow << " arithmetic expression inputs stopped  by unexpected token - returning." ;
@@ -112,10 +112,10 @@ std::pair<SppToken::Iterator, SppToken::Iterator> Compiler::GetLineText(SppToken
 }
 
 
-xio *Compiler::CCUnit()
+[[maybe_unused]] xio *Compiler::CCAmu()
 {
 
-    AppBook::Error() << " Compile Unit: " << Book::Fn::Endl << (*Ctx.Cur).Details(true) << Book::Fn::Endl<< " is not implemented yet... ";
+    AppBook::Error() << " Compile Amu: " << Book::Fn::Endl << (*Ctx.Cur).Details(true) << Book::Fn::Endl<< " is not implemented yet... ";
     return nullptr;
 }
 
@@ -126,9 +126,10 @@ xio *Compiler::CCUnit()
  * \param token  pointer to the current token.
  * \return pointer to newly created xio;
  * \note As of 2023-08-28, only xio's POD ( Plain Old Data ) variable types are created on identifier token restricted to arithmetic expressions.
+ *       Object ID and Function ID are not handled yet. So this implementation will systematically raises a syntax error...
  * \author &copy; August 28, 2023; oldlonecoder, (serge.lussier@oldlonecoder.club)
  */
-xio* Compiler::NewXio(SppToken* Token)
+xio* Compiler::NewExprNode(SppToken* Token)
 {
     // "Branch" on token type
     AppBook::Debug() << " Entering xio producer with "<< Book::Fn::Endl << Token->Mark(true) ;
@@ -202,24 +203,29 @@ Book::Result Compiler::ExecuteLexer()
 
 /*!
  * @brief Recursive; Initiate a parsing rule then iterate its sequences list.
- * @param Rule
+ * @param None - The Rule is already ( must be ) set in the Context.
  * @return Result: Accepted or Rejected or any other error Result values.
  *
- * @note   Ctx.Rule = Rule;
+ * @note   Ctx.Rule = The Rule to Descent-Parse;
  */
-Book::Result Compiler::EnterRule(const Lang::Grammar::Rule *Rule)
+Book::Result Compiler::EnterRule()
 {
-
+    for(auto Seq = Ctx.Rule->Begin(); !Ctx.Rule->End(Seq); Seq++)
+    {
+        if(auto Ok = EnterElementSequence(Seq); Ok != Book::Result::Accepted)
+            return Ok;
+        ///
+    }
     return Book::Result::Ok;
 }
 
-Book::Result Compiler::EnterElementSequence(Lang::Grammar::ElementSeq::Iterator SeqIt)
+Book::Result Compiler::EnterElementSequence(Lang::Grammar::ElementSeq::const_iterator SeqIt)
 {
     for(auto const& Seq : SeqIt->terms)
     {
 
     }
-    return Book::Result::Ok;
+    return Book::Result::Accepted;
 }
 
 Book::Result Compiler::ParseElement(Lang::Grammar::Element::Iterator &EI)

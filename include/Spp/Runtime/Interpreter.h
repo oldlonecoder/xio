@@ -11,7 +11,7 @@
  ***************************************************************************/
 
 #pragma once
-#include "Spp/Runtime/Unit.h"
+#include "Spp/Runtime/Amu.h"
 #include "Spp/Runtime/RTObject.h"
 #include <AppBook/Util/CArgs.h>
 #include "Spp/Styles/ColorScheme.h"
@@ -20,7 +20,7 @@
 namespace Spp
 {
 /**
- * \brief  Unit-Interpreter  ( I know, it's wierd but it is wht it is... )
+ * \brief  Amu-Interpreter  ( I know, it's wierd but it is what it is... )
  *
  *
  * \author &copy; 2023, Serge Lussier; oldlonecoder (serge.lussier@oldlonecoder.club)
@@ -59,7 +59,7 @@ private:
 */
 
 
-class SPP_EXPORT Interpreter : public Unit
+class SPP_EXPORT Interpreter : public Amu
 {
     Cmd::CArgs    Args;
     std::vector<std::string_view> CmdArgs;
@@ -67,7 +67,7 @@ class SPP_EXPORT Interpreter : public Unit
     RTObject::Dictionary  RuntimeObjects;
     RTObject::Dictionary  RuntimeFunctions; ///< No matter if function or class method;
 
-    Unit::Array         Units;
+    Amu::Array         Units;
     static Interpreter* InterpreterInstance;
 
 

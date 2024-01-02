@@ -95,7 +95,7 @@ SppToken::SppToken(Mnemonic aCode, Type::T aType, Type::T aSem, Distance::T aDel
     S = aSem;
     D = aDelta;
     Location = { aLexem, nullptr, 0, 0, -1,0 };
-    Flags = { V_Flag, 0, 0,1 };
+    Flags = { V_Flag, 0, 0, UTF };
 
 }
 
@@ -273,7 +273,7 @@ static SppToken::Array TokensTable =
         {Mnemonic::Add,                 Type::Binary,    Type::Operator|Type::Binary                                ,Distance::Addition,   Lexem::Addition,     1},
         {Mnemonic::Sub,                 Type::Binary,    Type::Operator|Type::Binary                                ,Distance::Addition,   Lexem::Sub,          1},
         {Mnemonic::Mul,                 Type::Binary,    Type::Operator|Type::Binary                                ,Distance::Product,    Lexem::Multiply,     1},
-        {Mnemonic::CommentCpp,          Type::LineComment, Type::LineComment|Type::Operator                                        ,Distance::Noop_,      Lexem::CommentCpp,  0},
+        {Mnemonic::CommentCpp,          Type::LineComment, Type::LineComment|Type::Operator                         ,Distance::Noop_,      Lexem::CommentCpp,  0},
         {Mnemonic::Modulo,              Type::Binary,    Type::Operator|Type::Binary                                ,Distance::Product,    Lexem::Modulo,       1},
         {Mnemonic::LessThan,            Type::Binary,    Type::Operator|Type::Binary|Type::Bool                     ,Distance::Equality,   Lexem::LessThan,    1},
         {Mnemonic::GreaterThan,         Type::Binary,    Type::Operator|Type::Binary|Type::Bool                     ,Distance::Equality,   Lexem::GreaterThan, 1},
@@ -307,11 +307,11 @@ static SppToken::Array TokensTable =
         {Mnemonic::Ternary,             Type::Keyword,   Type::Keyword|Type::Operator|Type::Binary                  ,Distance::Unary,      Lexem::Ternary, 1},
         {Mnemonic::Hash,                Type::Prefix,    Type::Unary|Type::Prefix|Type::Operator                    ,Distance::Unary,      Lexem::Hash,   1},
         {Mnemonic::Eos,                 Type::Prefix,    Type::Unary|Type::Prefix|Type::Operator                    ,Distance::Unary,      Lexem::Eos,    1},
-        {Mnemonic::Dot,                 Type::Punc,      Type::Punc|Type::Operator                     ,Distance::Scope,      Lexem::Dot,    1},
+        {Mnemonic::Dot,                 Type::Punc,      Type::Punc|Type::Operator                                  ,Distance::Scope,      Lexem::Dot,    1},
         {Mnemonic::Return,              Type::Keyword,   Type::Keyword                                              ,Distance::Identifier, Lexem::Return, 0},
         {Mnemonic::If,                  Type::Keyword,   Type::Keyword                                              ,Distance::Identifier, Lexem::If,     0},
         {Mnemonic::Pi,                  Type::Number,    Type::Number|Type::Leaf|Type::Float|Type::Keyword|Type::Const ,Distance::Identifier, Lexem::Pi,     1},
-        {Mnemonic::Pi,                  Type::Number,    Type::Number|Type::Leaf|Type::Float|Type::Keyword|Type::Const ,Distance::Identifier, "π",     1,0},
+        {Mnemonic::Pi,                  Type::Number,    Type::Number|Type::Leaf|Type::Float|Type::Keyword|Type::Const ,Distance::Identifier, "π",     1,1},
         {Mnemonic::Number,              Type::Prefix,    Type::Number|Type::Unary|Type::Keyword|Type::Prefix|Type::Operator     ,Distance::Identifier, Lexem::Number, 1},
         {Mnemonic::U8,                  Type::Prefix,    Type::U8|Type::Keyword|Type::Prefix|Type::Operator         ,Distance::Identifier, Lexem::U8,     1},
         {Mnemonic::U16,                 Type::Prefix,    Type::U16|Type::Unary|Type::Keyword|Type::Prefix|Type::Operator        ,Distance::Identifier, Lexem::U16,    1},
@@ -370,7 +370,7 @@ SppToken SppToken::Scan(const char* C_)
         while ((*crs && *rtxt) && (*crs == *rtxt))
         {
             if (*crs < 0)
-                ++unicode; ///< @note oui/ yes; Soon/Bientot je supporte quelques symboles UTF-8 (pi, xor,...)
+                ++unicode; ///< @note oui/ yes; Soon/Bientôt je supporte quelques symboles UTF-8 (pi, xor,...)
             ++crs;
             ++rtxt;
         }
@@ -384,6 +384,7 @@ SppToken SppToken::Scan(const char* C_)
 
             token.Location.begin = C_;
             token.Location.end = crs - 1;
+            token.Location.Length = (token.Location.end - token.Location.begin) + 1;
             return token;
         }
     }

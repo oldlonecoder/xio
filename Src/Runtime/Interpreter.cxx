@@ -16,7 +16,7 @@ Interpreter::~Interpreter()
     CmdArgs.clear();
 }
 
-Interpreter::Interpreter(std::string _Id, int argc, char **argv): Unit(nullptr, std::move(_Id))
+Interpreter::Interpreter(std::string _Id, int argc, char **argv): Amu(nullptr, std::move(_Id))
 {
     AppBook::Message() ;
     if(Interpreter::Instance()) throw AppBook::Exception("Cannot instantiate more than one Interpreter.");
@@ -55,7 +55,7 @@ Book::Action Interpreter::SourceFile(Cmd::ArgumentData &Arg)
     AppBook::Debug() << " Dump Grammar:";
     Gr.Dump();
 
-    auto Code = Unit::Compile();
+    auto Code = Amu::Compile();
     if(Code != Book::Result::Success)
     {
         AppBook::Error() << " Failed to Compile and execute the source";
@@ -63,7 +63,7 @@ Book::Action Interpreter::SourceFile(Cmd::ArgumentData &Arg)
     }
     if(!Instructions.empty())
     {
-        Alu A = Unit::JSR();
+        Alu A = Amu::JSR();
         AppBook::Out() << A();
     }
     else

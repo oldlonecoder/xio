@@ -52,7 +52,7 @@ protected:
 
     SppToken* Tk = nullptr; ///< Token informations.
 
-    Alu* A = nullptr; ///< Arithmetic Logical Unit, or Accumulator, or whatever!
+    Alu* A = nullptr; ///< Arithmetic Logical Amu, or Accumulator, or whatever!
     struct SPP_EXPORT storage_attr {
         uint8_t LV : 1; // 0 = rvalue non-assignable (such as const,leaf). 1= left value; assignable.
         uint8_t PRef : 1; // 1 = this xio owns its acc storage - so will delete it in the destructor.

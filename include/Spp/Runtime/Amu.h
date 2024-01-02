@@ -20,10 +20,10 @@
 namespace Spp
 {
 
-class SPP_EXPORT Unit : public Stack
+class SPP_EXPORT Amu : public Stack
 {
-    // Unit Tata; Unit Toto;
-    // Unit Tata
+    // Amu Tata; Amu Toto;
+    // Amu Tata
     // {
     //      Var = Toto::Var;
     // }
@@ -39,10 +39,10 @@ protected:
 public:
 
 
-    Unit() = default;
-    Unit(Stack* _Parent, std::string _Id);
+    Amu() = default;
+    Amu(Stack* _Parent, std::string _Id);
 
-    ~Unit() override;
+    ~Amu() override;
 
     Book::Enums::Code Compile();
 

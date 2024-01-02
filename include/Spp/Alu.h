@@ -27,7 +27,7 @@
 namespace Spp
 {
 /*!
- * @brief Arithmetic Logical Unit ( Sort of...)
+ * @brief Arithmetic Logical Amu ( Sort of...)
  *
  *
  * One local instance of/or pointer-To alu is held by each and every Spp; alu takes the role of the Spp accumulator

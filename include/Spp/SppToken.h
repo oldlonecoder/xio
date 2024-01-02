@@ -31,12 +31,12 @@ namespace Spp
 struct SPP_EXPORT SppToken
 {
     Mnemonic    M{Mnemonic::Noop};
-    Type::T     T{Type::Null};    ///< Primitive Type bit.
+    Type::T     T{Type::Null};     ///< Primitive Type bit.
     Type::T     S{Type::Null};    ///< Semantic Type bits field
     Spp::Distance::T D{Spp::Distance::Noop_};
-    void* Data{nullptr};
+    void* Data{nullptr}; //Unused;
 
-//        // --------------------- Add link pointers to previous and forward tokens because there situations where giving the std container is so overload and overbloated!
+//        // --------------------- Add link pointers to previous and forward tokens because there are situations where giving the std container is so overload and overbloated!
 //        SppToken* __prev{nullptr};
 //        SppToken* __next{nullptr};
 //        // --------------------------------------------------------------------------------------------------------------------------------------------------------------

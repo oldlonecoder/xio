@@ -219,7 +219,7 @@ namespace Distance
 {
 using T = uint8_t;
 constexpr T Scope      = 0;
-constexpr T Assign_rhs = 1;
+constexpr T Assign_rhs = 1; //  A = B = ER!
 constexpr T Deref      = 2;
 constexpr T Prefix     = 3;
 constexpr T Postfix    = 3;
@@ -262,7 +262,7 @@ constexpr T AssignMod     = "%=";
 constexpr T AssignAnd     = "&=";
 constexpr T AssignOr      = "|=";
 constexpr T AssignXor     = "><=";
-constexpr T AssignC1      = "`=";
+constexpr T AssignC1      = "`="; // Insérer AssignCompletment à 2 =>  { ``=  }
 constexpr T AssignLshift  = "<<=";
 constexpr T AssignRshift  = ">>=";
 constexpr T Deref         = "->";
@@ -287,7 +287,7 @@ constexpr T C2            = "``";///< compl&eacute;ment &agrave; 2
 constexpr T Not           = "!";
 constexpr T BoolAnd       = "&&";
 constexpr T BoolOr        = "||";
-constexpr T AbsBegin      = "|<";// |< expr >|
+constexpr T AbsBegin      = "|<";// |< absolute value expr >|
 constexpr T AbsEnd        = ">|";
 constexpr T OpenPar       = "(";
 constexpr T ClosePar      = ")";
@@ -330,7 +330,7 @@ constexpr T Then          = "then";
 constexpr T Else          = "else";
 constexpr T Const         = "const";
 constexpr T Include       = "include";
-constexpr T Unit          = "Unit";
+constexpr T Unit          = "Amu";
 constexpr T At            = "@";
 constexpr T Prime         = "`"; ///@todo change...
 constexpr T Do            = "do";

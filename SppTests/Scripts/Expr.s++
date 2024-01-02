@@ -1,5 +1,14 @@
 
-//Unit ::Test;
+//Program Test;  \
+//Amu ::Test;    -> Program Test; === Amu ::Test;
+// ...
+
+//..            A = [Expression::DoSomethingWith expr: cos(1+1)];
+//          === A = Expression::DoSomethingWith(1+1);
+//          === A = Expression::DoSomethingWith(expr: cos(1+1));
+//          === A = Expression::DoSomethingWith cos(1 + 1);
+
+//
 
 /*
            Idée de syntaxe ( alternative à switch-case ) pour l'interpreteur XIO :
@@ -26,6 +35,7 @@
 
            ---------------------------------------------------------------------
 
+
 private:
         Unit Calculus;
         //...
@@ -48,11 +58,14 @@ private:
 // C++ style line comment;
 // At global scope it is ok to evaluate an expression; Therefore no instruction
 // and control flow are allowed at the global/Unit scope/context.
+// if x = 42/4 + 5(3+4*3/5+34) - 42 + π d = 12; else {...; }
+// Means:
+// ...
 /*----------------Bloc  comment ... --------------------------------*/
 x = 42/4 + 5(3+4*3/5+34) - 42 + π d = 12; // This is the actual code source! lol
-//---------------------------^---------------------------------------
-//                           |
-//                           --- > Intentionally Invalidate syntax in arithmetic expression ( context ).
+//-------------------------------^---------------------------------------
+//                               |
+//                               --- > Intentionally Invalidate syntax in arithmetic expression ( context ).
 //
 
 

@@ -801,22 +801,27 @@ xio::input_table_t xio::input_tbl =
 
 void xio::syntax_error(xio* e)
 {
-    throw AppBook::Syntax() << "at " << e->Tk->LocationText() << Book::Enums::Fn::Endl << e->Tk->Mark() << Book::Enums::Fn::Endl ;
+    throw AppBook::Exception() [AppBook::Syntax() << "at " << e->Tk->LocationText() << Book::Enums::Fn::Endl << e->Tk->Mark()] ;
 }
 
-xio *xio::Warning(xio*)
+xio *xio::Warning(xio* x)
 {
+
     return nullptr;
 }
+
+
 void xio::make_error(Book::Enums::Code ErrCode, xio* source_node, xio* input_node)
 {
-    throw AppBook::Error() << source_node->Attribute()
+    throw AppBook::Exception()
+    [
+        AppBook::Error() << source_node->Attribute()
         << " TokenPtr TreeInput error: "
         << ErrCode
         << input_node->Attribute()
         << Book::Enums::Fn::Endl
         << input_node->Tk->Mark()
-        << Book::Enums::Fn::Endl ;
+    ];
 }
 
 void xio::make_error(Book::Enums::Code ErrCode, xio* source_node, SppToken* inputoken)
@@ -872,7 +877,7 @@ xio* xio::TreeInput(xio* parent_bloc, SppToken* token, xio::maker mk)
             {
                 a->Detach();
                 delete a;
-                AppBook::Syntax() << " invalid relational operands at " << token->LocationText() << " - unexpected TokenPtr:" << Book::Enums::Fn::Endl << token->Mark() << Book::Enums::Fn::Endl ;
+                AppBook::Syntax() << " invalid relational operands at " << token->LocationText() << " - unexpected Token:" << Book::Enums::Fn::Endl << token->Mark() << Book::Enums::Fn::Endl ;
                 return nullptr;
             }
             AppBook::Debug() << Tk->Text() << "::TreeInput(" << token->Text() << "):" << Book::Enums::Fn::Endl << token->Mark() << Book::Enums::Fn::Endl ;
@@ -890,13 +895,15 @@ xio* xio::TreeInput(xio* parent_bloc, SppToken* token, xio::maker mk)
     return nullptr;
 }
 
+
+
 xio* xio::TreeInputBinary(xio* a)
 {
     Header(a);
 
     if (Tk->IsLeaf())
     {
-        if (a->Tk->M == Mnemonic::OpenPar)
+        if (a->Tk->M == Mnemonic::OpenPar) /* Ex.: Id <-( */
             syntax_error(a);
     }
 

@@ -2,27 +2,27 @@
 // Created by oldlonecoder on 11/2/23.
 //
 
-#include "Spp/Runtime/Unit.h"
+#include "Spp/Runtime/Amu.h"
 //#include "Spp/Compiler/Compiler.h"
 
 namespace Spp
 {
 
 
-Unit::~Unit()
+Amu::~Amu()
 {
     _Source.clear();
     _Tokens.clear();
 }
 
-Unit::Unit(Stack *_Parent, std::string _Id): Stack(_Parent, nullptr,nullptr)
+Amu::Amu(Stack *_Parent, std::string _Id): Stack(_Parent, nullptr, nullptr)
 {
-    AppBook::Debug() << " New Unit['" << Color::Yellow << Id() << Color::Reset << "'] Created.";
+    AppBook::Debug() << " New Amu['" << Color::Yellow << Id() << Color::Reset << "'] Created.";
     SetId(_Id);
 
 }
 
-Book::Enums::Code Unit::Compile()
+Book::Enums::Code Amu::Compile()
 {
     if(_Source.empty())
         return Book::Enums::Code::Empty;
@@ -41,12 +41,12 @@ Book::Enums::Code Unit::Compile()
     return CC();
 }
 
-Alu Unit::JSR()
+Alu Amu::JSR()
 {
     return Stack::JSR();
 }
 
-Book::Enums::Code Unit::LoadSource()
+Book::Enums::Code Amu::LoadSource()
 {
     char  Line[256];
     std::ifstream in;

@@ -27,7 +27,7 @@ namespace Spp
 class SPP_EXPORT Compiler
 {
 
-    friend class Unit;
+    friend class Amu;
     friend class Interpreter;
 
 
@@ -98,15 +98,16 @@ private:
 
     Book::Result operator()();
     Book::Result SkipComments();
-    xio* NewXio(SppToken*);
-    xio* CCUnit();
+    xio* NewExprNode(SppToken* Token);
+
+    [[maybe_unused]] xio* CCAmu();
 
     xio *ParseRightValueKeyword();
 
     [[maybe_unused]] xio *ParseExpression();
 
-    Book::Result EnterRule(Lang::Grammar::Rule const* Rule);
-    Book::Result EnterElementSequence(Lang::Grammar::ElementSeq::Iterator SeqIt);
+    Book::Result EnterRule();
+    Book::Result EnterElementSequence(Lang::Grammar::ElementSeq::const_iterator SeqIt);
     Book::Result ParseElement(Lang::Grammar::Element::Iterator& EI);
 
     std::pair<SppToken::Iterator, SppToken::Iterator> GetLineText(SppToken::Iterator Token);
