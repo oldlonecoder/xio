@@ -221,15 +221,32 @@ Book::Result Compiler::EnterRule()
 
 Book::Result Compiler::EnterElementSequence(Lang::Grammar::ElementSeq::const_iterator SeqIt)
 {
-    for(auto const& Seq : SeqIt->terms)
+    for(auto TermIt = SeqIt->terms.begin(); TermIt != SeqIt->terms.end(); TermIt++)
     {
+        if(ParseElement(*TermIt) != Book::Result::Accepted)
+        {
+            if(TermIt->a.IsOneof())
+            {
+                ++TermIt;
+                continue;
+            }
+        }
 
     }
     return Book::Result::Accepted;
 }
 
-Book::Result Compiler::ParseElement(Lang::Grammar::Element::Iterator &EI)
+Book::Result Compiler::ParseElement(const Lang::Grammar::Element& El)
 {
+    if(El.IsMnemonic())
+    {
+        if(Ctx.Cur->M == El.Mem.M)
+        {
+            //..
+
+        }
+
+    }
 
     return Book::Result::Rejected;
 }

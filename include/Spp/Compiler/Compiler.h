@@ -108,7 +108,7 @@ private:
 
     Book::Result EnterRule();
     Book::Result EnterElementSequence(Lang::Grammar::ElementSeq::const_iterator SeqIt);
-    Book::Result ParseElement(Lang::Grammar::Element::Iterator& EI);
+    Book::Result ParseElement(const Lang::Grammar::Element& EI);
 
     std::pair<SppToken::Iterator, SppToken::Iterator> GetLineText(SppToken::Iterator Token);
     Compiler::ContextData::CTXStack CStack;
