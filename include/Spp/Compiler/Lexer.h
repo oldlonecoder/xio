@@ -150,10 +150,10 @@ public:
 
 #pragma region Scanners
 public:
-    using ScanPtr = Book::Result (Lexer::*)(SppToken &);
-    using InputAssociation = std::pair<Type::T, Lexer::ScanPtr>;
-    using ScanTbl = std::vector<Lexer::InputAssociation>;
-    using ScannerFn = Lexer::ScanPtr;
+    using ScanPtr           = Book::Result (Lexer::*)(SppToken &);
+    using InputAssociation  = std::pair<Type::T, Lexer::ScanPtr>;
+    using ScanTbl           = std::vector<Lexer::InputAssociation>;
+    using ScannerFn         = Lexer::ScanPtr;
 
     static ScannerFn GetScanner(SppToken &token);
     std::string MarkToken(const SppToken& token, bool c) const;

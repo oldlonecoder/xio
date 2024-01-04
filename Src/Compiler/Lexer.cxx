@@ -685,7 +685,7 @@ Book::Result Lexer::ScanNumber(SppToken &Token)
         _Cursor._F = false;
 
     Token.T = Spp::Type::Number;
-    Token.S = Spp::Type::Number | Num() | Spp::Type::Leaf;
+    Token.S = Spp::Type::Number | Num() | Spp::Type::Leaf | Spp::Type::Litteral | Spp::Type::Const;
     Token.Flags.V = 1;
     Token.Location.begin = Num.B;
     Token.Location.end = Num.E; // And Num.C ?
@@ -935,7 +935,7 @@ Book::Result Lexer::InputText(SppToken &Token)
     Token.Location.end = e - 1;
     Token.M = Mnemonic::Noop;
     Token.T = Type::Text;
-    Token.S = Type::Text | Type::Leaf | Type::Const;
+    Token.S = Type::Text | Type::Leaf | Type::Const | Type::Litteral;
     Accept(Token);
 
     Token.Location.begin = Token.Location.end = e;
