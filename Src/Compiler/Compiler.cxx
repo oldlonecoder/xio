@@ -212,9 +212,10 @@ Book::Result Compiler::EnterRule()
 {
     for(auto Seq = Ctx.Rule->Begin(); !Ctx.Rule->End(Seq); Seq++)
     {
-        if(auto Ok = EnterElementSequence(Seq); Ok != Book::Result::Accepted)
-            return Ok;
-        ///
+        if(auto Result = EnterElementSequence(Seq); Result == Book::Result::Accepted) return Result;
+
+
+
     }
     return Book::Result::Ok;
 }

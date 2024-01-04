@@ -72,8 +72,9 @@ std::map<T, std::string> T_STR = {{Null,         "Null"},
                                   {Const,        "Const"},
                                   {Integer,      "Integer"},
                                   {Unsigned,     "Unsigned"},
-                                  {LineComment,     "LineComment"},
-                                  {BlocComment,     "BlocComment"}
+                                  {LineComment,   "LineComment"},
+                                  {BlocComment,   "BlocComment"},
+                                  {Litteral,      "Litteral"}
 };
 
 std::map<std::string, T> STR_T = {{"Null",          Null},
@@ -130,6 +131,7 @@ std::map<std::string, T> STR_T = {{"Null",          Null},
                                   {"Unsigned",      Unsigned},
                                   {"LineComment",   LineComment},
                                   {"BlocComment",   BlocComment},
+                                  {"Litteral",      Litteral}
 };
 
 std::string Name(T T_)

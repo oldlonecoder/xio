@@ -24,7 +24,6 @@ namespace Type
 {
 using T = uint64_t;
 
-constexpr T        Null         = 0x1000000000000000;
 constexpr T        Number       = 0x000000000001;
 constexpr T        Text         = 0x000000000002;
 constexpr T        VoidPtr      = 0x000000000004;
@@ -71,6 +70,8 @@ constexpr T        OctalFormat  = 0x080000000000;
 constexpr T        BinFormat    = 0x100000000000;
 constexpr T        LineComment  = 0x200000000000;
 constexpr T        BlocComment  = 0x400000000000;
+constexpr T        Litteral     = 0x800000000000; ///< Litteral types { number, string };
+constexpr T        Null         = 0x1000000000000000;
 constexpr T        Integer      = Type::I8|Type::I16|Type::I32|Type::I64|Type::U8|Type::U16|Type::U32|Type::U64;
 constexpr T        Unsigned     = Type::U8|Type::U16|Type::U32|Type::U64;
 
