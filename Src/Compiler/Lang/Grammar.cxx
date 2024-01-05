@@ -44,8 +44,8 @@ Grammar::Rule::Array Grammar::Rules;
 std::string grammar_text = R"(
 amu                : 'Amu' *Id '::' Id ';' | 'Amu' Id ';'.
 stmts              : +statement.
-statement          : ';' | instruction | assignstmt ';'| declvar ';'| #expression ';'| #var_id ';'.
-assignstmt         : declvar Assign #expression | #var_id Assign #expression.
+statement          : ';' | instruction | assignstmt ';'| declvar ';'| #expression ';'| VarID ';'.
+assignstmt         : declvar Assign #expression | VarID Assign #expression.
 declvar            : *typename #newvar.
 funcsig            : *typename function_id '(' *params ')'.
 declfunc           : funcsig ';'| funcsig statement ';' | funcsig bloc.
@@ -66,6 +66,7 @@ elsebloc           : 'else' bloc | 'else' statement.
 ifbody             : truebloc *elsebloc.
 condexpr           : assignstmt | #expression.
 function_id        : *'::' #functionid | #AmuID '::' #functionid | #objectid '::' #functionid | #obj_instance '.' #functionid.
+VarID              : #var_id | AmuID'::' #var_id | *'::' #var_id.
 objcfncall         : '[' function_id  *Args ']'.
 
 )";

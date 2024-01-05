@@ -85,6 +85,16 @@ private:
 
     };
 
+    struct ScopeDataBloc
+    {
+        SppToken::Iterator StartSeq, Cur, EndSeq;
+        Stack* Bloc{nullptr};
+        Type::T CurType{Type::Null};
+        const Lang::Grammar::Rule* Rule{nullptr};
+        using BlocStack = std::stack<Compiler::ScopeDataBloc>;
+    };
+
+
     Compiler::ConfigData  Data;
     Compiler::ContextData Ctx;
 
@@ -106,13 +116,17 @@ private:
 
     [[maybe_unused]] xio *ParseExpression();
 
-    Book::Result EnterRule();
+    Book::Result EnterRule(const Lang::Grammar::Rule* R);
     Book::Result EnterElementSequence(Lang::Grammar::ElementSeq::const_iterator SeqIt);
     Book::Result ParseElement(const Lang::Grammar::Element& EI);
 
     std::pair<SppToken::Iterator, SppToken::Iterator> GetLineText(SppToken::Iterator Token);
-    Compiler::ContextData::CTXStack CStack;
+    Compiler::ScopeDataBloc::BlocStack BStack;
 
+
+
+    void PushContext();
+    void PopContext();
 
 };
 

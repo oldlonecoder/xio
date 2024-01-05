@@ -208,17 +208,26 @@ Book::Result Compiler::ExecuteLexer()
  *
  * @note   Ctx.Rule = The Rule to Descent-Parse;
  */
-Book::Result Compiler::EnterRule()
+Book::Result Compiler::EnterRule(const Lang::Grammar::Rule* R)
 {
+    PushContext();
+    Ctx.Rule = R;
+    Book::Result Result;
     for(auto Seq = Ctx.Rule->Begin(); !Ctx.Rule->End(Seq); Seq++)
     {
-        if(auto Result = EnterElementSequence(Seq); Result == Book::Result::Accepted) return Result;
-
-
-
+        Result = EnterElementSequence(Seq);
+        if(Result == Book::Result::Accepted)
+        {
+            PopContext();
+            Ctx.Accept();
+            return Result;
+        }
+        PopContext();
+        Ctx.Reject();
     }
-    return Book::Result::Ok;
+    return Book::Result::Rejected;
 }
+
 
 Book::Result Compiler::EnterElementSequence(Lang::Grammar::ElementSeq::const_iterator SeqIt)
 {
@@ -232,24 +241,52 @@ Book::Result Compiler::EnterElementSequence(Lang::Grammar::ElementSeq::const_ite
                 continue;
             }
         }
-
-    }
-    return Book::Result::Accepted;
-}
-
-Book::Result Compiler::ParseElement(const Lang::Grammar::Element& El)
-{
-    if(El.IsMnemonic())
-    {
-        if(Ctx.Cur->M == El.Mem.M)
+        else
         {
-            //..
-
+            // Element is accepted;
+            if(TermIt->a.IsRepeat())
+            {
+                ++Ctx;
+                continue;
+            }
+            return Book::Result ::Accepted;
         }
 
     }
+    return Book::Result::Rejected;
+}
+
+
+
+Book::Result Compiler::ParseElement(const Lang::Grammar::Element& El)
+{
+
+    if(El.IsRule()) return EnterRule(El.Mem.R);
+    //...
 
     return Book::Result::Rejected;
+}
+
+void Compiler::PushContext()
+{
+    BStack.push({Ctx.StartSeq, Ctx.Cur, Ctx.EndSeq, Ctx.Bloc, Ctx.CurType, Ctx.Rule});
+    Ctx.StartSeq = Ctx.EndSeq = Ctx.Cur;
+
+    // Bloc is assigned only when it is created ....duh,,.,,
+
+}
+
+
+
+void Compiler::PopContext()
+{
+    if(BStack.empty()) return;
+    auto Bst = BStack.top();
+    BStack.pop();
+    Ctx.Cur = Bst.Cur;
+    Ctx.Bloc = Bst.Bloc;
+    Ctx.Rule = Bst.Rule;
+    Ctx.CurType = Bst.CurType;
 }
 
 
