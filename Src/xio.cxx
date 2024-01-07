@@ -925,8 +925,8 @@ xio* xio::TreeInputBinary(xio* a)
             return (Op->*fn)(a);
         }
 
-        a->ToLeft(this); // returns "this" but from  we must return a as the new insertion node into the tree...
-        // The only case when it is required to return lhs ( left-hand-side node) is on openning par or left-pair(operator) that isolates the
+        a->ToLeft(this); // returns "this" - however from here, we must return { a } as the new insertion node into the tree...
+        // The only case when it is required to return lhs ( left-hand-side node) is on opening parenthesis or left-pair(operator) that isolates the
         // inner expression between open-close pair.
         return a;
     }
