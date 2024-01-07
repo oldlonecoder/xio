@@ -210,18 +210,24 @@ Book::Result Compiler::ExecuteLexer()
  */
 Book::Result Compiler::EnterRule(const Lang::Grammar::Rule* R)
 {
+    AppBook::Debug() << Color::Reset << " :" << Color::Yellow << R->Id << Color::Reset << ":";
     PushContext();
     Ctx.Rule = R;
     Book::Result Result;
+
     for(auto Seq = Ctx.Rule->Begin(); !Ctx.Rule->End(Seq); Seq++)
     {
+        AppBook::Debug() << " Sequence loaded:" << Book::Fn::Endl << Lang::Grammar::DebugDumpSequence(*Seq);
+
         Result = EnterElementSequence(Seq);
         if(Result == Book::Result::Accepted)
         {
+            AppBook::Debug() << "Sequence Accepted. Accepting compilation of this Rule";
             PopContext();
             Ctx.Accept();
             return Result;
         }
+        AppBook::Debug() << " Sequence Rejected - Next Sequence.";
         PopContext();
         Ctx.Reject();
     }
@@ -231,18 +237,24 @@ Book::Result Compiler::EnterRule(const Lang::Grammar::Rule* R)
 
 Book::Result Compiler::EnterElementSequence(Lang::Grammar::ElementSeq::const_iterator SeqIt)
 {
+    AppBook::Debug() << Color::Reset << " :";
     for(auto TermIt = SeqIt->terms.begin(); TermIt != SeqIt->terms.end(); TermIt++)
     {
+        AppBook::Out() << " Rule Element : '" << Color::Yellow << TermIt->operator()() << Color::Reset << "':";
         if(ParseElement(*TermIt) != Book::Result::Accepted)
         {
+            AppBook::Debug() << " Not accepted.";
             if(TermIt->a.IsOneof())
             {
+                AppBook::Debug() << "Opt:OneOf - Next Element.";
                 ++TermIt;
                 continue;
             }
         }
         else
         {
+            AppBook::Debug() << " Accepted - Parsing Element (" << Color::Yellow << (*TermIt)() << Color::Reset << ");";
+
             // Element is accepted;
             if(TermIt->a.IsRepeat())
             {
@@ -262,6 +274,13 @@ Book::Result Compiler::ParseElement(const Lang::Grammar::Element& El)
 {
 
     if(El.IsRule()) return EnterRule(El.Mem.R);
+    //Equality operator between Rule Element and SppToken:
+    if(El == Ctx.Token())
+    {
+
+    }
+
+
     //...
 
     return Book::Result::Rejected;

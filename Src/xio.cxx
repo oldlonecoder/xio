@@ -1070,17 +1070,17 @@ xio* xio::OpToRight(xio* a)
 }
 
 
-int xio::PushPar(xio* a)
+auto xio::PushPar(xio* a)
 {
     xio::pars.push(a);
-    return static_cast<int>(xio::pars.size());
+    return xio::pars.size();
 }
 
 xio* xio::PopPar()
 {
     if (xio::pars.empty()) return nullptr;
     xio* x = xio::pars.top();
-    xio::pars.pop(); // Tabarnak!
+    xio::pars.pop();
     return x;
 }
 

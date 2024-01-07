@@ -327,7 +327,7 @@ class SPP_EXPORT Grammar
     Book::Enums::Code Build();
 
     void Dump();
-    std::string DebugDumpSequence(const ElementSeq& seq);
+    static std::string DebugDumpSequence(const ElementSeq& seq);
 
     private:
     enum state_mac

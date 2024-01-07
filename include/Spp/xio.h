@@ -46,7 +46,7 @@ class  SPP_EXPORT xio : public Util::Object
     //friend class compiler;
 //    friend class ::Spp::spp::interpretr;
 protected:
-    xio* Op = nullptr; ///< Parent Operator
+    xio* Op  = nullptr; ///< Parent Operator
     xio* Lhs = nullptr; ///< Left Hand Side Operand.
     xio* Rhs = nullptr; ///< Right Hand Size Operand
 
@@ -54,11 +54,11 @@ protected:
 
     Alu* A = nullptr; ///< Arithmetic Logical Amu, or Accumulator, or whatever!
     struct SPP_EXPORT storage_attr {
-        uint8_t LV : 1; // 0 = rvalue non-assignable (such as const,leaf). 1= left value; assignable.
-        uint8_t PRef : 1; // 1 = this xio owns its acc storage - so will delete it in the destructor.
-        uint8_t LF : 1; // 1 = leave flag because this xio is a return statement.
+        uint8_t LV     : 1; // 0 = rvalue non-assignable (such as const,leaf). 1= left value; assignable.
+        uint8_t PRef   : 1; // 1 = this xio owns its acc storage - so will delete it in the destructor.
+        uint8_t LF     : 1; // 1 = leave flag because this xio is a return/exit/exception/interrupt/break/continue node.
         uint8_t Static : 1; // 1 = static storage.
-        uint8_t Ref : 1; // 1 = cannot be deleted by the parent's destructor.
+        uint8_t Ref    : 1; // 1 = cannot be deleted by the parent's destructor.
         // ...
     }Mem = { 0,0,0,0,0 }; ///< Storage types of this xio.
     //friend class xiovar;
@@ -169,7 +169,7 @@ public:
     //static void clear_static_pool();
 
     static std::stack<xio*> pars;
-    static int PushPar(xio* a);
+    static auto PushPar(xio* a);
     static xio* PopPar();
 
 
