@@ -25,6 +25,7 @@ namespace Spp::Lang
 
 
 
+
 class SPP_EXPORT Grammar
 {
     public:
@@ -118,6 +119,7 @@ class SPP_EXPORT Grammar
 
     struct SPP_EXPORT Element
     {
+//        AST A{}; // Which AST (group) this element is part of, if matched with the SppToken.
         mutable Properties a = { 0, 0, 0, 0, 0 }; ///< default : punctual, strict match
 
         enum class ElementType : uint8_t
