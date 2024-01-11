@@ -9,7 +9,7 @@ My personal c++ not modern way to experiment coding a machineless scripting inte
 ---
 - <h5>Spp::Alu</h5> Arithmetic Logical Unit or Accumulator, component of xio.
 ---
- - <h5>Spp::xio</h5> Instruction Object node.
+ - <h5>Spp::xio</h5> Instruction Object node. [AST Node]
 -
 ---
 - <h5>Spp::Stack</h5> Scoped instructions-list/stack bloc".

@@ -36,7 +36,7 @@ namespace Spp
 
 
 /*!
-    @brief Script Instruction Object.
+    @brief Script Instruction Object. [AST Node]
 
     @author copy;2008-2023, oldlonecoder (Serge Lussier, lussier.serge@gmail.com)
 */
