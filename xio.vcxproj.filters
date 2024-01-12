@@ -36,12 +36,6 @@
     <ClInclude Include="include\Spp\Runtime\Interpreter.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="include\Spp\Runtime\RTBase.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Spp\Runtime\Unit.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="include\Spp\Runtime\Variable.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -52,6 +46,12 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="include\Spp\Compiler\Lexer.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Spp\Runtime\Amu.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Spp\Compiler\Lang\Ast.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
@@ -66,12 +66,6 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Src\Runtime\Interpreter.cxx">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Runtime\RTBase.cxx">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Runtime\Unit.cxx">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Src\Runtime\Variable.cxx">
@@ -90,6 +84,15 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Src\xio.cxx">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Runtime\Amu.cxx">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Compiler\Lang\Ast.cxx">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Compiler\Lang\CCKWAmu.cxx">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

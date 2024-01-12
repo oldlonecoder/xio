@@ -173,12 +173,12 @@ xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  
   <ItemGroup>
     <ClInclude Include="include\Spp\Alu.h" />
     <ClInclude Include="include\Spp\Compiler\Compiler.h" />
+    <ClInclude Include="include\Spp\Compiler\Lang\Ast.h" />
     <ClInclude Include="include\Spp\Compiler\Lang\Grammar.h" />
     <ClInclude Include="include\Spp\Compiler\Lexer.h" />
     <ClInclude Include="include\Spp\Exports.h" />
     <ClInclude Include="include\Spp\Runtime\Interpreter.h" />
-    <ClInclude Include="include\Spp\Runtime\RTBase.h" />
-    <ClInclude Include="include\Spp\Runtime\Unit.h" />
+    <ClInclude Include="include\Spp\Runtime\Amu.h" />
     <ClInclude Include="include\Spp\Runtime\Variable.h" />
     <ClInclude Include="include\Spp\SppToken.h" />
     <ClInclude Include="include\Spp\SppTypes.h" />
@@ -188,11 +188,12 @@ xcopy $(SolutionDir)include $(HOMEDRIVE)$(HOMEPATH)\libraries\include   /Y  /I  
   <ItemGroup>
     <ClCompile Include="Src\Alu.cxx" />
     <ClCompile Include="Src\Compiler\Compiler.cxx" />
+    <ClCompile Include="Src\Compiler\Lang\Ast.cxx" />
+    <ClCompile Include="Src\Compiler\Lang\CCKWAmu.cxx" />
     <ClCompile Include="Src\Compiler\Lang\Grammar.cxx" />
     <ClCompile Include="Src\Compiler\Lexer.cxx" />
     <ClCompile Include="Src\Runtime\Interpreter.cxx" />
-    <ClCompile Include="Src\Runtime\RTBase.cxx" />
-    <ClCompile Include="Src\Runtime\Unit.cxx" />
+    <ClCompile Include="Src\Runtime\Amu.cxx" />
     <ClCompile Include="Src\Runtime\Variable.cxx" />
     <ClCompile Include="Src\SppToken.cxx" />
     <ClCompile Include="Src\SppTypes.cxx" />
