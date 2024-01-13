@@ -4,22 +4,22 @@
 
 namespace Spp::Lang
 {
-Book::Expect<Ast::Node*> ArithmeticAST::TreeBegin(SppToken* aToken)
+Book::Expect<Ast::Node*> MathAST::TreeBegin(SppToken* aToken)
 {
     return Book::Expect<Ast::Node*>();
 }
 
-Book::Expect<Ast::Node*> ArithmeticAST::Input(SppToken* aToken)
+Book::Expect<Ast::Node*> MathAST::Input(SppToken* aToken)
 {
     return Book::Expect<Ast::Node*>();
 }
 
-Book::Expect<Ast::Node*> ArithmeticAST::Root()
+Book::Expect<Ast::Node*> MathAST::Root()
 {
     return Book::Expect<Ast::Node*>();
 }
 
-Book::Expect<Ast::Node*> ArithmeticAST::Close()
+Book::Expect<Ast::Node*> MathAST::Close()
 {
     return Book::Expect<Ast::Node*>();
 }

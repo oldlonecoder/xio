@@ -17,7 +17,8 @@
 #include <Spp/SppToken.h>
 #include <map>
 #include <stack>
-#include <Spp/Stack.h>
+#include "Spp/Stack.h"
+#include "Spp/Compiler/Lang/Grammar.h"
 
 namespace Spp::Lang
 {
@@ -56,7 +57,7 @@ public:
 };
 
 
-class SPP_EXPORT ArithmeticAST : public Ast
+class SPP_EXPORT MathAST : public Ast
 {
 
 public:
@@ -66,6 +67,9 @@ public:
     Book::Expect <Ast::Node*> Input(SppToken* aToken) override;
     Book::Expect <Ast::Node*> Root();
     Book::Expect <Ast::Node*> Close();
+
+    using InputValidation = std::vector<std::pair<std::pair<Type::T, Type::T>, std::string>>;
+    using InsertAssoc = std::vector<std::pair<std::pair<Type::T, Type::T>, Ast::Node* (MathAST::*)(Ast::Node*)>>;
 
 
 };
